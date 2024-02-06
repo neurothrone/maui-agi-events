@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage
     x:Class="AGIEvents.App.Views.EventsPage"
+    x:DataType="viewModel:EventsViewModel"
+    x:Name="Page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ContentPage.Content>
@@ -14,15 +17,20 @@
                     public string MyText => $"Line 1{Environment.NewLine}Line 2";
                 -->
                 <Label
+                    TextColor="White"
                     FontSize="24"
                     Margin="0,0,0,20"
                     Text="Welcome to&#x0a;AGI Events" />
                 <Label
+                    TextColor="White"
                     FontSize="20"
                     Margin="0,0,0,10"
                     Text="Your Events" />
-                <Label Text="You do not have any events yet. Tap on an Event in the Coming Events section and Scan the QR code of your exhibitor badge." />
                 <Label
+                    TextColor="Silver"
+                    Text="You do not have any events yet. Tap on an Event in the Coming Events section and Scan the QR code of your exhibitor badge." />
+                <Label
+                    TextColor="White"
                     FontSize="20"
                     Margin="0,20,0,10"
                     Text="Coming Events" />
@@ -49,34 +57,29 @@
                             VerticalItemSpacing="15" />
                     </CollectionView.ItemsLayout>
 
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="{x:Type x:String}">
-                            <VerticalStackLayout Margin="0">
-                                <!-- <Frame CornerRadius="20" Padding="0"> -->
-                                <!--  <Image  -->
-                                <!--  Aspect="AspectFit"  -->
-                                <!--  HeightRequest="175"  -->
-                                <!--  SemanticProperties.Description="Event logo"  -->
-                                <!--  Source="dotnet_bot.png">  -->
-                                <!--         <Image.GestureRecognizers> -->
-                                <!--             <TapGestureRecognizer Tapped="OnEventTapped" /> -->
-                                <!--         </Image.GestureRecognizers> -->
-                                <!--     </Image> -->
-                                <!-- </Frame> -->
+                    <!--  TODO: GestureRecognizer hold 2 sec. Show context menu. Allow deletion of event locally  -->
 
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout Margin="0">
                                 <Frame
                                     BackgroundColor="SlateBlue"
                                     CornerRadius="20"
-                                    Padding="0">
-                                    <ImageButton
+                                    Padding="10">
+                                    <Image
                                         Aspect="AspectFit"
-                                        Clicked="OnEventClicked"
-                                        Padding="10"
-                                        SemanticProperties.Description="Event logo button"
+                                        SemanticProperties.Description="Event logo"
                                         Source="sopdk_logo.png" />
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.NavigateToLeadsCommand, Source={x:Reference Page}}" />
+                                    </Frame.GestureRecognizers>
                                 </Frame>
 
+
                                 <Label
+                                    TextColor="White"
+                                    FontAttributes="Bold"
                                     LineBreakMode="TailTruncation"
                                     Margin="10,5,0,5"
                                     SemanticProperties.Description="Sign and Print Scandinavia"

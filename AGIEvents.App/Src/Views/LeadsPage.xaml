@@ -1,8 +1,20 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage
+    Title="Leads"
     x:Class="AGIEvents.App.Views.LeadsPage"
+    x:DataType="viewModel:LeadsViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <ContentPage.Content />
+
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label Text="Leads Page" TextColor="White" />
+            <Button Text="Navigate to Lead Detail Page"
+                    Command="{Binding NavigateToLeadDetailCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>
