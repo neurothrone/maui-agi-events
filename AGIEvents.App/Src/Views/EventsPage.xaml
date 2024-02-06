@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="AGIEvents.App.Views.EventsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <ContentPage.Content>
+        <ScrollView>
+
+            <VerticalStackLayout Margin="10">
+                <!--
+                    This way ensures proper newline handling across different platforms.
+                    public string MyText => $"Line 1{Environment.NewLine}Line 2";
+                -->
+                <Label
+                    FontSize="24"
+                    Margin="0,0,0,20"
+                    Text="Welcome to&#x0a;AGI Events" />
+                <Label
+                    FontSize="20"
+                    Margin="0,0,0,10"
+                    Text="Your Events" />
+                <Label Text="You do not have any events yet. Tap on an Event in the Coming Events section and Scan the QR code of your exhibitor badge." />
+                <Label
+                    FontSize="20"
+                    Margin="0,20,0,10"
+                    Text="Coming Events" />
+
+                <CollectionView SelectionMode="None">
+                    <CollectionView.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Sign&amp;Print Scandinavia</x:String>
+                            <x:String>Sign Print &amp; Pack Denmark</x:String>
+                            <x:String>Sign, Print &amp; Promotion</x:String>
+                            <x:String>Sign, Print &amp; Promotion</x:String>
+                            <x:String>Sign, Print &amp; Promotion</x:String>
+                            <x:String>Sign, Print &amp; Promotion</x:String>
+                            <x:String>Sign, Print &amp; Promotion</x:String>
+                            <x:String>Sign, Print &amp; Promotion</x:String>
+                        </x:Array>
+                    </CollectionView.ItemsSource>
+
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout
+                            HorizontalItemSpacing="10"
+                            Orientation="Vertical"
+                            Span="2"
+                            VerticalItemSpacing="15" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type x:String}">
+                            <VerticalStackLayout Margin="0">
+                                <!-- <Frame CornerRadius="20" Padding="0"> -->
+                                <!--  <Image  -->
+                                <!--  Aspect="AspectFit"  -->
+                                <!--  HeightRequest="175"  -->
+                                <!--  SemanticProperties.Description="Event logo"  -->
+                                <!--  Source="dotnet_bot.png">  -->
+                                <!--         <Image.GestureRecognizers> -->
+                                <!--             <TapGestureRecognizer Tapped="OnEventTapped" /> -->
+                                <!--         </Image.GestureRecognizers> -->
+                                <!--     </Image> -->
+                                <!-- </Frame> -->
+
+                                <Frame
+                                    BackgroundColor="SlateBlue"
+                                    CornerRadius="20"
+                                    Padding="0">
+                                    <ImageButton
+                                        Aspect="AspectFit"
+                                        Clicked="OnEventClicked"
+                                        Padding="10"
+                                        SemanticProperties.Description="Event logo button"
+                                        Source="sopdk_logo.png" />
+                                </Frame>
+
+                                <Label
+                                    LineBreakMode="TailTruncation"
+                                    Margin="10,5,0,5"
+                                    SemanticProperties.Description="Sign and Print Scandinavia"
+                                    Text="{Binding .}" />
+                                <Label
+                                    Margin="10,0,0,0"
+                                    SemanticProperties.Description="Event takes place 19 to 21 September"
+                                    Text="19-21 Sep"
+                                    TextColor="Silver" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+            </VerticalStackLayout>
+
+
+        </ScrollView>
+    </ContentPage.Content>
+
+</ContentPage>
