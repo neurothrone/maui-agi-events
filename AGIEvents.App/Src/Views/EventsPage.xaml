@@ -8,6 +8,11 @@
     xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="icon_settings.png"
+                     Command="{Binding NavigateToSettingsCommand}" />
+    </ContentPage.ToolbarItems>
+
     <ScrollView VerticalScrollBarVisibility="Never">
         <VerticalStackLayout Margin="10">
             <Label
