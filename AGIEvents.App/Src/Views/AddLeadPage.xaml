@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
+             x:Class="AGIEvents.App.Views.AddLeadPage"
+             x:DataType="viewModel:AddLeadViewModel"
+             Title="Add Lead">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="icon_save.png"
+                     Text="Add"
+                     Command="{Binding AddLeadCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <TableView Intent="Form">
+        <TableRoot>
+            <TableSection Title="New Lead">
+                <EntryCell Label="First Name" LabelColor="MediumSlateBlue"
+                           Placeholder="John"
+                           Text="{Binding FirstName}" />
+
+                <EntryCell Label="Last Name" LabelColor="MediumSlateBlue"
+                           Placeholder="Doe"
+                           Text="{Binding LastName}" />
+
+                <EntryCell Label="Company" LabelColor="MediumSlateBlue"
+                           Placeholder="MAUI Corp"
+                           Text="{Binding Company}" />
+
+                <EntryCell Label="E-mail" LabelColor="MediumSlateBlue"
+                           Placeholder="john.doe@example.com"
+                           Text="{Binding Email}"
+                           Keyboard="Email" />
+
+                <EntryCell Label="Phone" LabelColor="MediumSlateBlue"
+                           Placeholder="+46 123 456 78 99"
+                           Text="{Binding Phone}"
+                           Keyboard="Telephone" />
+
+                <EntryCell Label="Address" LabelColor="MediumSlateBlue"
+                           Placeholder="Some st. 47"
+                           Text="{Binding Address}" />
+
+                <EntryCell Label="Zip code" LabelColor="MediumSlateBlue"
+                           Placeholder="123 45"
+                           Text="{Binding ZipCode}" />
+
+                <EntryCell Label="City" LabelColor="MediumSlateBlue"
+                           Placeholder="Gothenburg"
+                           Text="{Binding City}" />
+            </TableSection>
+        </TableRoot>
+    </TableView>
+
+</ContentPage>
