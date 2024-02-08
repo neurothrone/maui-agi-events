@@ -16,6 +16,7 @@ public class Lead
     public string city;
     public string product;
     public string seller;
+    public string notes;
     public DateTime scannedAt;
 
     public Lead(

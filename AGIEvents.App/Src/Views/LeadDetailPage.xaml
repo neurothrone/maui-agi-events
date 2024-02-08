@@ -8,10 +8,52 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Lead">
 
-    <ScrollView>
-        <VerticalStackLayout>
-            <Label Text="Lead" TextColor="White" />
-        </VerticalStackLayout>
-    </ScrollView>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="icon_save.png"
+                     SemanticProperties.Description="Save changes"
+                     ToolTipProperties.Text="Save changes"
+                     Command="{Binding SaveChangesCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <TableView Intent="Form" HasUnevenRows="True">
+        <TableRoot>
+            <TableSection Title="Contact Information">
+                <EntryCell Label="First Name" LabelColor="MediumSlateBlue"
+                           Text="{Binding FirstName }" />
+                <EntryCell Label="Last Name" LabelColor="MediumSlateBlue"
+                           Text="{Binding LastName }" />
+                <EntryCell Label="Company" LabelColor="MediumSlateBlue"
+                           Text="{Binding Company }" />
+                <EntryCell Label="E-mail" LabelColor="MediumSlateBlue"
+                           Text="{Binding Email }"
+                           Keyboard="Email" />
+                <EntryCell Label="Phone" LabelColor="MediumSlateBlue"
+                           Text="{Binding Phone }"
+                           Keyboard="Telephone" />
+            </TableSection>
+
+            <TableSection Title="Additional Information">
+                <EntryCell Label="Address" LabelColor="MediumSlateBlue"
+                           Text="{Binding Address }" />
+                <EntryCell Label="Zip code" LabelColor="MediumSlateBlue"
+                           Text="{Binding ZipCode }" />
+                <EntryCell Label="City" LabelColor="MediumSlateBlue"
+                           Text="{Binding City }" />
+                <EntryCell Label="Product(s)" LabelColor="MediumSlateBlue"
+                           Text="{Binding Product }" />
+                <EntryCell Label="Seller" LabelColor="MediumSlateBlue"
+                           Text="{Binding Seller }" />
+                <TextCell />
+            </TableSection>
+
+            <TableSection Title="Notes">
+                <ViewCell>
+                    <Editor Placeholder="Type in your notes..."
+                            Margin="15,0" />
+                </ViewCell>
+            </TableSection>
+        </TableRoot>
+    </TableView>
+
 
 </ContentPage>
