@@ -10,7 +10,6 @@ internal partial class LeadsViewModel : ObservableObject, IQueryAttributable
 {
     [ObservableProperty] private string _id = string.Empty;
     [ObservableProperty] private string _image = string.Empty;
-
     public ObservableCollection<LeadViewModel> Leads { get; }
 
     public LeadsViewModel()
@@ -24,9 +23,11 @@ internal partial class LeadsViewModel : ObservableObject, IQueryAttributable
     }
 
     [RelayCommand]
-    private async Task NavigateToLeadDetail()
+    private async Task NavigateToLeadDetail(LeadViewModel lead)
     {
-        await Shell.Current.GoToAsync(nameof(LeadDetailPage));
+        await Shell.Current.GoToAsync(
+            $"{nameof(LeadDetailPage)}?LeadId={lead.Id}"
+        );
     }
 
     [RelayCommand]
@@ -34,6 +35,37 @@ internal partial class LeadsViewModel : ObservableObject, IQueryAttributable
     {
         await Shell.Current.GoToAsync(
             $"{nameof(AddLeadPage)}?EventId={Id}");
+    }
+
+    [RelayCommand]
+    private async Task ShowQrScanner()
+    {
+        Leads.Add(
+            new LeadViewModel(
+                new Lead(
+                    id: "1",
+                    eventId: "0",
+                    firstName: "Jane",
+                    lastName: "Doe",
+                    company: "Doe Industries",
+                    email: "jane.doe@example.com",
+                    phone: "+46 123 456 78 90",
+                    scannedAt: DateTime.Now
+                )
+            )
+        );
+    }
+    
+    [RelayCommand]
+    private async Task ExportLead(LeadViewModel lead)
+    {
+        Console.WriteLine($"✅ -> Exporting lead with id: {lead.Id}");
+    }
+
+    [RelayCommand]
+    private async Task DeleteLead(LeadViewModel lead)
+    {
+        Console.WriteLine($"✅ -> Deleting lead with id: {lead.Id}");
     }
 
     [RelayCommand]

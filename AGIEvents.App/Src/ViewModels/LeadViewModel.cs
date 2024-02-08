@@ -2,6 +2,8 @@ namespace AGIEvents.App.ViewModels;
 
 internal partial class LeadViewModel(Models.Lead lead)
 {
+    public string Id => lead.id;
+    public string EventId => lead.eventId;
     public string FirstName => lead.firstName;
     public string LastName => lead.lastName;
     public string FullName => $"{FirstName} {LastName}";

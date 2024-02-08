@@ -6,15 +6,22 @@
     x:DataType="viewModel:LeadsViewModel"
     x:Name="Page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:converters="clr-namespace:AGIEvents.App.Converters"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:LeadItemTapConverter x:Key="LeadItemTappedEventArgsConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Share"
-                     IconImageSource="icon_share.png"
+        <ToolbarItem IconImageSource="icon_share.png"
+                     SemanticProperties.Description="Export Leads"
+                     ToolTipProperties.Text="Export Leads"
                      Command="{Binding ExportLeadsCommand}" />
-        <!-- <ToolbarItem Text="Add" IconImageSource="{FontImage Glyph='+', Color=White, Size=22}" -->
-        <!--              Command="{Binding  NewCommand}" /> -->
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="auto,auto,*"
@@ -58,7 +65,8 @@
                             FontSize="24"
                             FontAttributes="Bold"
                             Padding="0"
-                            SemanticProperties.Description="Add Lead through QR Code Scanner"
+                            SemanticProperties.Description="Add Lead with QR Scanner"
+                            ToolTipProperties.Text="Add Lead with QR Scanner"
                             Command="{Binding ShowQrScannerCommand}" />
 
                     <Button Text="+"
@@ -69,7 +77,8 @@
                             FontSize="24"
                             FontAttributes="Bold"
                             Padding="0"
-                            SemanticProperties.Description="Add Lead manually through a form"
+                            SemanticProperties.Description="Add Lead manually with a Form"
+                            ToolTipProperties.Text="Add Lead manually with a Form"
                             Command="{Binding NavigateToAddLeadCommand}" />
 
                 </HorizontalStackLayout>
@@ -84,40 +93,83 @@
                   SelectionMode="None"
                   VerticalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}"
                   CachingStrategy="RecycleElement"
+                  SeparatorVisibility="None"
                   RowHeight="65">
+
+            <ListView.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventName="ItemTapped"
+                    EventArgsConverter="{StaticResource LeadItemTappedEventArgsConverter}"
+                    Command="{Binding NavigateToLeadDetailCommand}" />
+            </ListView.Behaviors>
 
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="viewModel:LeadViewModel">
                     <ViewCell>
-                        <Grid ColumnDefinitions="*,auto"
-                              RowDefinitions="*,*"
-                              RowSpacing="5"
-                              Margin="0, 10">
+                        <!-- <ViewCell.ContextActions> -->
+                        <!--     <MenuItem Text="Export" /> -->
+                        <!-- </ViewCell.ContextActions> -->
 
-                            <HorizontalStackLayout Grid.Column="0"
-                                                   Grid.Row="0"
-                                                   Spacing="10">
-                                <Image Source="icon_person.png"
-                                       WidthRequest="15"
-                                       HeightRequest="15" />
-                                <Label Text="{Binding FullName}" />
-                            </HorizontalStackLayout>
+                        <Border Stroke="Transparent">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="15" />
+                            </Border.StrokeShape>
 
-                            <HorizontalStackLayout Grid.Column="0"
-                                                   Grid.Row="1"
-                                                   Spacing="10">
-                                <Image Source="icon_company.png"
-                                       WidthRequest="15"
-                                       HeightRequest="15" />
-                                <Label Text="{Binding Company}" />
-                            </HorizontalStackLayout>
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItem Text="Export"
+                                               IconImageSource="icon_delete.png"
+                                               BackgroundColor="DarkCyan"
+                                               Command="{Binding Source={x:Reference Page},
+                                                  Path=BindingContext.ExportLeadCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeView.LeftItems>
 
-                            <ImageButton Grid.Column="1"
-                                         Grid.RowSpan="2"
-                                         Source="icon_chevron_right.png"
-                                         Scale="0.3" />
+                                <SwipeView.RightItems>
+                                    <SwipeItem Text="Delete"
+                                               IconImageSource="icon_delete.png"
+                                               BackgroundColor="DarkRed"
+                                               IsDestructive="True"
+                                               Command="{Binding Source={x:Reference Page},
+                                                  Path=BindingContext.DeleteLeadCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeView.RightItems>
 
-                        </Grid>
+                                <Grid ColumnDefinitions="*,auto"
+                                      RowDefinitions="*,*"
+                                      RowSpacing="5"
+                                      Padding="10,10,0,10"
+                                      BackgroundColor="DarkSlateBlue">
+
+                                    <HorizontalStackLayout Grid.Column="0"
+                                                           Grid.Row="0"
+                                                           Spacing="10">
+                                        <Image Source="icon_person.png"
+                                               WidthRequest="15"
+                                               HeightRequest="15" />
+                                        <Label Text="{Binding FullName}" />
+                                    </HorizontalStackLayout>
+
+                                    <HorizontalStackLayout Grid.Column="0"
+                                                           Grid.Row="1"
+                                                           Spacing="10">
+                                        <Image Source="icon_company.png"
+                                               WidthRequest="15"
+                                               HeightRequest="15" />
+                                        <Label Text="{Binding Company}" />
+                                    </HorizontalStackLayout>
+
+                                    <ImageButton Grid.Column="1"
+                                                 Grid.RowSpan="2"
+                                                 Source="icon_chevron_right.png"
+                                                 Scale="0.3" />
+
+                                </Grid>
+
+                            </SwipeView>
+
+                        </Border>
+
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
