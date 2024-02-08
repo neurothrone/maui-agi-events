@@ -1,15 +1,27 @@
+using System.Collections.ObjectModel;
+using AGIEvents.App.Models;
 using AGIEvents.App.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace AGIEvents.App.ViewModels;
 
-public partial class EventsViewModel : ObservableObject
+internal partial class EventsViewModel
 {
-    [RelayCommand]
-    private async Task NavigateToLeads()
+    public ObservableCollection<EventViewModel> Events { get; }
+
+    public EventsViewModel()
     {
-        Console.WriteLine("✅ -> Event Clicked, Navigate to LeadsPage");
-        await Shell.Current.GoToAsync(nameof(LeadsPage));
+        Events = new ObservableCollection<EventViewModel>(
+            Event.Samples().Select(e => new EventViewModel(e))
+        );
+    }
+
+
+    [RelayCommand]
+    private async Task NavigateToLeadsForEvent(EventViewModel eventViewModel)
+    {
+        await Shell.Current.GoToAsync(
+            $"{nameof(LeadsPage)}?EventId={eventViewModel.Id}"
+        );
     }
 }

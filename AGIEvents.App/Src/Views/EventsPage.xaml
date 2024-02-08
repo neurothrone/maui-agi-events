@@ -8,96 +8,84 @@
     xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <ContentPage.Content>
-        <ScrollView>
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <VerticalStackLayout Margin="10">
+            <Label
+                TextColor="White"
+                FontSize="24"
+                FontAttributes="Bold"
+                Margin="0,0,0,20"
+                Text="Welcome to&#x0a;AGI Events" />
+            <Label
+                TextColor="White"
+                FontSize="20"
+                Margin="0,0,0,10"
+                Text="Your Events" />
+            <Label LineBreakMode="WordWrap">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="You do not have any events yet. Tap on an Event in the " TextColor="Silver" />
+                        <Span Text="Coming Events" TextColor="White" FontAttributes="Bold" />
+                        <Span Text=" section and Scan the QR code of your exhibitor badge." TextColor="Silver" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label
+                TextColor="White"
+                FontSize="20"
+                Margin="0,20,0,10"
+                Text="Coming Events" />
 
-            <VerticalStackLayout Margin="10">
-                <!--
-                    This way ensures proper newline handling across different platforms.
-                    public string MyText => $"Line 1{Environment.NewLine}Line 2";
-                -->
-                <Label
-                    TextColor="White"
-                    FontSize="24"
-                    Margin="0,0,0,20"
-                    Text="Welcome to&#x0a;AGI Events" />
-                <Label
-                    TextColor="White"
-                    FontSize="20"
-                    Margin="0,0,0,10"
-                    Text="Your Events" />
-                <Label
-                    TextColor="Silver"
-                    Text="You do not have any events yet. Tap on an Event in the Coming Events section and Scan the QR code of your exhibitor badge." />
-                <Label
-                    TextColor="White"
-                    FontSize="20"
-                    Margin="0,20,0,10"
-                    Text="Coming Events" />
+            <CollectionView ItemsSource="{Binding Events}"
+                            SelectionMode="None"
+                            ItemSizingStrategy="MeasureFirstItem">
 
-                <CollectionView SelectionMode="None">
-                    <CollectionView.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>Sign&amp;Print Scandinavia</x:String>
-                            <x:String>Sign Print &amp; Pack Denmark</x:String>
-                            <x:String>Sign, Print &amp; Promotion</x:String>
-                            <x:String>Sign, Print &amp; Promotion</x:String>
-                            <x:String>Sign, Print &amp; Promotion</x:String>
-                            <x:String>Sign, Print &amp; Promotion</x:String>
-                            <x:String>Sign, Print &amp; Promotion</x:String>
-                            <x:String>Sign, Print &amp; Promotion</x:String>
-                        </x:Array>
-                    </CollectionView.ItemsSource>
+                <!-- TODO: Investigate if there is a better Grid solution. -->
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout
+                        Orientation="Vertical"
+                        Span="{OnIdiom Phone=2, Default=3}"
+                        HorizontalItemSpacing="10"
+                        VerticalItemSpacing="40" />
+                </CollectionView.ItemsLayout>
 
-                    <CollectionView.ItemsLayout>
-                        <GridItemsLayout
-                            HorizontalItemSpacing="10"
-                            Orientation="Vertical"
-                            Span="2"
-                            VerticalItemSpacing="15" />
-                    </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModel:EventViewModel">
+                        <VerticalStackLayout Margin="0">
+                            <Frame
+                                BackgroundColor="SlateBlue"
+                                BorderColor="Transparent"
+                                CornerRadius="25"
+                                Padding="10">
+                                <Image
+                                    Aspect="AspectFit"
+                                    HeightRequest="100"
+                                    SemanticProperties.Description="Event logo"
+                                    Source="{Binding Image}" />
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={x:Reference Page},
+                                                  Path=BindingContext.NavigateToLeadsForEventCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
 
-                    <!--  TODO: GestureRecognizer hold 2 sec. Show context menu. Allow deletion of event locally  -->
-
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <VerticalStackLayout Margin="0">
-                                <Frame
-                                    BackgroundColor="SlateBlue"
-                                    CornerRadius="20"
-                                    Padding="10">
-                                    <Image
-                                        Aspect="AspectFit"
-                                        SemanticProperties.Description="Event logo"
-                                        Source="sopdk_logo.png" />
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding BindingContext.NavigateToLeadsCommand, Source={x:Reference Page}}" />
-                                    </Frame.GestureRecognizers>
-                                </Frame>
-
-
-                                <Label
-                                    TextColor="White"
-                                    FontAttributes="Bold"
-                                    LineBreakMode="TailTruncation"
-                                    Margin="10,5,0,5"
-                                    SemanticProperties.Description="Sign and Print Scandinavia"
-                                    Text="{Binding .}" />
-                                <Label
-                                    Margin="10,0,0,0"
-                                    SemanticProperties.Description="Event takes place 19 to 21 September"
-                                    Text="19-21 Sep"
-                                    TextColor="Silver" />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-
-                </CollectionView>
-            </VerticalStackLayout>
-
-
-        </ScrollView>
-    </ContentPage.Content>
-
+                            <!-- BUG: LineBreakMode=TailTruncation does not work with MaxLines property -->
+                            <Label
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                Margin="10,5,0,5"
+                                SemanticProperties.Description="Event title"
+                                Text="{Binding Title}" />
+                            <Label
+                                Margin="10,0,0,0"
+                                SemanticProperties.Description="The dates the event takes place"
+                                Text="{Binding FormattedDateRange}"
+                                TextColor="Silver" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
