@@ -41,7 +41,7 @@
                         <FormattedString>
                             <Span Text="Your leads " />
                             <Span Text="(" TextColor="DarkGray" />
-                            <Span Text="{Binding Count}" TextColor="MediumSlateBlue"
+                            <Span Text="{Binding Leads.Count}" TextColor="MediumSlateBlue"
                                   FontAttributes="Bold" />
                             <Span Text=")" TextColor="DarkGray" />
                         </FormattedString>
@@ -59,7 +59,7 @@
                             FontAttributes="Bold"
                             Padding="0"
                             SemanticProperties.Description="Add Lead through QR Code Scanner"
-                            Command="{Binding NavigateToAddLeadCommand}" />
+                            Command="{Binding ShowQrScannerCommand}" />
 
                     <Button Text="+"
                             WidthRequest="20"
