@@ -1,12 +1,10 @@
-using AGIEvents.App.ViewModels;
-
 namespace AGIEvents.App.Views;
 
 public partial class SettingsPage : ContentPage
 {
-    public SettingsPage()
+    public SettingsPage(ViewModels.SettingsViewModel vm)
     {
         InitializeComponent();
-        BindingContext = new SettingsViewModel();
+        BindingContext = vm;
     }
 }

@@ -1,12 +1,10 @@
-using AGIEvents.App.ViewModels;
-
 namespace AGIEvents.App.Views;
 
 public partial class EventsPage : ContentPage
 {
-    public EventsPage()
+    public EventsPage(ViewModels.EventsViewModel vm)
     {
         InitializeComponent();
-        BindingContext = new EventsViewModel();
+        BindingContext = vm;
     }
 }

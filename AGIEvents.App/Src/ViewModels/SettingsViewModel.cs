@@ -1,6 +1,5 @@
 namespace AGIEvents.App.ViewModels;
 
-internal partial class SettingsViewModel
+public partial class SettingsViewModel
 {
-    
 }

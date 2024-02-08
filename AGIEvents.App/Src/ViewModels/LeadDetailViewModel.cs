@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 namespace AGIEvents.App.ViewModels;
 
 [QueryProperty("LeadId", "LeadId")]
-internal partial class LeadDetailViewModel : ObservableObject
+public partial class LeadDetailViewModel : ObservableObject
 {
     [ObservableProperty] private string _leadId;
 

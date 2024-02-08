@@ -1,6 +1,6 @@
 namespace AGIEvents.App.ViewModels;
 
-internal partial class LeadViewModel(Models.Lead lead)
+public partial class LeadViewModel(Models.Lead lead)
 {
     public string Id => lead.id;
     public string EventId => lead.eventId;

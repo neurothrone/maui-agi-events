@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AGIEvents.App.ViewModels;
 
-internal partial class LeadsViewModel : ObservableObject, IQueryAttributable
+public partial class LeadsViewModel : ObservableObject, IQueryAttributable
 {
     [ObservableProperty] private string _id = string.Empty;
     [ObservableProperty] private string _image = string.Empty;

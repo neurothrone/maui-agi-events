@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AGIEvents.App.ViewModels;
 
-internal partial class EventsViewModel
+public partial class EventsViewModel
 {
     public ObservableCollection<EventViewModel> Events { get; }
 

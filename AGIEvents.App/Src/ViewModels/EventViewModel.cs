@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AGIEvents.App.ViewModels;
 
-internal partial class EventViewModel(Models.Event e) : ObservableObject
+public partial class EventViewModel(Models.Event e) : ObservableObject
 {
     public string Id => e.id;
     public string Title => e.title;

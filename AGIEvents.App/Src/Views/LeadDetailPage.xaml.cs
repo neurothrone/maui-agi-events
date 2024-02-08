@@ -1,12 +1,10 @@
-using AGIEvents.App.ViewModels;
-
 namespace AGIEvents.App.Views;
 
 public partial class LeadDetailPage : ContentPage
 {
-    public LeadDetailPage()
+    public LeadDetailPage(ViewModels.LeadDetailViewModel vm)
     {
         InitializeComponent();
-        BindingContext = new LeadDetailViewModel();
+        BindingContext = vm;
     }
 }
