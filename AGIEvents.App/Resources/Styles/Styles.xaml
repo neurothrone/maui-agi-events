@@ -221,6 +221,9 @@
     </Style>
 
     <Style TargetType="ListView">
+        <!-- Make ListView's BackgroundColor Transparent so we can customize it
+             for the Item view. -->
+        <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="SeparatorColor"
                 Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
         <Setter Property="RefreshControlColor"
@@ -450,12 +453,12 @@
     <Style ApplyToDerivedTypes="True" TargetType="Page">
         <Setter Property="Padding" Value="0" />
         <!-- <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}" /> -->
-        <Setter Property="BackgroundColor" Value="Black" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
     </Style>
 
     <Style ApplyToDerivedTypes="True" TargetType="Shell">
         <!-- <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}" /> -->
-        <Setter Property="Shell.BackgroundColor" Value="MediumSlateBlue" />
+        <Setter Property="Shell.BackgroundColor" Value="{StaticResource OffBlack}" />
         <Setter Property="Shell.ForegroundColor"
                 Value="{OnPlatform WinUI={StaticResource Primary}, Default={StaticResource White}}" />
         <!-- <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" /> -->
@@ -473,6 +476,11 @@
                 Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
         <Setter Property="Shell.TabBarUnselectedColor"
                 Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
+    </Style>
+
+    <!-- !: Set BackgroundColor here if changing BackgroundColor for TargetType=Page. -->
+    <Style TargetType="TableView">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackgroundColor}" />
     </Style>
 
     <Style TargetType="NavigationPage">
