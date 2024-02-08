@@ -12,7 +12,10 @@ internal partial class EventsViewModel
     public EventsViewModel()
     {
         Events = new ObservableCollection<EventViewModel>(
-            Event.Samples().Select(e => new EventViewModel(e))
+            Event.Samples()
+                .Select(e => new EventViewModel(e))
+                .OrderBy(e => e.Id)
+                .ToList()
         );
     }
 
@@ -23,5 +26,11 @@ internal partial class EventsViewModel
         await Shell.Current.GoToAsync(
             $"{nameof(LeadsPage)}?EventId={eventViewModel.Id}"
         );
+    }
+
+    [RelayCommand]
+    private async Task NavigateToSettings()
+    {
+        await Shell.Current.GoToAsync(nameof(SettingsPage));
     }
 }
