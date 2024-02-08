@@ -9,7 +9,8 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="icon_save.png"
-                     Text="Add"
+                     SemanticProperties.Description="Add Lead"
+                     ToolTipProperties.Text="Add Lead"
                      Command="{Binding AddLeadCommand}" />
     </ContentPage.ToolbarItems>
 

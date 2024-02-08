@@ -10,6 +10,8 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="icon_settings.png"
+                     SemanticProperties.Description="Settings"
+                     ToolTipProperties.Text="Settings"
                      Command="{Binding NavigateToSettingsCommand}" />
     </ContentPage.ToolbarItems>
 
