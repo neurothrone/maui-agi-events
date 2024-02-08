@@ -21,18 +21,18 @@ public static class MauiProgram
             .Services
             // ViewModels
             .AddSingleton<ViewModels.EventsViewModel>()
+            .AddSingleton<ViewModels.LeadsViewModel>()
+            .AddSingleton<ViewModels.SettingsViewModel>()
             .AddTransient<ViewModels.EventViewModel>()
-            .AddTransient<ViewModels.LeadsViewModel>()
             .AddTransient<ViewModels.LeadViewModel>()
             .AddTransient<ViewModels.LeadDetailViewModel>()
             .AddTransient<ViewModels.AddLeadViewModel>()
-            .AddTransient<ViewModels.SettingsViewModel>()
             // Views
             .AddSingleton<Views.EventsPage>()
-            .AddTransient<Views.LeadsPage>()
+            .AddSingleton<Views.LeadsPage>()
+            .AddSingleton<Views.SettingsPage>()
             .AddTransient<Views.LeadDetailPage>()
             .AddTransient<Views.AddLeadPage>()
-            .AddTransient<Views.SettingsPage>()
             ;
 
 #if DEBUG
