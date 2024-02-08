@@ -34,7 +34,7 @@
                            Keyboard="Email" />
 
                 <EntryCell Label="Phone" LabelColor="MediumSlateBlue"
-                           Placeholder="+46 123 456 78 99"
+                           Placeholder="+46 123 456 78 90"
                            Text="{Binding Phone}"
                            Keyboard="Telephone" />
 
