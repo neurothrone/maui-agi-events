@@ -18,7 +18,7 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="icon_share.png"
+        <ToolbarItem IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
                      SemanticProperties.Description="Export Leads"
                      ToolTipProperties.Text="Export Leads"
                      Command="{Binding ExportLeadsCommand}" />
@@ -57,7 +57,7 @@
 
                 <HorizontalStackLayout Spacing="10">
 
-                    <Button ImageSource="icon_qrcode.png"
+                    <Button ImageSource="icon_qr_code_scanner.png"
                             HeightRequest="20"
                             WidthRequest="20"
                             TextColor="White"
@@ -69,7 +69,7 @@
                             ToolTipProperties.Text="Add Lead with QR Scanner"
                             Command="{Binding ShowQrScannerCommand}" />
 
-                    <Button Text="+"
+                    <Button ImageSource="icon_add.png"
                             WidthRequest="20"
                             HeightRequest="20"
                             TextColor="White"
@@ -106,9 +106,6 @@
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="viewModel:LeadViewModel">
                     <ViewCell>
-                        <!-- <ViewCell.ContextActions> -->
-                        <!--     <MenuItem Text="Export" /> -->
-                        <!-- </ViewCell.ContextActions> -->
 
                         <Border Stroke="Transparent">
                             <Border.StrokeShape>
@@ -118,7 +115,7 @@
                             <SwipeView>
                                 <SwipeView.LeftItems>
                                     <SwipeItem Text="Export"
-                                               IconImageSource="icon_delete.png"
+                                               IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
                                                BackgroundColor="DarkCyan"
                                                Command="{Binding Source={x:Reference Page},
                                                   Path=BindingContext.ExportLeadCommand}"
@@ -137,32 +134,38 @@
 
                                 <Grid ColumnDefinitions="*,auto"
                                       RowDefinitions="*,*"
-                                      RowSpacing="5"
+                                      RowSpacing="4"
                                       Padding="10,10,0,10"
                                       BackgroundColor="DarkSlateBlue">
 
-                                    <HorizontalStackLayout Grid.Column="0"
-                                                           Grid.Row="0"
-                                                           Spacing="10">
-                                        <Image Source="icon_person.png"
-                                               WidthRequest="15"
-                                               HeightRequest="15" />
-                                        <Label Text="{Binding FullName}" />
-                                    </HorizontalStackLayout>
+                                    <FlexLayout Grid.Column="0"
+                                                Grid.Row="0"
+                                                Direction="Row"
+                                                JustifyContent="Start"
+                                                AlignItems="Center">
+                                        <Image Source="icon_person.png" />
+                                        <Label
+                                            FontSize="16"
+                                            Margin="4,0,0,0"
+                                            Text="{Binding FullName}" />
+                                    </FlexLayout>
 
-                                    <HorizontalStackLayout Grid.Column="0"
-                                                           Grid.Row="1"
-                                                           Spacing="10">
-                                        <Image Source="icon_company.png"
-                                               WidthRequest="15"
-                                               HeightRequest="15" />
-                                        <Label Text="{Binding Company}" />
-                                    </HorizontalStackLayout>
+                                    <FlexLayout Grid.Column="0"
+                                                Grid.Row="1"
+                                                Direction="Row"
+                                                JustifyContent="Start"
+                                                AlignItems="Center">
+                                        <Image Source="icon_location_city.png" />
+                                        <Label
+                                            FontSize="16"
+                                            Margin="4,0,0,0"
+                                            Text="{Binding Company}" />
+                                    </FlexLayout>
 
                                     <ImageButton Grid.Column="1"
                                                  Grid.RowSpan="2"
                                                  Source="icon_chevron_right.png"
-                                                 Scale="0.3" />
+                                                 Scale="0.5" />
 
                                 </Grid>
 
