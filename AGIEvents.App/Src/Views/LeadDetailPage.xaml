@@ -9,7 +9,7 @@
     Title="Lead">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="icon_save.png"
+        <ToolbarItem IconImageSource="icon_check.png"
                      SemanticProperties.Description="Save changes"
                      ToolTipProperties.Text="Save changes"
                      Command="{Binding SaveChangesCommand}" />
