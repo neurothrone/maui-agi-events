@@ -54,6 +54,31 @@
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
+        <None Remove="Resources\Images\Icons\icon_add.svg" />
+        <MauiImage Include="Resources\Images\Events\sopdk_logo.svg" />
+        <MauiImage Include="Resources\Images\Events\sopno_logo.svg" />
+        <MauiImage Include="Resources\Images\Events\sopse_logo.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_add.svg" />
+        <None Remove="Resources\Images\Icons\icon_check.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_check.svg" />
+        <None Remove="Resources\Images\Icons\icon_chevron_right.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_chevron_right.svg" />
+        <None Remove="Resources\Images\Icons\icon_csv.svg" />
+        <None Remove="Resources\Images\Icons\icon_delete.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_delete.svg" />
+        <None Remove="Resources\Images\Icons\icon_export_notes.svg" />
+        <None Remove="Resources\Images\Icons\icon_ios_share.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_ios_share.svg" />
+        <None Remove="Resources\Images\Icons\icon_location_city.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_location_city.svg" />
+        <None Remove="Resources\Images\Icons\icon_person.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_person.svg" />
+        <None Remove="Resources\Images\Icons\icon_qr_code_scanner.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_qr_code_scanner.svg" />
+        <None Remove="Resources\Images\Icons\icon_settings.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_settings.svg" />
+        <None Remove="Resources\Images\Icons\icon_android_share.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_android_share.svg" />
     </ItemGroup>
 
     <ItemGroup>
@@ -66,6 +91,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AGIEvents.Lib\AGIEvents.Lib.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Resources\Images\App\" />
     </ItemGroup>
 
 </Project>
