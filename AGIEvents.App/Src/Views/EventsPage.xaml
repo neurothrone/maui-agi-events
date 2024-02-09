@@ -17,17 +17,21 @@
 
     <ScrollView VerticalScrollBarVisibility="Never">
         <VerticalStackLayout Margin="10">
-            <Label
-                TextColor="White"
-                FontSize="24"
-                FontAttributes="Bold"
-                Margin="0,0,0,20"
-                Text="Welcome to&#x0a;AGI Events" />
-            <Label
-                TextColor="White"
-                FontSize="20"
-                Margin="0,0,0,10"
-                Text="Your Events" />
+            <Label Text="Welcome to&#x0a;AGI Events"
+                   TextColor="White"
+                   Style="{StaticResource Headline}"
+                   HorizontalTextAlignment="Start"
+                   HorizontalOptions="Start"
+                   SemanticProperties.HeadingLevel="Level1"
+                   SemanticProperties.Description="Welcome to A G I Events"
+                   Margin="0,0,0,20" />
+            <Label Text="Your Events"
+                   TextColor="White"
+                   Style="{StaticResource SubHeadline}"
+                   HorizontalTextAlignment="Start"
+                   HorizontalOptions="Start"
+                   SemanticProperties.HeadingLevel="Level2"
+                   Margin="0,0,0,10" />
             <Label LineBreakMode="WordWrap">
                 <Label.FormattedText>
                     <FormattedString>
@@ -37,11 +41,13 @@
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
-            <Label
-                TextColor="White"
-                FontSize="20"
-                Margin="0,20,0,10"
-                Text="Coming Events" />
+            <Label Text="Your Events"
+                   TextColor="White"
+                   Style="{StaticResource SubHeadline}"
+                   HorizontalTextAlignment="Start"
+                   HorizontalOptions="Start"
+                   SemanticProperties.HeadingLevel="Level2"
+                   Margin="0,20,0,10" />
 
             <CollectionView ItemsSource="{Binding Events}"
                             SelectionMode="None"
