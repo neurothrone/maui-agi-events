@@ -41,7 +41,7 @@
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
-            <Label Text="Your Events"
+            <Label Text="Coming Events"
                    TextColor="White"
                    Style="{StaticResource SubHeadline}"
                    HorizontalTextAlignment="Start"
