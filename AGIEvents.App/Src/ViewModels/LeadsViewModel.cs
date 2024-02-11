@@ -10,16 +10,36 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
 {
     [ObservableProperty] private string _id = string.Empty;
     [ObservableProperty] private string _image = string.Empty;
-    public ObservableCollection<LeadViewModel> Leads { get; }
+    [ObservableProperty] private bool _isLoading;
+
+    private ObservableCollection<LeadViewModel> _leads;
+
+    public ObservableCollection<LeadViewModel> Leads
+    {
+        get => _leads;
+        set => SetProperty(ref _leads, value);
+    }
 
     public LeadsViewModel()
     {
+        _leads = [];
+        FetchLeads();
+    }
+
+    private async void FetchLeads()
+    {
+        IsLoading = true;
+        // Sleep for 2 sec
+        await Task.Delay(2000);
+
         Leads = new ObservableCollection<LeadViewModel>(
             Lead.Samples()
                 .Select(lead => new LeadViewModel(lead))
                 .OrderByDescending(lead => lead.ScannedAt)
                 .ToList()
         );
+
+        IsLoading = false;
     }
 
     [RelayCommand]
@@ -55,7 +75,7 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
             )
         );
     }
-    
+
     [RelayCommand]
     private async Task ExportLead(LeadViewModel lead)
     {
