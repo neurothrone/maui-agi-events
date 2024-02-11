@@ -111,10 +111,10 @@
                                     </Border.GestureRecognizers>
                                 </Border>
 
-                                <!-- BUG: LineBreakMode=TailTruncation does not work with MaxLines property -->
                                 <Label
                                     TextColor="White"
                                     FontAttributes="Bold"
+                                    LineBreakMode="TailTruncation"
                                     Margin="10,5,0,5"
                                     SemanticProperties.Description="Event title"
                                     Text="{Binding Title}" />
@@ -157,11 +157,14 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="viewmodel:EventViewModel">
                             <VerticalStackLayout WidthRequest="200">
-                                <Frame
+                                <Border
+                                    Stroke="Transparent"
                                     BackgroundColor="SlateBlue"
-                                    BorderColor="Transparent"
-                                    CornerRadius="25"
                                     Padding="10">
+
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="25" />
+                                    </Border.StrokeShape>
 
                                     <Grid>
                                         <Image
@@ -180,18 +183,18 @@
 
                                     </Grid>
 
-                                    <Frame.GestureRecognizers>
+                                    <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={x:Reference Page},
                                                   Path=BindingContext.NavigateToLeadsForEventCommand}"
                                             CommandParameter="{Binding .}" />
-                                    </Frame.GestureRecognizers>
-                                </Frame>
+                                    </Border.GestureRecognizers>
+                                </Border>
 
-                                <!-- BUG: LineBreakMode=TailTruncation does not work with MaxLines property -->
                                 <Label
                                     TextColor="White"
                                     FontAttributes="Bold"
+                                    LineBreakMode="TailTruncation"
                                     Margin="10,5,0,5"
                                     SemanticProperties.Description="Event title"
                                     Text="{Binding Title}" />
