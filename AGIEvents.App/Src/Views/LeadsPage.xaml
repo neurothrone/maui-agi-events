@@ -3,18 +3,15 @@
 <ContentPage
     Title="Leads"
     x:Class="AGIEvents.App.Views.LeadsPage"
-    x:DataType="viewModel:LeadsViewModel"
+    x:DataType="viewmodel:LeadsViewModel"
     x:Name="Page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:converters="clr-namespace:AGIEvents.App.Converters"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
+    xmlns:viewmodel="clr-namespace:AGIEvents.App.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:LeadItemTapConverter x:Key="LeadItemTappedEventArgsConverter" />
-        </ResourceDictionary>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
@@ -88,149 +85,111 @@
                      Color="SlateBlue" />
         </VerticalStackLayout>
 
-        <ListView Grid.Row="2"
-                  ItemsSource="{Binding Leads}"
-                  SelectionMode="None"
-                  VerticalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}"
-                  CachingStrategy="RecycleElement"
-                  SeparatorVisibility="None"
-                  RowHeight="65">
+        <ActivityIndicator Grid.Row="2"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" />
 
-            <ListView.Behaviors>
-                <toolkit:EventToCommandBehavior
-                    EventName="ItemTapped"
-                    EventArgsConverter="{StaticResource LeadItemTappedEventArgsConverter}"
-                    Command="{Binding NavigateToLeadDetailCommand}" />
-            </ListView.Behaviors>
+        <CollectionView Grid.Row="2"
+                        IsVisible="{Binding IsLoading,
+                        Converter={StaticResource InverseBooleanConverter}}"
+                        ItemsSource="{Binding Leads}"
+                        SelectionMode="None"
+                        VerticalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}">
 
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="viewModel:LeadViewModel">
-                    <ViewCell>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical"
+                                   ItemSpacing="0" />
+            </CollectionView.ItemsLayout>
 
-                        <Border Stroke="Transparent">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="15" />
-                            </Border.StrokeShape>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodel:LeadViewModel">
+                    <Border Stroke="Transparent">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="15" />
+                        </Border.StrokeShape>
 
-                            <SwipeView>
-                                <SwipeView.LeftItems>
-                                    <SwipeItem Text="Export"
-                                               IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
-                                               BackgroundColor="DarkCyan"
-                                               Command="{Binding Source={x:Reference Page},
+                        <Grid>
+                            <Border Stroke="Transparent">
+                                <SwipeView>
+                                    <SwipeView.LeftItems>
+                                        <SwipeItem Text="Export"
+                                                   IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
+                                                   BackgroundColor="DarkCyan"
+                                                   Command="{Binding Source={x:Reference Page},
                                                   Path=BindingContext.ExportLeadCommand}"
-                                               CommandParameter="{Binding .}" />
-                                </SwipeView.LeftItems>
+                                                   CommandParameter="{Binding .}" />
+                                    </SwipeView.LeftItems>
 
-                                <SwipeView.RightItems>
-                                    <SwipeItem Text="Delete"
-                                               IconImageSource="icon_delete.png"
-                                               BackgroundColor="DarkRed"
-                                               IsDestructive="True"
-                                               Command="{Binding Source={x:Reference Page},
+                                    <SwipeView.RightItems>
+                                        <SwipeItem Text="Delete"
+                                                   IconImageSource="icon_delete.png"
+                                                   BackgroundColor="DarkRed"
+                                                   IsDestructive="True"
+                                                   Command="{Binding Source={x:Reference Page},
                                                   Path=BindingContext.DeleteLeadCommand}"
-                                               CommandParameter="{Binding .}" />
-                                </SwipeView.RightItems>
+                                                   CommandParameter="{Binding .}" />
+                                    </SwipeView.RightItems>
 
-                                <Grid ColumnDefinitions="*,auto"
-                                      RowDefinitions="*,*"
-                                      RowSpacing="4"
-                                      Padding="10,10,0,10"
-                                      BackgroundColor="DarkSlateBlue">
+                                    <Grid ColumnDefinitions="*,auto"
+                                          RowDefinitions="*,*"
+                                          RowSpacing="4"
+                                          Padding="20,10,5,10"
+                                          BackgroundColor="DarkSlateBlue">
 
-                                    <FlexLayout Grid.Column="0"
-                                                Grid.Row="0"
-                                                Direction="Row"
-                                                JustifyContent="Start"
-                                                AlignItems="Center">
-                                        <Image Source="icon_person.png" />
-                                        <Label
-                                            FontSize="16"
-                                            Margin="4,0,0,0"
-                                            Text="{Binding FullName}" />
-                                    </FlexLayout>
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding BindingContext.NavigateToLeadDetailCommand, 
+                                                  Source={x:Reference Name=Page}}"
+                                                CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
 
-                                    <FlexLayout Grid.Column="0"
-                                                Grid.Row="1"
-                                                Direction="Row"
-                                                JustifyContent="Start"
-                                                AlignItems="Center">
-                                        <Image Source="icon_location_city.png" />
-                                        <Label
-                                            FontSize="16"
-                                            Margin="4,0,0,0"
-                                            Text="{Binding Company}" />
-                                    </FlexLayout>
+                                        <FlexLayout Grid.Column="0"
+                                                    Grid.Row="0"
+                                                    Direction="Row"
+                                                    JustifyContent="Start"
+                                                    AlignItems="Center">
+                                            <Image Source="icon_person.png" />
+                                            <Label
+                                                FontSize="16"
+                                                Margin="4,0,0,0"
+                                                Text="{Binding FullName}" />
+                                        </FlexLayout>
 
-                                    <ImageButton Grid.Column="1"
-                                                 Grid.RowSpan="2"
-                                                 Source="icon_chevron_right.png"
-                                                 Scale="0.5" />
+                                        <FlexLayout Grid.Column="0"
+                                                    Grid.Row="1"
+                                                    Direction="Row"
+                                                    JustifyContent="Start"
+                                                    AlignItems="Center">
+                                            <Image Source="icon_location_city.png" />
+                                            <Label
+                                                FontSize="16"
+                                                Margin="4,0,0,0"
+                                                Text="{Binding Company}" />
+                                        </FlexLayout>
 
-                                </Grid>
+                                        <ImageButton Grid.Column="1"
+                                                     Grid.RowSpan="2"
+                                                     Source="icon_chevron_right.png"
+                                                     Scale="0.5" />
 
-                            </SwipeView>
+                                    </Grid>
+                                </SwipeView>
+                            </Border>
 
-                        </Border>
+                            <BoxView BackgroundColor="DarkCyan"
+                                     WidthRequest="10"
+                                     VerticalOptions="Fill"
+                                     HorizontalOptions="Start" />
 
-                    </ViewCell>
+                            <BoxView BackgroundColor="DarkRed"
+                                     WidthRequest="10"
+                                     VerticalOptions="Fill"
+                                     HorizontalOptions="End" />
+
+                        </Grid>
+                    </Border>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <!-- <CollectionView.ItemsLayout> -->
-        <!--     <LinearItemsLayout Orientation="Vertical" -->
-        <!--                        ItemSpacing="10" /> -->
-        <!-- </CollectionView.ItemsLayout> -->
-
-
-        <!-- <CollectionView Grid.Row="2" -->
-        <!--                 ItemsSource="{Binding Leads}" -->
-        <!--                 VerticalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}"> -->
-        <!-- -->
-        <!--     <CollectionView.ItemsLayout> -->
-        <!--         <LinearItemsLayout Orientation="Vertical" -->
-        <!--                            ItemSpacing="10" /> -->
-        <!--     </CollectionView.ItemsLayout> -->
-        <!-- -->
-        <!--     <CollectionView.ItemTemplate> -->
-        <!--         <DataTemplate x:DataType="viewModel:LeadViewModel"> -->
-        <!--             <Grid ColumnDefinitions="*,auto" -->
-        <!--                   RowDefinitions="*,*, auto" -->
-        <!--                   RowSpacing="5"> -->
-        <!-- -->
-        <!--                 <HorizontalStackLayout Grid.Column="0" -->
-        <!--                                        Grid.Row="0" -->
-        <!--                                        Spacing="10"> -->
-        <!--                     <Image Source="icon_person.png" -->
-        <!--                            WidthRequest="15" -->
-        <!--                            HeightRequest="15" /> -->
-        <!--                     <Label Text="{Binding FullName}" /> -->
-        <!--                 </HorizontalStackLayout> -->
-        <!-- -->
-        <!--                 <HorizontalStackLayout Grid.Column="0" -->
-        <!--                                        Grid.Row="1" -->
-        <!--                                        Spacing="10"> -->
-        <!--                     <Image Source="icon_company.png" -->
-        <!--                            WidthRequest="15" -->
-        <!--                            HeightRequest="15" /> -->
-        <!--                     <Label Text="{Binding Company}" /> -->
-        <!--                 </HorizontalStackLayout> -->
-        <!-- -->
-        <!--                 <ImageButton Grid.Column="1" -->
-        <!--                              Grid.RowSpan="2" -->
-        <!--                              Source="icon_chevron_right.png" -->
-        <!--                              Scale="0.3" /> -->
-        <!-- -->
-        <!--                 <BoxView Grid.ColumnSpan="2" -->
-        <!--                          Grid.Row="2" -->
-        <!--                          Color="Silver" -->
-        <!--                          HeightRequest="0.5" -->
-        <!--                          Margin="0, 10" /> -->
-        <!-- -->
-        <!--             </Grid> -->
-        <!--         </DataTemplate> -->
-        <!--     </CollectionView.ItemTemplate> -->
-        <!-- </CollectionView> -->
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </Grid>
 </ContentPage>
