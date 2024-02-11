@@ -5,7 +5,8 @@
              xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
              x:Class="AGIEvents.App.Views.AddLeadPage"
              x:DataType="viewModel:AddLeadViewModel"
-             Title="Add Lead">
+             Title="Add Lead"
+             HideSoftInputOnTapped="True">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="icon_save.png"
