@@ -67,7 +67,7 @@
         <None Remove="Resources\Images\Icons\icon_delete.svg" />
         <MauiImage Include="Resources\Images\Icons\icon_delete.svg" />
         <None Remove="Resources\Images\Icons\icon_export_notes.svg" />
-        <None Remove="Resources\Images\Icons\icon_ios_share.svg" />
+        <None Remove="Resources\Images\Icons\icon_ios_share.svg" /> 
         <MauiImage Include="Resources\Images\Icons\icon_ios_share.svg" />
         <None Remove="Resources\Images\Icons\icon_location_city.svg" />
         <MauiImage Include="Resources\Images\Icons\icon_location_city.svg" />
@@ -82,8 +82,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Maui" Version="7.0.1"/>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2"/>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0"/>
@@ -94,7 +92,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Resources\Images\App\" />
+      <Folder Include="Resources\Images\AppIcon\" />
     </ItemGroup>
 
 </Project>
