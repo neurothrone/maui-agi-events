@@ -95,14 +95,13 @@
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="25" />
                                     </Border.StrokeShape>
-
+                                    
                                     <Image
                                         Aspect="AspectFit"
                                         HeightRequest="100"
                                         SemanticProperties.Description="Event logo"
                                         Source="{Binding Image}" />
-
-
+                                    
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding Source={x:Reference Page},
@@ -180,7 +179,6 @@
                                             HeightRequest="30"
                                             SemanticProperties.Description="QR Code Scanner"
                                             Source="icon_qr_code_scanner.png" />
-
                                     </Grid>
 
                                     <Border.GestureRecognizers>
