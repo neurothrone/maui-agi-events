@@ -2,10 +2,10 @@
 
 <ContentPage
     x:Class="AGIEvents.App.Views.EventsPage"
-    x:DataType="viewModel:EventsViewModel"
+    x:DataType="viewmodel:EventsViewModel"
     x:Name="Page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
+    xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <ContentPage.ToolbarItems>
@@ -63,7 +63,7 @@
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="viewModel:EventViewModel">
+                    <DataTemplate x:DataType="viewmodel:EventViewModel">
                         <VerticalStackLayout Margin="0">
                             <Frame
                                 BackgroundColor="SlateBlue"

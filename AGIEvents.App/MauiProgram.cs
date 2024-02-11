@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+﻿using AGIEvents.Lib.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace AGIEvents.App;
@@ -10,8 +10,6 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            // Initialize CommunityToolkit
-            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -20,13 +18,13 @@ public static class MauiProgram
             // Initialize Services
             .Services
             // ViewModels
-            .AddSingleton<ViewModels.EventsViewModel>()
-            .AddSingleton<ViewModels.LeadsViewModel>()
-            .AddSingleton<ViewModels.SettingsViewModel>()
-            .AddTransient<ViewModels.EventViewModel>()
-            .AddTransient<ViewModels.LeadViewModel>()
-            .AddTransient<ViewModels.LeadDetailViewModel>()
-            .AddTransient<ViewModels.AddLeadViewModel>()
+            .AddSingleton<EventsViewModel>()
+            .AddSingleton<LeadsViewModel>()
+            .AddSingleton<SettingsViewModel>()
+            .AddTransient<EventViewModel>()
+            .AddTransient<LeadViewModel>()
+            .AddTransient<LeadDetailViewModel>()
+            .AddTransient<AddLeadViewModel>()
             // Views
             .AddSingleton<Views.EventsPage>()
             .AddSingleton<Views.LeadsPage>()

@@ -1,10 +1,9 @@
 using System.Collections.ObjectModel;
-using AGIEvents.App.Models;
-using AGIEvents.App.Views;
+using AGIEvents.Lib.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace AGIEvents.App.ViewModels;
+namespace AGIEvents.Lib.ViewModels;
 
 public partial class LeadsViewModel : ObservableObject, IQueryAttributable
 {
@@ -46,7 +45,7 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
     private async Task NavigateToLeadDetail(LeadViewModel lead)
     {
         await Shell.Current.GoToAsync(
-            $"{nameof(LeadDetailPage)}?LeadId={lead.Id}"
+            $"{nameof(AppRoute.LeadDetailPage)}?LeadId={lead.Id}"
         );
     }
 
@@ -54,7 +53,7 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
     private async Task NavigateToAddLead()
     {
         await Shell.Current.GoToAsync(
-            $"{nameof(AddLeadPage)}?EventId={Id}");
+            $"{nameof(AppRoute.AddLeadPage)}?EventId={Id}");
     }
 
     [RelayCommand]

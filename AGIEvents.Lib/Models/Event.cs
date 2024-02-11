@@ -1,4 +1,4 @@
-namespace AGIEvents.App.Models;
+namespace AGIEvents.Lib.Models;
 
 // TODO: use a record?
 public class Event

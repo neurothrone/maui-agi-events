@@ -1,8 +1,10 @@
+using AGIEvents.Lib.ViewModels;
+
 namespace AGIEvents.App.Views;
 
 public partial class LeadsPage : ContentPage
 {
-    public LeadsPage(ViewModels.LeadsViewModel vm)
+    public LeadsPage(LeadsViewModel vm)
     {
         InitializeComponent();
         BindingContext = vm;

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewModel="clr-namespace:AGIEvents.App.ViewModels"
              x:Class="AGIEvents.App.Views.SettingsPage"
-             x:DataType="viewModel:SettingsViewModel"
+             x:DataType="viewmodel:SettingsViewModel"
              Title="Settings">
-    
+
     <TableView Intent="Settings">
         <TableRoot>
             <TableSection Title="Preferences">
-                
+
             </TableSection>
-            
+
             <TableSection Title="Data">
-                
+
             </TableSection>
-            
+
             <TableSection Title="About">
-                
+
             </TableSection>
         </TableRoot>
     </TableView>

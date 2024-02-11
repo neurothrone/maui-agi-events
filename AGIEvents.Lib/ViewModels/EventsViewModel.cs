@@ -1,9 +1,8 @@
 using System.Collections.ObjectModel;
-using AGIEvents.App.Models;
-using AGIEvents.App.Views;
+using AGIEvents.Lib.Models;
 using CommunityToolkit.Mvvm.Input;
 
-namespace AGIEvents.App.ViewModels;
+namespace AGIEvents.Lib.ViewModels;
 
 public partial class EventsViewModel
 {
@@ -19,18 +18,17 @@ public partial class EventsViewModel
         );
     }
 
-
     [RelayCommand]
     private async Task NavigateToLeadsForEvent(EventViewModel eventViewModel)
     {
         await Shell.Current.GoToAsync(
-            $"{nameof(LeadsPage)}?EventId={eventViewModel.Id}"
+            $"{nameof(AppRoute.LeadsPage)}?EventId={eventViewModel.Id}"
         );
     }
 
     [RelayCommand]
     private async Task NavigateToSettings()
     {
-        await Shell.Current.GoToAsync(nameof(SettingsPage));
+        await Shell.Current.GoToAsync(nameof(AppRoute.SettingsPage));
     }
 }

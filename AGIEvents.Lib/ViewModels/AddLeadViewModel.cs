@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace AGIEvents.App.ViewModels;
+namespace AGIEvents.Lib.ViewModels;
 
 [QueryProperty("EventId", "EventId")]
 public partial class AddLeadViewModel : ObservableObject

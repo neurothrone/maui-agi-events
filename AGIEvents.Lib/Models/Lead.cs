@@ -1,11 +1,11 @@
-namespace AGIEvents.App.Models;
+namespace AGIEvents.Lib.Models;
 
 public class Lead
 {
-    public string id;
-    public string eventId;
-    public string firstName;
-    public string lastName;
+    public string Id;
+    public string EventId;
+    public string FirstName;
+    public string LastName;
     public string company;
     public string email;
     public string phone;
@@ -30,10 +30,10 @@ public class Lead
         DateTime scannedAt
     )
     {
-        this.id = id;
-        this.eventId = eventId;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.Id = id;
+        this.EventId = eventId;
+        this.FirstName = firstName;
+        this.LastName = lastName;
         this.company = company;
         this.email = email;
         this.phone = phone;

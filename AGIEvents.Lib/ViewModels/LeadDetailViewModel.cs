@@ -1,8 +1,8 @@
-using AGIEvents.App.Models;
+using AGIEvents.Lib.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace AGIEvents.App.ViewModels;
+namespace AGIEvents.Lib.ViewModels;
 
 public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 {
@@ -29,6 +29,12 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
         await Shell.Current.GoToAsync("..");
     }
 
+    [RelayCommand]
+    private async Task OpenPhoneDialer()
+    {
+        Console.WriteLine("✅ -> Open Phone Dialer");
+    }
+
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (!query.TryGetValue("LeadId", out var value))
@@ -40,13 +46,13 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     private async void LoadLeadInfo(string leadId)
     {
         // TODO: load Lead from database
-        var matchedLead = Lead.Samples().FirstOrDefault((lead) => lead.id == leadId);
+        var matchedLead = Lead.Samples().FirstOrDefault((lead) => lead.Id == leadId);
         if (matchedLead == null)
             return;
 
-        LeadId = matchedLead.id;
-        FirstName = matchedLead.firstName;
-        LastName = matchedLead.lastName;
+        LeadId = matchedLead.Id;
+        FirstName = matchedLead.FirstName;
+        LastName = matchedLead.LastName;
         Company = matchedLead.company;
         Email = matchedLead.email;
         Phone = matchedLead.phone;
