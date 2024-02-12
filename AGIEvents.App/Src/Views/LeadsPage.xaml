@@ -130,7 +130,7 @@
                                                    CommandParameter="{Binding .}" />
                                     </SwipeView.RightItems>
 
-                                    <Grid ColumnDefinitions="*,auto"
+                                    <Grid ColumnDefinitions="*,*"
                                           RowDefinitions="*,*"
                                           RowSpacing="4"
                                           Padding="20,10,5,10"
@@ -170,7 +170,8 @@
                                         <ImageButton Grid.Column="1"
                                                      Grid.RowSpan="2"
                                                      Source="icon_chevron_right.png"
-                                                     Scale="0.5" />
+                                                     Scale="0.5"
+                                                     HorizontalOptions="End" />
 
                                     </Grid>
                                 </SwipeView>
