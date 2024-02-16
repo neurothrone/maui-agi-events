@@ -114,12 +114,16 @@
                             </Border.StrokeShape>
 
                             <Grid>
-                                <Image
+                                <ImageButton
                                     Aspect="AspectFit"
                                     HeightRequest="100"
                                     SemanticProperties.Description="Event logo"
-                                    Source="{Binding Image}" />
-
+                                    Source="{Binding Image}"
+                                    Command="{Binding
+                                            Source={RelativeSource
+                                            AncestorType={x:Type viewmodels:EventsViewModel}},
+                                            Path=EventTappedCommand}"
+                                    CommandParameter="{Binding}" />
                                 <Image
                                     IsVisible="{Binding IsSaved, Converter={StaticResource InverseBooleanConverter}}"
                                     VerticalOptions="Start"
@@ -130,15 +134,6 @@
                                     Source="icon_qr_code_scanner.png">
                                 </Image>
                             </Grid>
-
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding
-                                            Source={RelativeSource
-                                            AncestorType={x:Type viewmodels:EventsViewModel}},
-                                            Path=EventTappedCommand}"
-                                    CommandParameter="{Binding}" />
-                            </Border.GestureRecognizers>
                         </Border>
 
                         <Label
