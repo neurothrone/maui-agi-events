@@ -7,6 +7,9 @@ namespace AGIEvents.Lib.ViewModels;
 
 public partial class EventsViewModel : ObservableObject
 {
+    private const string YourEvents = "Your Events";
+    private const string UpcomingEvents = "Coming Events";
+
     [ObservableProperty] private bool _isLoading;
 
     private ObservableCollection<EventGroup> _groupedEvents = new();
@@ -36,12 +39,12 @@ public partial class EventsViewModel : ObservableObject
 
         // Order by ascending (StartDate) will sort the events from the ones that are
         // scheduled to start soonest.
-        var savedEvents = new EventGroup("Your Events",
+        var savedEvents = new EventGroup(YourEvents,
             eventViewModels
                 .Where(e => e.IsSaved)
                 .OrderBy(e => e.StartDate)
                 .ToList());
-        var upcomingEvents = new EventGroup("Coming Soon",
+        var upcomingEvents = new EventGroup(UpcomingEvents,
             eventViewModels
                 .Where(e => !e.IsSaved)
                 .OrderBy(e => e.StartDate)
@@ -53,12 +56,12 @@ public partial class EventsViewModel : ObservableObject
 
     private void MoveEventToGroup(int eventId, string sourceGroupName, string targetGroupName)
     {
-        //Find the source group
+        // Find the source group
         var sourceGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == sourceGroupName);
 
         if (sourceGroup != null)
         {
-            //Find the event in the source group
+            // Find the event in the source group
             var eventToMove = sourceGroup.FirstOrDefault(e => e.Id == eventId);
 
             if (eventToMove != null)
@@ -66,7 +69,7 @@ public partial class EventsViewModel : ObservableObject
                 eventToMove.ToggleIsSaved();
                 sourceGroup.Remove(eventToMove);
 
-                //Find the target group
+                // Find the target group
                 var targetGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == targetGroupName);
 
                 if (targetGroup != null)
@@ -75,7 +78,7 @@ public partial class EventsViewModel : ObservableObject
                 }
                 else
                 {
-                    //If target group doesn't exist, create it and add the event
+                    // If target group doesn't exist, create it and add the event
                     targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
                     GroupedEvents.Add(targetGroup);
                 }
@@ -90,11 +93,11 @@ public partial class EventsViewModel : ObservableObject
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            var group = GroupedEvents.FirstOrDefault(g => g.GroupName == "Your Events");
+            var group = GroupedEvents.FirstOrDefault(g => g.GroupName == YourEvents);
 
             if (group == null)
             {
-                group = new EventGroup("Your Events", new List<EventViewModel>());
+                group = new EventGroup(YourEvents, new List<EventViewModel>());
                 GroupedEvents.Add(group);
             }
 
@@ -144,7 +147,7 @@ public partial class EventsViewModel : ObservableObject
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                MoveEventToGroup(eventViewModel.Id, "Coming Soon", "Your Events");
+                MoveEventToGroup(eventViewModel.Id, UpcomingEvents, YourEvents);
             });
         }
     }
