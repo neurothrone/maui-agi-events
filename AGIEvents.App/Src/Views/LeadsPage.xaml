@@ -4,7 +4,6 @@
     Title="Leads"
     x:Class="AGIEvents.App.Views.LeadsPage"
     x:DataType="viewmodel:LeadsViewModel"
-    x:Name="Page"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:converters="clr-namespace:AGIEvents.App.Converters"
     xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
@@ -26,7 +25,7 @@
           Margin="10">
 
         <Image Grid.Row="0"
-               Source="{Binding Image}"/>
+               Source="{Binding EventImage}" />
 
         <VerticalStackLayout Grid.Row="1"
                              Spacing="10">
@@ -114,8 +113,10 @@
                                         <SwipeItem Text="Export"
                                                    IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
                                                    BackgroundColor="DarkCyan"
-                                                   Command="{Binding Source={x:Reference Page},
-                                                  Path=BindingContext.ExportLeadCommand}"
+                                                   Command="{Binding 
+                                                   Source={RelativeSource 
+                                                   AncestorType={x:Type viewmodel:LeadsViewModel}}, 
+                                                   Path=ExportLeadCommand}"
                                                    CommandParameter="{Binding .}" />
                                     </SwipeView.LeftItems>
 
@@ -124,8 +125,10 @@
                                                    IconImageSource="icon_delete.png"
                                                    BackgroundColor="DarkRed"
                                                    IsDestructive="True"
-                                                   Command="{Binding Source={x:Reference Page},
-                                                  Path=BindingContext.DeleteLeadCommand}"
+                                                   Command="{Binding 
+                                                   Source={RelativeSource 
+                                                   AncestorType={x:Type viewmodel:LeadsViewModel}}, 
+                                                   Path=DeleteLeadCommand}"
                                                    CommandParameter="{Binding .}" />
                                     </SwipeView.RightItems>
 
@@ -137,8 +140,10 @@
 
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer
-                                                Command="{Binding BindingContext.NavigateToLeadDetailCommand, 
-                                                  Source={x:Reference Name=Page}}"
+                                                Command="{Binding 
+                                                   Source={RelativeSource 
+                                                   AncestorType={x:Type viewmodel:LeadsViewModel}}, 
+                                                   Path=NavigateToLeadDetailCommand}"
                                                 CommandParameter="{Binding .}" />
                                         </Grid.GestureRecognizers>
 
