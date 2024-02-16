@@ -59,32 +59,24 @@ public partial class EventsViewModel : ObservableObject
         // Find the source group
         var sourceGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == sourceGroupName);
 
-        if (sourceGroup != null)
+        if (sourceGroup?.FirstOrDefault(e => e.Id == eventId) is not { } eventToMove)
+            return;
+
+        eventToMove.ToggleIsSaved();
+        sourceGroup.Remove(eventToMove);
+
+        // Find the target group
+        var targetGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == targetGroupName);
+
+        if (targetGroup != null)
         {
-            // Find the event in the source group
-            var eventToMove = sourceGroup.FirstOrDefault(e => e.Id == eventId);
-
-            if (eventToMove != null)
-            {
-                eventToMove.ToggleIsSaved();
-                sourceGroup.Remove(eventToMove);
-
-                // Find the target group
-                var targetGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == targetGroupName);
-
-                if (targetGroup != null)
-                {
-                    targetGroup.Add(eventToMove);
-                }
-                else
-                {
-                    // If target group doesn't exist, create it and add the event
-                    targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
-                    GroupedEvents.Add(targetGroup);
-                }
-
-                OnPropertyChanged(nameof(GroupedEvents));
-            }
+            targetGroup.Add(eventToMove);
+        }
+        else
+        {
+            // If target group doesn't exist, create it and add the event
+            targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
+            GroupedEvents.Add(targetGroup);
         }
     }
 
