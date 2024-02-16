@@ -131,15 +131,24 @@ public partial class EventsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void OnEventScanned(EventViewModel eventViewModel)
+    private async Task EventTapped(EventViewModel eventViewModel)
     {
-        MainThread.BeginInvokeOnMainThread(() =>
+        // If IsSaved, navigate to Leads
+        // TODO: Else open QR Scanner
+
+        if (eventViewModel.IsSaved)
         {
-            MoveEventToGroup(eventViewModel.Id, "Coming Soon", "Your Events");
-        });
+            await NavigateToLeadsForEvent(eventViewModel);
+        }
+        else
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                MoveEventToGroup(eventViewModel.Id, "Coming Soon", "Your Events");
+            });
+        }
     }
 
-    [RelayCommand]
     private async Task NavigateToLeadsForEvent(EventViewModel eventViewModel)
     {
         // TODO: send the EventViewModel instead, because the Id property is for the database in contrast to EventId
