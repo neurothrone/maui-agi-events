@@ -1,126 +1,25 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using AGIEvents.Lib.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace AGIEvents.Lib.ViewModels;
 
-public partial class EventsViewModel : ObservableObject, IDisposable
+public partial class EventsViewModel : ObservableObject
 {
     [ObservableProperty] private bool _isLoading;
 
-    private ObservableCollection<EventViewModel> _yourEvents;
+    private ObservableCollection<EventGroup> _groupedEvents = new();
 
-    public ObservableCollection<EventViewModel> YourEvents
+    public ObservableCollection<EventGroup> GroupedEvents
     {
-        get => _yourEvents;
-        set => SetProperty(ref _yourEvents, value);
+        get => _groupedEvents;
+        private set => SetProperty(ref _groupedEvents, value);
     }
-
-    private ObservableCollection<EventViewModel> _comingEvents;
-
-    public ObservableCollection<EventViewModel> ComingEvents
-    {
-        get => _comingEvents;
-        set => SetProperty(ref _comingEvents, value);
-    }
-
-    public bool IsYourEventsEmpty => !IsLoading && YourEvents.Count == 0;
-    public bool IsComingEventsEmpty => !IsLoading && ComingEvents.Count == 0;
 
     public EventsViewModel()
     {
-        _yourEvents = [];
-        _comingEvents = [];
-
-        SubscribeToEvents();
         FetchEvents();
-    }
-
-    void IDisposable.Dispose()
-    {
-        UnsubscribeToEvents();
-    }
-
-    private void SubscribeToEvents()
-    {
-        PropertyChanged += OnYourEventsIsChanged;
-        PropertyChanged += OnComingEventsIsChanged;
-    }
-
-    private void UnsubscribeToEvents()
-    {
-        PropertyChanged -= OnYourEventsIsChanged;
-        PropertyChanged -= OnComingEventsIsChanged;
-    }
-
-    private void OnYourEventsIsChanged(
-        object? sender,
-        PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName is nameof(IsLoading) or nameof(YourEvents))
-            OnPropertyChanged(nameof(IsYourEventsEmpty));
-    }
-
-    private void OnComingEventsIsChanged(
-        object? sender,
-        PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName is nameof(IsLoading) or nameof(ComingEvents))
-            OnPropertyChanged(nameof(IsComingEventsEmpty));
-    }
-
-
-    [RelayCommand]
-    private async Task AddEvent()
-    {
-        YourEvents.Add(
-            new EventViewModel(new Event(
-                    id: "2",
-                    title: "Sign, Print & Promotion",
-                    image: "sopno_logo.png",
-                    startDate: DateTime.Now.AddDays(150),
-                    endDate: DateTime.Now.AddDays(152)
-                )
-            )
-        );
-        OnPropertyChanged(nameof(YourEvents));
-    }
-
-    [RelayCommand]
-    private async Task ClearEvents()
-    {
-        YourEvents.Clear();
-        OnPropertyChanged(nameof(YourEvents));
-    }
-
-    [RelayCommand]
-    private async Task AddEvents()
-    {
-        IsLoading = true;
-        await Task.Delay(500);
-
-        YourEvents = new ObservableCollection<EventViewModel>(
-            [
-                new EventViewModel(new Event(
-                    id: "0",
-                    title: "Sign&Print Scandinavia",
-                    image: "sopse_logo.png",
-                    startDate: DateTime.Now.AddDays(100),
-                    endDate: DateTime.Now.AddDays(103)
-                )),
-                new EventViewModel(new Event(
-                    id: "1",
-                    title: "Sign Print & Pack Denmark",
-                    image: "sopdk_logo.png",
-                    startDate: DateTime.Now.AddDays(125),
-                    endDate: DateTime.Now.AddDays(127)
-                ))
-            ]
-        );
-
-        IsLoading = false;
     }
 
     private async void FetchEvents()
@@ -128,81 +27,122 @@ public partial class EventsViewModel : ObservableObject, IDisposable
         IsLoading = true;
         await Task.Delay(500);
 
-        // YourEvents = new ObservableCollection<EventViewModel>(
-        //     [
-        //         new EventViewModel(new Event(
-        //             id: "0",
-        //             title: "Sign&Print Scandinavia",
-        //             image: "sopse_logo.png",
-        //             startDate: DateTime.Now.AddDays(100),
-        //             endDate: DateTime.Now.AddDays(103)
-        //         )),
-        //         new EventViewModel(new Event(
-        //             id: "1",
-        //             title: "Sign Print & Pack Denmark",
-        //             image: "sopdk_logo.png",
-        //             startDate: DateTime.Now.AddDays(125),
-        //             endDate: DateTime.Now.AddDays(127)
-        //         ))
-        //     ]
-        // );
-
-        ComingEvents = new ObservableCollection<EventViewModel>(
-            [
-                new EventViewModel(
-                    new Event(
-                        id: "3",
-                        title: "Sign, Print & Promotion",
-                        image: "sopno_logo.png",
-                        startDate: DateTime.Now.AddDays(165),
-                        endDate: DateTime.Now.AddDays(168)
-                    )
-                ),
-                new EventViewModel(
-                    new Event(
-                        id: "3",
-                        title: "Sign, Print & Promotion",
-                        image: "sopno_logo.png",
-                        startDate: DateTime.Now.AddDays(165),
-                        endDate: DateTime.Now.AddDays(168)
-                    )
-                ),
-                new EventViewModel(
-                    new Event(
-                        id: "3",
-                        title: "Sign, Print & Promotion",
-                        image: "sopno_logo.png",
-                        startDate: DateTime.Now.AddDays(165),
-                        endDate: DateTime.Now.AddDays(168)
-                    )
-                ),
-                new EventViewModel(
-                    new Event(
-                        id: "3",
-                        title: "Sign, Print & Promotion",
-                        image: "sopno_logo.png",
-                        startDate: DateTime.Now.AddDays(165),
-                        endDate: DateTime.Now.AddDays(168)
-                    )
-                ),
-                new EventViewModel(
-                    new Event(
-                        id: "3",
-                        title: "Sign, Print & Promotion",
-                        image: "sopno_logo.png",
-                        startDate: DateTime.Now.AddDays(165),
-                        endDate: DateTime.Now.AddDays(168)
-                    )
-                ),
-            ]
+        // TODO: fetch from database
+        var eventViewModels = new List<EventViewModel>(
+            Event.Samples()
+                .Select(e => new EventViewModel(e))
+                .ToList()
         );
 
+        // Order by ascending (StartDate) will sort the events from the ones that are
+        // scheduled to start soonest.
+        var savedEvents = new EventGroup("Your Events",
+            eventViewModels
+                .Where(e => e.IsSaved)
+                .OrderBy(e => e.StartDate)
+                .ToList());
+        var upcomingEvents = new EventGroup("Coming Soon",
+            eventViewModels
+                .Where(e => !e.IsSaved)
+                .OrderBy(e => e.StartDate)
+                .ToList());
+        GroupedEvents = [savedEvents, upcomingEvents];
+
         IsLoading = false;
+    }
+
+    private void MoveEventToGroup(int eventId, string sourceGroupName, string targetGroupName)
+    {
+        //Find the source group
+        var sourceGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == sourceGroupName);
+
+        if (sourceGroup != null)
+        {
+            //Find the event in the source group
+            var eventToMove = sourceGroup.FirstOrDefault(e => e.Id == eventId);
+
+            if (eventToMove != null)
+            {
+                eventToMove.ToggleIsSaved();
+                sourceGroup.Remove(eventToMove);
+
+                //Find the target group
+                var targetGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == targetGroupName);
+
+                if (targetGroup != null)
+                {
+                    targetGroup.Add(eventToMove);
+                }
+                else
+                {
+                    //If target group doesn't exist, create it and add the event
+                    targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
+                    GroupedEvents.Add(targetGroup);
+                }
+
+                OnPropertyChanged(nameof(GroupedEvents));
+            }
+        }
+    }
+
+    [RelayCommand]
+    private async Task AddEvent()
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            var group = GroupedEvents.FirstOrDefault(g => g.GroupName == "Your Events");
+
+            if (group == null)
+            {
+                group = new EventGroup("Your Events", new List<EventViewModel>());
+                GroupedEvents.Add(group);
+            }
+
+
+            group.Add(
+                new EventViewModel(new Event(
+                        id: 2,
+                        eventId: "sopno398632",
+                        title: "Sign, Print & Promotion",
+                        image: "sopno_logo.png",
+                        startDate: DateTime.Now.AddDays(150),
+                        endDate: DateTime.Now.AddDays(152),
+                        isSaved: true
+                    )
+                )
+            );
+        });
+    }
+
+    [RelayCommand]
+    private async Task ClearEvents()
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            foreach (var group in GroupedEvents)
+                group.Clear();
+        });
+    }
+
+    [RelayCommand]
+    private async Task AddEvents()
+    {
+        MainThread.BeginInvokeOnMainThread(async () => { FetchEvents(); });
+    }
+
+    [RelayCommand]
+    private void OnEventScanned(EventViewModel eventViewModel)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            MoveEventToGroup(eventViewModel.Id, "Coming Soon", "Your Events");
+        });
     }
 
     [RelayCommand]
     private async Task NavigateToLeadsForEvent(EventViewModel eventViewModel)
     {
+        // TODO: send the EventViewModel instead, because the Id property is for the database in contrast to EventId
         await Shell.Current.GoToAsync(
             $"{nameof(AppRoute.LeadsPage)}?EventId={eventViewModel.Id}"
         );

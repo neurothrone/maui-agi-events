@@ -7,11 +7,11 @@ namespace AGIEvents.Lib.ViewModels;
 
 public partial class LeadsViewModel : ObservableObject, IQueryAttributable
 {
-    [ObservableProperty] private string _id = string.Empty;
-    [ObservableProperty] private string _image = string.Empty;
+    [ObservableProperty] private int _eventId;
+    [ObservableProperty] private string _eventImage = string.Empty;
     [ObservableProperty] private bool _isLoading;
 
-    private ObservableCollection<LeadViewModel> _leads;
+    private ObservableCollection<LeadViewModel> _leads = [];
 
     public ObservableCollection<LeadViewModel> Leads
     {
@@ -21,7 +21,6 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
 
     public LeadsViewModel()
     {
-        _leads = [];
         FetchLeads();
     }
 
@@ -53,7 +52,7 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
     private async Task NavigateToAddLead()
     {
         await Shell.Current.GoToAsync(
-            $"{nameof(AppRoute.AddLeadPage)}?EventId={Id}");
+            $"{nameof(AppRoute.AddLeadPage)}?EventId={EventId}");
     }
 
     [RelayCommand]
@@ -95,21 +94,24 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (!query.TryGetValue("EventId", out var value))
+        if (!query.TryGetValue("Id", out var value))
             return;
 
-        LoadEventInfo(value.ToString() ?? "");
+        var id = value.ToString() ?? "-1";
+        LoadEventInfo(int.Parse(id));
+
+        // LoadEventInfo(value.ToString() ?? "");
     }
 
-    private async void LoadEventInfo(string eventId)
+    private async void LoadEventInfo(int id)
     {
-        // TODO: load Event from database
-        var matchedEvent = Event.Samples().FirstOrDefault((n) => n.id == eventId);
+        // TODO: load Event from database, load by id not eventId
+        var matchedEvent = Event.Samples().FirstOrDefault((n) => n.id == id);
         if (matchedEvent == null)
             return;
 
-        Id = matchedEvent.id;
-        Image = matchedEvent.image;
+        EventId = matchedEvent.id;
+        EventImage = matchedEvent.image;
 
         // TODO: load leads from database
     }

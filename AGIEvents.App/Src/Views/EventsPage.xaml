@@ -2,12 +2,11 @@
 
 <ContentPage
     x:Class="AGIEvents.App.Views.EventsPage"
-    x:DataType="viewmodel:EventsViewModel"
-    x:Name="Page"
+    x:DataType="viewmodels:EventsViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:AGIEvents.App.Converters"
-    xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib">
 
     <ContentPage.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
@@ -32,180 +31,315 @@
                      Command="{Binding ClearEventsCommand}" />
     </ContentPage.ToolbarItems>
 
-    <ScrollView VerticalScrollBarVisibility="{OnIdiom Phone=Never, Default=Always}">
-        <VerticalStackLayout Margin="10">
-            <Label Text="Welcome to&#x0a;AGI Events"
-                   TextColor="White"
-                   Style="{StaticResource Headline}"
-                   HorizontalTextAlignment="Start"
-                   HorizontalOptions="Start"
-                   SemanticProperties.HeadingLevel="Level1"
-                   SemanticProperties.Description="Welcome to A G I Events"
-                   Margin="0,0,0,20" />
+    <Grid Margin="10">
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" />
 
-            <ActivityIndicator IsRunning="{Binding IsLoading}"
-                               IsVisible="{Binding IsLoading}" />
+        <CollectionView IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                        IsGrouped="True"
+                        ItemsSource="{Binding GroupedEvents}"
+                        ItemSizingStrategy="MeasureFirstItem"
+                        SelectionMode="None">
 
-            <VerticalStackLayout
-                IsVisible="{Binding IsLoading,
-                            Converter={StaticResource InverseBooleanConverter}}"
-                Spacing="10">
+            <CollectionView.Header>
+                <Grid>
+                    <Label
+                        Text="Welcome to&#x0a;AGI Events"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        Style="{StaticResource Headline}"
+                        HorizontalTextAlignment="Start"
+                        HorizontalOptions="Start"
+                        SemanticProperties.HeadingLevel="Level1"
+                        SemanticProperties.Description="Welcome to A G I Events"
+                        Margin="0,0,0,20" />
 
-                <!-- Your Events Section -->
-                <Label Text="Your Events"
-                       TextColor="White"
-                       Style="{StaticResource SubHeadline}"
-                       HorizontalTextAlignment="Start"
-                       HorizontalOptions="Start"
-                       SemanticProperties.HeadingLevel="Level2" />
+                    <!-- <Label IsVisible="{Binding IsYourEventsEmpty}" -->
+                    <!--        LineBreakMode="WordWrap" -->
+                    <!--        Margin="0,0,0,10"> -->
+                    <!--     <Label.FormattedText> -->
+                    <!--         <FormattedString> -->
+                    <!--             <Span Text="You do not have any events yet. Tap on an Event in the " TextColor="Silver" /> -->
+                    <!--             <Span Text="Coming Events" TextColor="White" FontAttributes="Bold" /> -->
+                    <!--             <Span Text=" section and Scan the QR code of your exhibitor badge." TextColor="Silver" /> -->
+                    <!--         </FormattedString> -->
+                    <!--     </Label.FormattedText> -->
+                    <!-- </Label> -->
+                </Grid>
+            </CollectionView.Header>
 
-                <Label IsVisible="{Binding IsYourEventsEmpty}"
-                       LineBreakMode="WordWrap">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="You do not have any events yet. Tap on an Event in the " TextColor="Silver" />
-                            <Span Text="Coming Events" TextColor="White" FontAttributes="Bold" />
-                            <Span Text=" section and Scan the QR code of your exhibitor badge." TextColor="Silver" />
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="{x:Type viewmodels:EventGroup}">
+                    <Grid>
+                        <Label
+                            TextColor="White"
+                            FontSize="24"
+                            Margin="0,10">
 
-                <CollectionView HeightRequest="200"
-                                IsVisible="{Binding IsYourEventsEmpty,
-                                            Converter={StaticResource InverseBooleanConverter}}"
-                                ItemsSource="{Binding YourEvents}"
-                                SelectionMode="None"
-                                HorizontalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}"
-                                ItemSizingStrategy="MeasureFirstItem">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding GroupName}" />
+                                    <Span Text=" (" TextColor="DarkGray" />
+                                    <Span Text="{Binding Count}" TextColor="MediumSlateBlue"
+                                          FontAttributes="Bold"/>
+                                    <Span Text=")" TextColor="DarkGray" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
 
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal"
-                                           ItemSpacing="10">
-                        </LinearItemsLayout>
-                    </CollectionView.ItemsLayout>
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="{OnIdiom Phone=2, Default=3}"
+                                 HorizontalItemSpacing="10">
+                </GridItemsLayout>
+                <!-- <LinearItemsLayout Orientation="Vertical" -->
+                <!--                    ItemSpacing="10"> -->
+                <!-- </LinearItemsLayout> -->
+            </CollectionView.ItemsLayout>
 
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="viewmodel:EventViewModel">
-                            <VerticalStackLayout WidthRequest="200">
-                                <Border
-                                    Stroke="Transparent"
-                                    BackgroundColor="SlateBlue"
-                                    Padding="10">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:EventViewModel">
+                    <VerticalStackLayout WidthRequest="200"
+                                         Margin="0,0,0,10">
+                        <Border
+                            Stroke="Transparent"
+                            BackgroundColor="SlateBlue"
+                            Padding="10">
 
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="25" />
-                                    </Border.StrokeShape>
-                                    
-                                    <Image
-                                        Aspect="AspectFit"
-                                        HeightRequest="100"
-                                        SemanticProperties.Description="Event logo"
-                                        Source="{Binding Image}" />
-                                    
-                                    <Border.GestureRecognizers>
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="25" />
+                            </Border.StrokeShape>
+
+                            <Grid>
+                                <Image
+                                    Aspect="AspectFit"
+                                    HeightRequest="100"
+                                    SemanticProperties.Description="Event logo"
+                                    Source="{Binding Image}" />
+
+                                <Image
+                                    IsVisible="{Binding IsSaved, Converter={StaticResource InverseBooleanConverter}}"
+                                    VerticalOptions="Start"
+                                    HorizontalOptions="Start"
+                                    Aspect="AspectFit"
+                                    HeightRequest="30"
+                                    SemanticProperties.Description="QR Code Scanner"
+                                    Source="icon_qr_code_scanner.png">
+
+                                    <Image.GestureRecognizers>
                                         <TapGestureRecognizer
-                                            Command="{Binding Source={x:Reference Page},
-                                                  Path=BindingContext.NavigateToLeadsForEventCommand}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:EventsViewModel}}, Path=EventScannedCommand}"
                                             CommandParameter="{Binding .}" />
-                                    </Border.GestureRecognizers>
-                                </Border>
+                                    </Image.GestureRecognizers>
+                                </Image>
+                            </Grid>
 
-                                <Label
-                                    TextColor="White"
-                                    FontAttributes="Bold"
-                                    LineBreakMode="TailTruncation"
-                                    Margin="10,5,0,5"
-                                    SemanticProperties.Description="Event title"
-                                    Text="{Binding Title}" />
-                                <Label
-                                    Margin="10,0,0,0"
-                                    SemanticProperties.Description="The dates the event takes place"
-                                    Text="{Binding FormattedDateRange}"
-                                    TextColor="Silver" />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding
+                                            Source={RelativeSource
+                                            AncestorType={x:Type viewmodels:EventsViewModel}},
+                                            Path=NavigateToLeadsForEventCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                        </Border>
 
-                <!-- Coming Events Section -->
-                <Label Text="Coming Events"
-                       TextColor="White"
-                       Style="{StaticResource SubHeadline}"
-                       HorizontalTextAlignment="Start"
-                       HorizontalOptions="Start"
-                       SemanticProperties.HeadingLevel="Level2" />
+                        <Label
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            LineBreakMode="TailTruncation"
+                            Margin="10,5,0,5"
+                            SemanticProperties.Description="Event title"
+                            Text="{Binding Title}" />
+                        <Label
+                            Margin="10,0,0,0"
+                            SemanticProperties.Description="The dates the event takes place"
+                            Text="{Binding FormattedDateRange}"
+                            TextColor="Silver" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 
-                <Label IsVisible="{Binding IsComingEventsEmpty}"
-                       Text="There are no events coming yet..."
-                       TextColor="Silver" />
+    <!-- <ScrollView VerticalScrollBarVisibility="{OnIdiom Phone=Never, Default=Always}"> -->
+    <!-- <VerticalStackLayout Margin="10"> -->
+    <!-- <Label Text="Welcome to&#x0a;AGI Events" -->
+    <!--        TextColor="White" -->
+    <!--        Style="{StaticResource Headline}" -->
+    <!--        HorizontalTextAlignment="Start" -->
+    <!--        HorizontalOptions="Start" -->
+    <!--        SemanticProperties.HeadingLevel="Level1" -->
+    <!--        SemanticProperties.Description="Welcome to A G I Events" -->
+    <!--        Margin="0,0,0,20" /> -->
 
-                <CollectionView HeightRequest="200"
-                                IsVisible="{Binding IsComingEventsEmpty,
-                            Converter={StaticResource InverseBooleanConverter}}"
-                                ItemsSource="{Binding ComingEvents}"
-                                SelectionMode="None"
-                                HorizontalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}"
-                                ItemSizingStrategy="MeasureFirstItem">
-
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal"
-                                           ItemSpacing="10">
-                        </LinearItemsLayout>
-                    </CollectionView.ItemsLayout>
-
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="viewmodel:EventViewModel">
-                            <VerticalStackLayout WidthRequest="200">
-                                <Border
-                                    Stroke="Transparent"
-                                    BackgroundColor="SlateBlue"
-                                    Padding="10">
-
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="25" />
-                                    </Border.StrokeShape>
-
-                                    <Grid>
-                                        <Image
-                                            Aspect="AspectFit"
-                                            HeightRequest="100"
-                                            SemanticProperties.Description="Event logo"
-                                            Source="{Binding Image}" />
-
-                                        <Image
-                                            VerticalOptions="Start"
-                                            HorizontalOptions="Start"
-                                            Aspect="AspectFit"
-                                            HeightRequest="30"
-                                            SemanticProperties.Description="QR Code Scanner"
-                                            Source="icon_qr_code_scanner.png" />
-                                    </Grid>
-
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={x:Reference Page},
-                                                  Path=BindingContext.NavigateToLeadsForEventCommand}"
-                                            CommandParameter="{Binding .}" />
-                                    </Border.GestureRecognizers>
-                                </Border>
-
-                                <Label
-                                    TextColor="White"
-                                    FontAttributes="Bold"
-                                    LineBreakMode="TailTruncation"
-                                    Margin="10,5,0,5"
-                                    SemanticProperties.Description="Event title"
-                                    Text="{Binding Title}" />
-                                <Label
-                                    Margin="10,0,0,0"
-                                    SemanticProperties.Description="The dates the event takes place"
-                                    Text="{Binding FormattedDateRange}"
-                                    TextColor="Silver" />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </VerticalStackLayout>
-        </VerticalStackLayout>
-    </ScrollView>
+    <!-- <VerticalStackLayout -->
+    <!--     IsVisible="{Binding IsLoading, -->
+    <!--                 Converter={StaticResource InverseBooleanConverter}}" -->
+    <!--     Spacing="10"> -->
+    <!-- -->
+    <!--     ~1~ Your Events Section @1@ -->
+    <!--     <Label Text="Your Events" -->
+    <!--            TextColor="White" -->
+    <!--            Style="{StaticResource SubHeadline}" -->
+    <!--            HorizontalTextAlignment="Start" -->
+    <!--            HorizontalOptions="Start" -->
+    <!--            SemanticProperties.HeadingLevel="Level2" /> -->
+    <!-- -->
+    <!--     <Label IsVisible="{Binding IsYourEventsEmpty}" -->
+    <!--            LineBreakMode="WordWrap"> -->
+    <!--         <Label.FormattedText> -->
+    <!--             <FormattedString> -->
+    <!--                 <Span Text="You do not have any events yet. Tap on an Event in the " TextColor="Silver" /> -->
+    <!--                 <Span Text="Coming Events" TextColor="White" FontAttributes="Bold" /> -->
+    <!--                 <Span Text=" section and Scan the QR code of your exhibitor badge." TextColor="Silver" /> -->
+    <!--             </FormattedString> -->
+    <!--         </Label.FormattedText> -->
+    <!--     </Label> -->
+    <!-- -->
+    <!--     <CollectionView HeightRequest="200" -->
+    <!--                     IsVisible="{Binding IsYourEventsEmpty, -->
+    <!--                                 Converter={StaticResource InverseBooleanConverter}}" -->
+    <!--                     ItemsSource="{Binding YourEvents, Mode=TwoWay}" -->
+    <!--                     SelectionMode="None" -->
+    <!--                     HorizontalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}" -->
+    <!--                     ItemSizingStrategy="MeasureFirstItem"> -->
+    <!-- -->
+    <!--         <CollectionView.ItemsLayout> -->
+    <!--             <LinearItemsLayout Orientation="Horizontal" -->
+    <!--                                ItemSpacing="10"> -->
+    <!--             </LinearItemsLayout> -->
+    <!--         </CollectionView.ItemsLayout> -->
+    <!-- -->
+    <!--         <CollectionView.ItemTemplate> -->
+    <!--             <DataTemplate x:DataType="viewmodels:EventViewModel"> -->
+    <!--                 <VerticalStackLayout WidthRequest="200"> -->
+    <!--                     <Border -->
+    <!--                         Stroke="Transparent" -->
+    <!--                         BackgroundColor="SlateBlue" -->
+    <!--                         Padding="10"> -->
+    <!-- -->
+    <!--                         <Border.StrokeShape> -->
+    <!--                             <RoundRectangle CornerRadius="25" /> -->
+    <!--                         </Border.StrokeShape> -->
+    <!-- -->
+    <!--                         <Image -->
+    <!--                             Aspect="AspectFit" -->
+    <!--                             HeightRequest="100" -->
+    <!--                             SemanticProperties.Description="Event logo" -->
+    <!--                             Source="{Binding Image}" /> -->
+    <!-- -->
+    <!--                         <Border.GestureRecognizers> -->
+    <!--                             <TapGestureRecognizer -->
+    <!--                                 Command="{Binding  -->
+    <!--                                 Source={RelativeSource  -->
+    <!--                                 AncestorType={x:Type viewmodels:EventsViewModel}},  -->
+    <!--                                 Path=NavigateToLeadsForEventCommand}" -->
+    <!--                                 CommandParameter="{Binding .}" /> -->
+    <!--                         </Border.GestureRecognizers> -->
+    <!--                     </Border> -->
+    <!-- -->
+    <!--                     <Label -->
+    <!--                         TextColor="White" -->
+    <!--                         FontAttributes="Bold" -->
+    <!--                         LineBreakMode="TailTruncation" -->
+    <!--                         Margin="10,5,0,5" -->
+    <!--                         SemanticProperties.Description="Event title" -->
+    <!--                         Text="{Binding Title}" /> -->
+    <!--                     <Label -->
+    <!--                         Margin="10,0,0,0" -->
+    <!--                         SemanticProperties.Description="The dates the event takes place" -->
+    <!--                         Text="{Binding FormattedDateRange}" -->
+    <!--                         TextColor="Silver" /> -->
+    <!--                 </VerticalStackLayout> -->
+    <!--             </DataTemplate> -->
+    <!--         </CollectionView.ItemTemplate> -->
+    <!--     </CollectionView> -->
+    <!-- -->
+    <!--     ~1~ Coming Events Section @1@ -->
+    <!--     <Label Text="Coming Events" -->
+    <!--            TextColor="White" -->
+    <!--            Style="{StaticResource SubHeadline}" -->
+    <!--            HorizontalTextAlignment="Start" -->
+    <!--            HorizontalOptions="Start" -->
+    <!--            SemanticProperties.HeadingLevel="Level2" /> -->
+    <!-- -->
+    <!--     <Label IsVisible="{Binding IsComingEventsEmpty}" -->
+    <!--            Text="There are no events coming yet..." -->
+    <!--            TextColor="Silver" /> -->
+    <!-- -->
+    <!--     <CollectionView HeightRequest="200" -->
+    <!--                     IsVisible="{Binding IsComingEventsEmpty, -->
+    <!--                 Converter={StaticResource InverseBooleanConverter}}" -->
+    <!--                     ItemsSource="{Binding ComingEvents}" -->
+    <!--                     SelectionMode="None" -->
+    <!--                     HorizontalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}" -->
+    <!--                     ItemSizingStrategy="MeasureFirstItem"> -->
+    <!-- -->
+    <!--         <CollectionView.ItemsLayout> -->
+    <!--             <LinearItemsLayout Orientation="Horizontal" -->
+    <!--                                ItemSpacing="10"> -->
+    <!--             </LinearItemsLayout> -->
+    <!--         </CollectionView.ItemsLayout> -->
+    <!-- -->
+    <!--         <CollectionView.ItemTemplate> -->
+    <!--             <DataTemplate x:DataType="viewmodels:EventViewModel"> -->
+    <!--                 <VerticalStackLayout WidthRequest="200"> -->
+    <!--                     <Border -->
+    <!--                         Stroke="Transparent" -->
+    <!--                         BackgroundColor="SlateBlue" -->
+    <!--                         Padding="10"> -->
+    <!-- -->
+    <!--                         <Border.StrokeShape> -->
+    <!--                             <RoundRectangle CornerRadius="25" /> -->
+    <!--                         </Border.StrokeShape> -->
+    <!-- -->
+    <!--                         <Grid> -->
+    <!--                             <Image -->
+    <!--                                 Aspect="AspectFit" -->
+    <!--                                 HeightRequest="100" -->
+    <!--                                 SemanticProperties.Description="Event logo" -->
+    <!--                                 Source="{Binding Image}" /> -->
+    <!-- -->
+    <!--                             <Image -->
+    <!--                                 VerticalOptions="Start" -->
+    <!--                                 HorizontalOptions="Start" -->
+    <!--                                 Aspect="AspectFit" -->
+    <!--                                 HeightRequest="30" -->
+    <!--                                 SemanticProperties.Description="QR Code Scanner" -->
+    <!--                                 Source="icon_qr_code_scanner.png" /> -->
+    <!--                         </Grid> -->
+    <!-- -->
+    <!--                         <Border.GestureRecognizers> -->
+    <!--                             <TapGestureRecognizer -->
+    <!--                                 Command="{Binding  -->
+    <!--                                 Source={RelativeSource  -->
+    <!--                                 AncestorType={x:Type viewmodels:EventsViewModel}},  -->
+    <!--                                 Path=NavigateToLeadsForEventCommand}" -->
+    <!--                                 CommandParameter="{Binding .}" /> -->
+    <!--                         </Border.GestureRecognizers> -->
+    <!--                     </Border> -->
+    <!-- -->
+    <!--                     <Label -->
+    <!--                         TextColor="White" -->
+    <!--                         FontAttributes="Bold" -->
+    <!--                         LineBreakMode="TailTruncation" -->
+    <!--                         Margin="10,5,0,5" -->
+    <!--                         SemanticProperties.Description="Event title" -->
+    <!--                         Text="{Binding Title}" /> -->
+    <!--                     <Label -->
+    <!--                         Margin="10,0,0,0" -->
+    <!--                         SemanticProperties.Description="The dates the event takes place" -->
+    <!--                         Text="{Binding FormattedDateRange}" -->
+    <!--                         TextColor="Silver" /> -->
+    <!--                 </VerticalStackLayout> -->
+    <!--             </DataTemplate> -->
+    <!--         </CollectionView.ItemTemplate> -->
+    <!--     </CollectionView> -->
+    <!-- </VerticalStackLayout> -->
+    <!-- </VerticalStackLayout> -->
+    <!-- </ScrollView> -->
 </ContentPage>
