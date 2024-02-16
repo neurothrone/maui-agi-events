@@ -5,6 +5,13 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AGIEvents.Lib.ViewModels;
 
+public class EventGroup(
+    string groupName,
+    IEnumerable<EventViewModel> events) : ObservableCollection<EventViewModel>(events)
+{
+    public string GroupName { get; init; } = groupName;
+}
+
 public partial class EventsViewModel : ObservableObject
 {
     private const string YourEvents = "Your Events";
@@ -12,7 +19,7 @@ public partial class EventsViewModel : ObservableObject
 
     [ObservableProperty] private bool _isLoading;
 
-    private ObservableCollection<EventGroup> _groupedEvents = new();
+    private ObservableCollection<EventGroup> _groupedEvents = [];
 
     public ObservableCollection<EventGroup> GroupedEvents
     {
@@ -81,7 +88,7 @@ public partial class EventsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task AddEvent()
+    private void AddEvent()
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -110,7 +117,7 @@ public partial class EventsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task ClearEvents()
+    private void ClearEvents()
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
@@ -120,36 +127,28 @@ public partial class EventsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task AddEvents()
+    private void AddEvents()
     {
-        MainThread.BeginInvokeOnMainThread(async () => { FetchEvents(); });
+        MainThread.BeginInvokeOnMainThread(FetchEvents);
     }
 
     [RelayCommand]
     private async Task EventTapped(EventViewModel eventViewModel)
     {
-        // If IsSaved, navigate to Leads
-        // TODO: Else open QR Scanner
-
         if (eventViewModel.IsSaved)
         {
-            await NavigateToLeadsForEvent(eventViewModel);
+            await Shell.Current.GoToAsync(
+                $"{nameof(AppRoute.LeadsPage)}?{nameof(EventViewModel.Id)}={eventViewModel.Id}"
+            );
         }
         else
         {
+            // TODO: Open QR Scanner
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 MoveEventToGroup(eventViewModel.Id, UpcomingEvents, YourEvents);
             });
         }
-    }
-
-    private async Task NavigateToLeadsForEvent(EventViewModel eventViewModel)
-    {
-        // TODO: send the EventViewModel instead, because the Id property is for the database in contrast to EventId
-        await Shell.Current.GoToAsync(
-            $"{nameof(AppRoute.LeadsPage)}?EventId={eventViewModel.Id}"
-        );
     }
 
     [RelayCommand]
