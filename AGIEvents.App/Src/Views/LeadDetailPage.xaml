@@ -4,8 +4,8 @@
     x:Class="AGIEvents.App.Views.LeadDetailPage"
     x:DataType="viewmodel:LeadDetailViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
     Title="Lead"
     HideSoftInputOnTapped="True">
 
@@ -16,7 +16,8 @@
                      Command="{Binding SaveChangesCommand}" />
     </ContentPage.ToolbarItems>
 
-    <TableView Intent="Form" HasUnevenRows="True">
+    <TableView Intent="Form"
+               HasUnevenRows="True">
         <TableRoot>
             <TableSection Title="Contact Information">
                 <EntryCell Label="First Name" LabelColor="MediumSlateBlue"
@@ -44,17 +45,21 @@
                            Text="{Binding Product }" />
                 <EntryCell Label="Seller" LabelColor="MediumSlateBlue"
                            Text="{Binding Seller }" />
-                <TextCell />
             </TableSection>
 
             <TableSection Title="Notes">
                 <ViewCell>
-                    <Editor Placeholder="Type in your notes..."
-                            Margin="15,0" />
+                    <Editor Text="{Binding Notes}"
+                            Placeholder="Type in your notes"
+                            FontSize="16"
+                            Margin="15,0"
+                            HeightRequest="300" />
                 </ViewCell>
+                <ImageCell
+                    ImageSource="icon_schedule.png"
+                    Text="Scanned at" TextColor="MediumSlateBlue"
+                    Detail="{Binding ScannedAt}" />
             </TableSection>
         </TableRoot>
     </TableView>
-
-
 </ContentPage>
