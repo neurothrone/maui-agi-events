@@ -59,8 +59,8 @@ public partial class EventsViewModel : ObservableObject
 
         // TODO: fetch from database
         var eventViewModels = new List<EventViewModel>(
-            Event.Samples()
-                .Select(e => new EventViewModel(e))
+            EventViewModel.Samples()
+                .OrderBy(e => e.StartDate)
                 .ToList()
         );
 
@@ -81,20 +81,17 @@ public partial class EventsViewModel : ObservableObject
         IsLoading = false;
     }
 
-    private void MoveEventToGroup(int eventId, string sourceGroupName, string targetGroupName)
+    private void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
     {
         // Find the source group
         var sourceGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == sourceGroupName);
-
-        if (sourceGroup?.FirstOrDefault(e => e.Id == eventId) is not { } eventToMove)
+        if (sourceGroup?.FirstOrDefault(e => e.EventId == eventId) is not { } eventToMove)
             return;
 
-        eventToMove.ToggleIsSaved();
         sourceGroup.Remove(eventToMove);
 
         // Find the target group
         var targetGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == targetGroupName);
-
         if (targetGroup != null)
         {
             targetGroup.Add(eventToMove);
@@ -122,15 +119,13 @@ public partial class EventsViewModel : ObservableObject
 
 
             group.Add(
-                new EventViewModel(new Event(
-                        id: 2,
-                        eventId: "sopno398632",
-                        title: "Sign, Print & Promotion",
-                        image: "sopno_logo.png",
-                        startDate: DateTime.Now.AddDays(150),
-                        endDate: DateTime.Now.AddDays(152),
-                        isSaved: true
-                    )
+                new EventViewModel(
+                    eventId: "sopno398692",
+                    title: "Sign, Print & Promotion",
+                    image: "sopno_logo.png",
+                    startDate: DateTime.Now.AddDays(150),
+                    endDate: DateTime.Now.AddDays(152),
+                    isSaved: true
                 )
             );
         });
@@ -158,18 +153,19 @@ public partial class EventsViewModel : ObservableObject
         if (eventViewModel.IsSaved)
         {
             await Shell.Current.GoToAsync(
-                $"{nameof(AppRoute.LeadsPage)}?{nameof(EventViewModel.Id)}={eventViewModel.Id}"
+                $"{nameof(AppRoute.LeadsPage)}?{nameof(EventViewModel.EventId)}={eventViewModel.EventId}"
             );
         }
         else
         {
             // TODO: Open QR Scanner
-            // MainThread.BeginInvokeOnMainThread(() =>
-            // {
-            //     MoveEventToGroup(eventViewModel.Id, UpcomingEvents, YourEvents);
-            // });
+            WeakReferenceMessenger.Default.Send(new EventSavedChangedMessage(eventViewModel.EventId, true));
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                MoveEventToGroup(eventViewModel.EventId, UpcomingEvents, YourEvents);
+            });
 
-            await Shell.Current.GoToAsync(nameof(AppRoute.QrScannerPage));
+            // await Shell.Current.GoToAsync(nameof(AppRoute.QrScannerPage));
         }
     }
 
