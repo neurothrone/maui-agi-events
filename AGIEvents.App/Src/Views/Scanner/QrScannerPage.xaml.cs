@@ -1,4 +1,4 @@
-using AGIEvents.Lib.Services.Messages;
+using AGIEvents.Lib.Messages;
 using CommunityToolkit.Mvvm.Messaging;
 using ZXing.Net.Maui;
 
