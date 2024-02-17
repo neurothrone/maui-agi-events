@@ -4,9 +4,9 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:AGIEvents.App.Views.Events.Controls"
-    xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+    xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
     x:Class="AGIEvents.App.Views.Events.EventsPage"
-    x:DataType="viewmodels:EventsViewModel">
+    x:DataType="viewModels:EventsViewModel">
 
     <ContentPage.ToolbarItems>
         <!-- <ToolbarItem IconImageSource="icon_settings.png" -->
@@ -43,7 +43,7 @@
             </CollectionView.Header>
 
             <CollectionView.GroupHeaderTemplate>
-                <DataTemplate x:DataType="{x:Type viewmodels:EventGroup}">
+                <DataTemplate x:DataType="{x:Type viewModels:EventGroup}">
                     <!-- BindingContext is implicitly provided like this -->
                     <controls:EventGroupHeader />
 
@@ -67,7 +67,7 @@
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="viewmodels:EventViewModel">
+                <DataTemplate x:DataType="viewModels:EventViewModel">
                     <controls:EventItemView Margin="0,0,0,10" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>

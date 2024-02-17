@@ -3,9 +3,9 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:AGIEvents.App.Views.Leads.Controls"
-             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              x:Class="AGIEvents.App.Views.Leads.Controls.LeadsCollectionView"
-             x:DataType="viewmodels:LeadsViewModel">
+             x:DataType="viewModels:LeadsViewModel">
 
     <CollectionView
         IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
@@ -19,7 +19,7 @@
         </CollectionView.ItemsLayout>
 
         <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="viewmodels:LeadViewModel">
+            <DataTemplate x:DataType="viewModels:LeadViewModel">
                 <controls:LeadItemView />
             </DataTemplate>
         </CollectionView.ItemTemplate>

@@ -2,9 +2,9 @@
 
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              x:Class="AGIEvents.App.Views.Leads.Controls.LeadItemView"
-             x:DataType="viewmodels:LeadViewModel">
+             x:DataType="viewModels:LeadViewModel">
 
     <Border Stroke="Transparent">
         <Border.StrokeShape>
@@ -20,7 +20,7 @@
                                    BackgroundColor="DarkCyan"
                                    Command="{Binding 
                                                    Source={RelativeSource 
-                                                   AncestorType={x:Type viewmodels:LeadsViewModel}}, 
+                                                   AncestorType={x:Type viewModels:LeadsViewModel}}, 
                                                    Path=ExportLeadCommand}"
                                    CommandParameter="{Binding .}" />
                     </SwipeView.LeftItems>
@@ -32,7 +32,7 @@
                                    IsDestructive="True"
                                    Command="{Binding 
                                                    Source={RelativeSource 
-                                                   AncestorType={x:Type viewmodels:LeadsViewModel}}, 
+                                                   AncestorType={x:Type viewModels:LeadsViewModel}}, 
                                                    Path=DeleteLeadCommand}"
                                    CommandParameter="{Binding .}" />
                     </SwipeView.RightItems>
@@ -47,7 +47,7 @@
                             <TapGestureRecognizer
                                 Command="{Binding 
                                                    Source={RelativeSource 
-                                                   AncestorType={x:Type viewmodels:LeadsViewModel}}, 
+                                                   AncestorType={x:Type viewModels:LeadsViewModel}}, 
                                                    Path=NavigateToLeadDetailCommand}"
                                 CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
