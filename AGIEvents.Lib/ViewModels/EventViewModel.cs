@@ -1,4 +1,4 @@
-using AGIEvents.Lib.Services.Messages;
+using AGIEvents.Lib.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 

@@ -1,4 +1,4 @@
-namespace AGIEvents.Lib.Services.Messages;
+namespace AGIEvents.Lib.Messages;
 
 public record EventSavedChangedMessage(
     string EventId,

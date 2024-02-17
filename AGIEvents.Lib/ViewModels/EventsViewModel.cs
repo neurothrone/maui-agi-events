@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
+using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services.Database;
-using AGIEvents.Lib.Services.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
