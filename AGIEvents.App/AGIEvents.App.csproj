@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
-        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+        <TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
         <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
         <!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 
@@ -12,6 +11,9 @@
         The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
         either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
         <!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+
+        <!-- Required for deploying to rael Android device -->
+        <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 
         <OutputType>Exe</OutputType>
         <RootNamespace>AGIEvents.App</RootNamespace>
@@ -24,7 +26,7 @@
         <ApplicationTitle>AGI Events</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>tech.neurothrone.agievents</ApplicationId>
+        <ApplicationId>tech.neurothrone.agi_events</ApplicationId>
 
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -54,37 +56,42 @@
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
-        <None Remove="Resources\Images\Icons\icon_add.svg" />
-        <MauiImage Include="Resources\Images\Events\sopdk_logo.svg" />
-        <MauiImage Include="Resources\Images\Events\sopno_logo.svg" />
-        <MauiImage Include="Resources\Images\Events\sopse_logo.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_add.svg" />
-        <None Remove="Resources\Images\Icons\icon_check.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_check.svg" />
-        <None Remove="Resources\Images\Icons\icon_chevron_right.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_chevron_right.svg" />
-        <None Remove="Resources\Images\Icons\icon_csv.svg" />
-        <None Remove="Resources\Images\Icons\icon_delete.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_delete.svg" />
-        <None Remove="Resources\Images\Icons\icon_export_notes.svg" />
-        <None Remove="Resources\Images\Icons\icon_ios_share.svg" /> 
-        <MauiImage Include="Resources\Images\Icons\icon_ios_share.svg" />
-        <None Remove="Resources\Images\Icons\icon_location_city.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_location_city.svg" />
-        <None Remove="Resources\Images\Icons\icon_person.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_person.svg" />
-        <None Remove="Resources\Images\Icons\icon_qr_code_scanner.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_qr_code_scanner.svg" />
-        <None Remove="Resources\Images\Icons\icon_settings.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_settings.svg" />
-        <None Remove="Resources\Images\Icons\icon_android_share.svg" />
-        <MauiImage Include="Resources\Images\Icons\icon_android_share.svg" />
+        <None Remove="Resources\Images\Icons\icon_add.svg"/>
+        <MauiImage Include="Resources\Images\Events\sopdk_logo.svg"/>
+        <MauiImage Include="Resources\Images\Events\sopno_logo.svg"/>
+        <MauiImage Include="Resources\Images\Events\sopse_logo.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_add.svg"/>
+        <None Remove="Resources\Images\Icons\icon_check.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_check.svg"/>
+        <None Remove="Resources\Images\Icons\icon_chevron_right.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_chevron_right.svg"/>
+        <None Remove="Resources\Images\Icons\icon_csv.svg"/>
+        <None Remove="Resources\Images\Icons\icon_delete.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_delete.svg"/>
+        <None Remove="Resources\Images\Icons\icon_export_notes.svg"/>
+        <None Remove="Resources\Images\Icons\icon_ios_share.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_ios_share.svg"/>
+        <None Remove="Resources\Images\Icons\icon_location_city.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_location_city.svg"/>
+        <None Remove="Resources\Images\Icons\icon_person.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_person.svg"/>
+        <None Remove="Resources\Images\Icons\icon_qr_code_scanner.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_qr_code_scanner.svg"/>
+        <None Remove="Resources\Images\Icons\icon_settings.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_settings.svg"/>
+        <None Remove="Resources\Images\Icons\icon_android_share.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_android_share.svg"/>
+        <None Remove="Resources\Images\Icons\icon_clock.svg"/>
+        <None Remove="Resources\Images\Icons\icon_schedule.svg"/>
+        <MauiImage Include="Resources\Images\Icons\icon_schedule.svg"/>
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Maui" Version="7.0.1"/>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0"/>
+        <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -92,7 +99,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Resources\Images\AppIcon\" />
+        <Folder Include="Resources\Images\AppIcon\"/>
     </ItemGroup>
 
 </Project>
