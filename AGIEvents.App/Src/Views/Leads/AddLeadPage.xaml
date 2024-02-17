@@ -9,7 +9,7 @@
              HideSoftInputOnTapped="True">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="icon_save.png"
+        <ToolbarItem IconImageSource="icon_check.png"
                      SemanticProperties.Description="Add Lead"
                      ToolTipProperties.Text="Add Lead"
                      Command="{Binding AddLeadCommand}" />
