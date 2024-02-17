@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using AGIEvents.Lib.Models;
+using AGIEvents.Lib.Services.Database;
 using AGIEvents.Lib.Services.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,6 +20,8 @@ public partial class EventsViewModel : ObservableObject
     private const string YourEvents = "Your Events";
     private const string UpcomingEvents = "Coming Events";
 
+    private readonly IDatabaseRepository _databaseRepository;
+
     [ObservableProperty] private bool _isLoading;
 
     private ObservableCollection<EventGroup> _groupedEvents = [];
@@ -29,8 +32,9 @@ public partial class EventsViewModel : ObservableObject
         private set => SetProperty(ref _groupedEvents, value);
     }
 
-    public EventsViewModel()
+    public EventsViewModel(IDatabaseRepository databaseRepository)
     {
+        _databaseRepository = databaseRepository;
         SubscribeToMessenger();
         FetchEvents();
     }

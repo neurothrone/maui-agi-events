@@ -38,6 +38,8 @@ public static class MauiProgram
             .AddTransient<Views.Leads.AddLeadPage>()
             .AddTransient<Views.Scanner.QrScannerPage>()
             .AddSingleton<Views.Settings.SettingsPage>()
+            // Data
+            .AddSingleton<Lib.Services.Database.IDatabaseRepository, Lib.Services.Database.DatabaseRepository>()
             ;
 
 #if DEBUG
