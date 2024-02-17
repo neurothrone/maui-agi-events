@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:AGIEvents.App.Converters"
+             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             x:Class="AGIEvents.App.Views.Controls.EventItemView"
+             x:DataType="viewmodels:EventViewModel">
+
+    <ContentView.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </ContentView.Resources>
+
+    <VerticalStackLayout>
+        <Border
+            Stroke="Transparent"
+            BackgroundColor="SlateBlue"
+            Padding="10">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="25" />
+            </Border.StrokeShape>
+
+            <Grid>
+                <ImageButton
+                    Aspect="AspectFit"
+                    HeightRequest="100"
+                    SemanticProperties.Description="Event logo"
+                    Source="{Binding Image}"
+                    Command="{Binding
+                                            Source={RelativeSource
+                                            AncestorType={x:Type viewmodels:EventsViewModel}},
+                                            Path=EventTappedCommand}"
+                    CommandParameter="{Binding}" />
+                <Image
+                    IsVisible="{Binding IsSaved, Converter={StaticResource InverseBooleanConverter}}"
+                    VerticalOptions="Start"
+                    HorizontalOptions="Start"
+                    Aspect="AspectFit"
+                    HeightRequest="30"
+                    SemanticProperties.Description="QR Code Scanner"
+                    Source="icon_qr_code_scanner.png">
+                </Image>
+            </Grid>
+        </Border>
+
+        <Label
+            TextColor="White"
+            FontAttributes="Bold"
+            LineBreakMode="TailTruncation"
+            Margin="10,5,0,5"
+            SemanticProperties.Description="Event title"
+            Text="{Binding Title}" />
+        <Label
+            Margin="10,0,0,0"
+            SemanticProperties.Description="The dates the event takes place"
+            Text="{Binding FormattedDateRange}"
+            TextColor="Silver" />
+    </VerticalStackLayout>
+</ContentView>

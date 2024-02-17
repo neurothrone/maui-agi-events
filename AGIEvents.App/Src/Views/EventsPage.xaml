@@ -6,7 +6,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:AGIEvents.App.Converters"
-    xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib">
+    xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+    xmlns:controls="clr-namespace:AGIEvents.App.Views.Controls">
 
     <ContentPage.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
@@ -36,57 +37,27 @@
                            IsVisible="{Binding IsLoading}" />
 
         <CollectionView IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                        VerticalScrollBarVisibility="{OnIdiom Phone=Never, Default=Always}"
                         IsGrouped="True"
                         ItemsSource="{Binding GroupedEvents}"
                         ItemSizingStrategy="MeasureFirstItem"
                         SelectionMode="None">
 
             <CollectionView.Header>
-                <Grid>
-                    <Label
-                        Text="Welcome to&#x0a;AGI Events"
-                        TextColor="White"
-                        FontAttributes="Bold"
-                        Style="{StaticResource Headline}"
-                        HorizontalTextAlignment="Start"
-                        HorizontalOptions="Start"
-                        SemanticProperties.HeadingLevel="Level1"
-                        SemanticProperties.Description="Welcome to A G I Events"
-                        Margin="0,0,0,20" />
-
-                    <!-- <Label IsVisible="{Binding IsYourEventsEmpty}" -->
-                    <!--        LineBreakMode="WordWrap" -->
-                    <!--        Margin="0,0,0,10"> -->
-                    <!--     <Label.FormattedText> -->
-                    <!--         <FormattedString> -->
-                    <!--             <Span Text="You do not have any events yet. Tap on an Event in the " TextColor="Silver" /> -->
-                    <!--             <Span Text="Coming Events" TextColor="White" FontAttributes="Bold" /> -->
-                    <!--             <Span Text=" section and Scan the QR code of your exhibitor badge." TextColor="Silver" /> -->
-                    <!--         </FormattedString> -->
-                    <!--     </Label.FormattedText> -->
-                    <!-- </Label> -->
-                </Grid>
+                <controls:EventsHeader />
             </CollectionView.Header>
 
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="{x:Type viewmodels:EventGroup}">
-                    <Grid>
-                        <Label
-                            TextColor="White"
-                            FontSize="24"
-                            Margin="0,10">
+                    <!-- BindingContext is implicitly provided like this -->
+                    <controls:EventGroupHeader />
 
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="{Binding GroupName}" />
-                                    <Span Text=" (" TextColor="DarkGray" />
-                                    <Span Text="{Binding Count}" TextColor="MediumSlateBlue"
-                                          FontAttributes="Bold" />
-                                    <Span Text=")" TextColor="DarkGray" />
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-                    </Grid>
+                    <!-- BindingContext can be explicitly provided like this -->
+                    <!-- <controls:EventGroupHeader> -->
+                    <!--     <controls:EventGroupHeader.BindingContext> -->
+                    <!--         <viewmodels:EventGroup/> -->
+                    <!--     </controls:EventGroupHeader.BindingContext> -->
+                    <!-- </controls:EventGroupHeader> -->
                 </DataTemplate>
             </CollectionView.GroupHeaderTemplate>
 
@@ -102,53 +73,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewmodels:EventViewModel">
-                    <VerticalStackLayout WidthRequest="200"
-                                         Margin="0,0,0,10">
-                        <Border
-                            Stroke="Transparent"
-                            BackgroundColor="SlateBlue"
-                            Padding="10">
-
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="25" />
-                            </Border.StrokeShape>
-
-                            <Grid>
-                                <ImageButton
-                                    Aspect="AspectFit"
-                                    HeightRequest="100"
-                                    SemanticProperties.Description="Event logo"
-                                    Source="{Binding Image}"
-                                    Command="{Binding
-                                            Source={RelativeSource
-                                            AncestorType={x:Type viewmodels:EventsViewModel}},
-                                            Path=EventTappedCommand}"
-                                    CommandParameter="{Binding}" />
-                                <Image
-                                    IsVisible="{Binding IsSaved, Converter={StaticResource InverseBooleanConverter}}"
-                                    VerticalOptions="Start"
-                                    HorizontalOptions="Start"
-                                    Aspect="AspectFit"
-                                    HeightRequest="30"
-                                    SemanticProperties.Description="QR Code Scanner"
-                                    Source="icon_qr_code_scanner.png">
-                                </Image>
-                            </Grid>
-                        </Border>
-
-                        <Label
-                            TextColor="White"
-                            FontAttributes="Bold"
-                            LineBreakMode="TailTruncation"
-                            Margin="10,5,0,5"
-                            SemanticProperties.Description="Event title"
-                            Text="{Binding Title}" />
-                        <Label
-                            Margin="10,0,0,0"
-                            SemanticProperties.Description="The dates the event takes place"
-                            Text="{Binding FormattedDateRange}"
-                            TextColor="Silver" />
-                    </VerticalStackLayout>
+                    <controls:EventItemView Margin="0,0,0,10" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

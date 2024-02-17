@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AGIEvents.App.Views.Controls.EventsHeader">
+
+    <Grid>
+        <Label
+            Text="Welcome to&#x0a;AGI Events"
+            TextColor="White"
+            FontAttributes="Bold"
+            Style="{StaticResource Headline}"
+            HorizontalTextAlignment="Start"
+            HorizontalOptions="Start"
+            SemanticProperties.HeadingLevel="Level1"
+            SemanticProperties.Description="Welcome to A G I Events"
+            Margin="0,0,0,20" />
+
+        <!-- <Label IsVisible="{Binding IsYourEventsEmpty}" -->
+        <!--        LineBreakMode="WordWrap" -->
+        <!--        Margin="0,0,0,10"> -->
+        <!--     <Label.FormattedText> -->
+        <!--         <FormattedString> -->
+        <!--             <Span Text="You do not have any events yet. Tap on an Event in the " TextColor="Silver" /> -->
+        <!--             <Span Text="Coming Events" TextColor="White" FontAttributes="Bold" /> -->
+        <!--             <Span Text=" section and Scan the QR code of your exhibitor badge." TextColor="Silver" /> -->
+        <!--         </FormattedString> -->
+        <!--     </Label.FormattedText> -->
+        <!-- </Label> -->
+    </Grid>
+
+</ContentView>
