@@ -1,5 +1,7 @@
 ﻿using AGIEvents.Lib.ViewModels;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using ZXing.Net.Maui.Controls;
 
 namespace AGIEvents.App;
 
@@ -10,11 +12,15 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            // Required to use CommunityToolkit.Maui
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             })
+            // Third Party
+            .UseBarcodeReader()
             // Initialize Services
             .Services
             // ViewModels
@@ -25,12 +31,14 @@ public static class MauiProgram
             .AddTransient<LeadViewModel>()
             .AddTransient<LeadDetailViewModel>()
             .AddTransient<AddLeadViewModel>()
+            .AddTransient<QrScannerViewModel>()
             // Views
             .AddSingleton<Views.EventsPage>()
             .AddSingleton<Views.LeadsPage>()
             .AddSingleton<Views.SettingsPage>()
             .AddTransient<Views.LeadDetailPage>()
             .AddTransient<Views.AddLeadPage>()
+            .AddTransient<Views.QrScannerPage>()
             ;
 
 #if DEBUG

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:zxingcontrols="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             xmlns:converters="clr-namespace:AGIEvents.App.Converters"
+             x:Class="AGIEvents.App.Views.QrScannerPage"
+             x:DataType="viewmodels:QrScannerViewModel"
+             Title="QR Scanner">
+
+    <ContentPage.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <converters:BarcodeDetectionEventArgsConverter x:Key="BarcodeDetectionEventArgsConverter" />
+    </ContentPage.Resources>
+
+    <Grid>
+        <ActivityIndicator IsEnabled="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}" />
+
+        <zxingcontrols:CameraBarcodeReaderView
+            x:Name="BarcodeReader"
+            IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+            IsDetecting="{Binding IsDetecting}">
+
+            <zxingcontrols:CameraBarcodeReaderView.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventArgsConverter="{StaticResource BarcodeDetectionEventArgsConverter}"
+                    EventName="BarcodesDetected"
+                    Command="{Binding QrCodeScannedCommand }" />
+            </zxingcontrols:CameraBarcodeReaderView.Behaviors>
+
+        </zxingcontrols:CameraBarcodeReaderView>
+    </Grid>
+
+</ContentPage>

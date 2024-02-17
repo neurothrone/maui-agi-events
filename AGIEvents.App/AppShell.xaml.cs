@@ -8,6 +8,7 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
+        Routing.RegisterRoute(nameof(QrScannerPage), typeof(QrScannerPage));
         Routing.RegisterRoute(nameof(LeadsPage), typeof(LeadsPage));
         Routing.RegisterRoute(nameof(LeadDetailPage), typeof(LeadDetailPage));
         Routing.RegisterRoute(nameof(AddLeadPage), typeof(AddLeadPage));

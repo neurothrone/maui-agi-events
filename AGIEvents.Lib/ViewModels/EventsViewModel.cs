@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using AGIEvents.Lib.Models;
+using AGIEvents.Lib.Services.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace AGIEvents.Lib.ViewModels;
 
@@ -29,7 +31,21 @@ public partial class EventsViewModel : ObservableObject
 
     public EventsViewModel()
     {
+        SubscribeToMessenger();
         FetchEvents();
+    }
+
+    private void SubscribeToMessenger()
+    {
+        WeakReferenceMessenger.Default.Register<QrScannerCompletedMessage>(
+            this,
+            (_, message) => ProcessQrCode(message.QrCode)
+        );
+    }
+
+    private void ProcessQrCode(string qrCode)
+    {
+        Console.WriteLine($"✅ -> QR Code scanned: {qrCode}");
     }
 
     private async void FetchEvents()
@@ -144,10 +160,12 @@ public partial class EventsViewModel : ObservableObject
         else
         {
             // TODO: Open QR Scanner
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                MoveEventToGroup(eventViewModel.Id, UpcomingEvents, YourEvents);
-            });
+            // MainThread.BeginInvokeOnMainThread(() =>
+            // {
+            //     MoveEventToGroup(eventViewModel.Id, UpcomingEvents, YourEvents);
+            // });
+
+            await Shell.Current.GoToAsync(nameof(AppRoute.QrScannerPage));
         }
     }
 
