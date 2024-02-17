@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             x:Class="AGIEvents.App.Views.Controls.LeadsOverviewView"
+             x:DataType="viewmodels:LeadsViewModel">
+
+    <VerticalStackLayout Spacing="10">
+
+        <FlexLayout Direction="Row"
+                    JustifyContent="SpaceBetween">
+
+            <Label
+                TextColor="White"
+                FontSize="24"
+                VerticalOptions="End"
+                Margin="0,0,0,-2">
+
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Your leads " />
+                        <Span Text="(" TextColor="DarkGray" />
+                        <Span Text="{Binding Leads.Count}" TextColor="MediumSlateBlue"
+                              FontAttributes="Bold" />
+                        <Span Text=")" TextColor="DarkGray" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <HorizontalStackLayout Spacing="10">
+
+                <Button ImageSource="icon_qr_code_scanner.png"
+                        HeightRequest="20"
+                        WidthRequest="20"
+                        TextColor="White"
+                        BackgroundColor="SlateBlue"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        Padding="0"
+                        SemanticProperties.Description="Add Lead with QR Scanner"
+                        ToolTipProperties.Text="Add Lead with QR Scanner"
+                        Command="{Binding ShowQrScannerCommand}" />
+
+                <Button ImageSource="icon_add.png"
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        TextColor="White"
+                        BackgroundColor="SlateBlue"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        Padding="0"
+                        SemanticProperties.Description="Add Lead manually with a Form"
+                        ToolTipProperties.Text="Add Lead manually with a Form"
+                        Command="{Binding NavigateToAddLeadCommand}" />
+
+            </HorizontalStackLayout>
+        </FlexLayout>
+
+        <BoxView HeightRequest="2"
+                 Color="SlateBlue" />
+    </VerticalStackLayout>
+</ContentView>

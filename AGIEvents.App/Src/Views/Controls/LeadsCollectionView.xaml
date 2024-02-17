@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:AGIEvents.App.Views.Controls"
+             xmlns:converters="clr-namespace:AGIEvents.App.Converters"
+             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             x:Class="AGIEvents.App.Views.Controls.LeadsCollectionView"
+             x:DataType="viewmodels:LeadsViewModel">
+
+    <ContentView.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </ContentView.Resources>
+
+    <CollectionView
+        IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+        ItemsSource="{Binding Leads}"
+        SelectionMode="None"
+        VerticalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}">
+
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout Orientation="Vertical"
+                               ItemSpacing="0" />
+        </CollectionView.ItemsLayout>
+
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="viewmodels:LeadViewModel">
+                <controls:LeadItemView />
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentView>

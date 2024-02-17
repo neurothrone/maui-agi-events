@@ -3,15 +3,11 @@
 <ContentPage
     Title="Leads"
     x:Class="AGIEvents.App.Views.LeadsPage"
-    x:DataType="viewmodel:LeadsViewModel"
+    x:DataType="viewmodels:LeadsViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:converters="clr-namespace:AGIEvents.App.Converters"
-    xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
-    <ContentPage.Resources>
-        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-    </ContentPage.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:AGIEvents.App.Views.Controls"
+    xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
@@ -27,174 +23,12 @@
         <Image Grid.Row="0"
                Source="{Binding EventImage}" />
 
-        <VerticalStackLayout Grid.Row="1"
-                             Spacing="10">
-
-            <FlexLayout Direction="Row"
-                        JustifyContent="SpaceBetween">
-
-                <Label
-                    TextColor="White"
-                    FontSize="24"
-                    VerticalOptions="End"
-                    Margin="0,0,0,-2">
-
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Your leads " />
-                            <Span Text="(" TextColor="DarkGray" />
-                            <Span Text="{Binding Leads.Count}" TextColor="MediumSlateBlue"
-                                  FontAttributes="Bold" />
-                            <Span Text=")" TextColor="DarkGray" />
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-
-                <HorizontalStackLayout Spacing="10">
-
-                    <Button ImageSource="icon_qr_code_scanner.png"
-                            HeightRequest="20"
-                            WidthRequest="20"
-                            TextColor="White"
-                            BackgroundColor="SlateBlue"
-                            FontSize="24"
-                            FontAttributes="Bold"
-                            Padding="0"
-                            SemanticProperties.Description="Add Lead with QR Scanner"
-                            ToolTipProperties.Text="Add Lead with QR Scanner"
-                            Command="{Binding ShowQrScannerCommand}" />
-
-                    <Button ImageSource="icon_add.png"
-                            WidthRequest="20"
-                            HeightRequest="20"
-                            TextColor="White"
-                            BackgroundColor="SlateBlue"
-                            FontSize="24"
-                            FontAttributes="Bold"
-                            Padding="0"
-                            SemanticProperties.Description="Add Lead manually with a Form"
-                            ToolTipProperties.Text="Add Lead manually with a Form"
-                            Command="{Binding NavigateToAddLeadCommand}" />
-
-                </HorizontalStackLayout>
-            </FlexLayout>
-
-            <BoxView HeightRequest="2"
-                     Color="SlateBlue" />
-        </VerticalStackLayout>
+        <controls:LeadsOverviewView Grid.Row="1" />
 
         <ActivityIndicator Grid.Row="2"
                            IsRunning="{Binding IsLoading}"
                            IsVisible="{Binding IsLoading}" />
 
-        <CollectionView Grid.Row="2"
-                        IsVisible="{Binding IsLoading,
-                        Converter={StaticResource InverseBooleanConverter}}"
-                        ItemsSource="{Binding Leads}"
-                        SelectionMode="None"
-                        VerticalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}">
-
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="0" />
-            </CollectionView.ItemsLayout>
-
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="viewmodel:LeadViewModel">
-                    <Border Stroke="Transparent">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="15" />
-                        </Border.StrokeShape>
-
-                        <Grid>
-                            <Border Stroke="Transparent">
-                                <SwipeView>
-                                    <SwipeView.LeftItems>
-                                        <SwipeItem Text="Export"
-                                                   IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
-                                                   BackgroundColor="DarkCyan"
-                                                   Command="{Binding 
-                                                   Source={RelativeSource 
-                                                   AncestorType={x:Type viewmodel:LeadsViewModel}}, 
-                                                   Path=ExportLeadCommand}"
-                                                   CommandParameter="{Binding .}" />
-                                    </SwipeView.LeftItems>
-
-                                    <SwipeView.RightItems>
-                                        <SwipeItem Text="Delete"
-                                                   IconImageSource="icon_delete.png"
-                                                   BackgroundColor="DarkRed"
-                                                   IsDestructive="True"
-                                                   Command="{Binding 
-                                                   Source={RelativeSource 
-                                                   AncestorType={x:Type viewmodel:LeadsViewModel}}, 
-                                                   Path=DeleteLeadCommand}"
-                                                   CommandParameter="{Binding .}" />
-                                    </SwipeView.RightItems>
-
-                                    <Grid ColumnDefinitions="*,*"
-                                          RowDefinitions="*,*"
-                                          RowSpacing="4"
-                                          Padding="20,10,5,10"
-                                          BackgroundColor="DarkSlateBlue">
-
-                                        <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer
-                                                Command="{Binding 
-                                                   Source={RelativeSource 
-                                                   AncestorType={x:Type viewmodel:LeadsViewModel}}, 
-                                                   Path=NavigateToLeadDetailCommand}"
-                                                CommandParameter="{Binding .}" />
-                                        </Grid.GestureRecognizers>
-
-                                        <FlexLayout Grid.Column="0"
-                                                    Grid.Row="0"
-                                                    Direction="Row"
-                                                    JustifyContent="Start"
-                                                    AlignItems="Center">
-                                            <Image Source="icon_person.png" />
-                                            <Label
-                                                FontSize="16"
-                                                Margin="4,0,0,0"
-                                                Text="{Binding FullName}" />
-                                        </FlexLayout>
-
-                                        <FlexLayout Grid.Column="0"
-                                                    Grid.Row="1"
-                                                    Direction="Row"
-                                                    JustifyContent="Start"
-                                                    AlignItems="Center">
-                                            <Image Source="icon_location_city.png" />
-                                            <Label
-                                                FontSize="16"
-                                                Margin="4,0,0,0"
-                                                Text="{Binding Company}" />
-                                        </FlexLayout>
-
-                                        <ImageButton Grid.Column="1"
-                                                     Grid.RowSpan="2"
-                                                     Source="icon_chevron_right.png"
-                                                     Scale="0.5"
-                                                     HorizontalOptions="End" />
-
-                                    </Grid>
-                                </SwipeView>
-                            </Border>
-
-                            <BoxView BackgroundColor="DarkCyan"
-                                     WidthRequest="10"
-                                     VerticalOptions="Fill"
-                                     HorizontalOptions="Start" />
-
-                            <BoxView BackgroundColor="DarkRed"
-                                     WidthRequest="10"
-                                     VerticalOptions="Fill"
-                                     HorizontalOptions="End" />
-
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <controls:LeadsCollectionView Grid.Row="2" />
     </Grid>
 </ContentPage>
