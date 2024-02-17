@@ -103,100 +103,99 @@
     </ItemGroup>
 
     <ItemGroup>
-      <MauiXaml Update="Src\Views\Components\EventsHeader.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Events\EventsPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Events\Controls\EventsHeader.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Events\Controls\EventGroupHeader.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Events\Controls\EventItemView.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Settings\SettingsPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Leads\LeadsPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Leads\Controls\LeadsOverviewView.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Leads\Controls\LeadsCollectionView.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Leads\Controls\LeadItemView.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Leads\AddLeadPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Leads\LeadDetailPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
-      <MauiXaml Update="Src\Views\Scanner\QrScannerPage.xaml">
-        <SubType>Designer</SubType>
-      </MauiXaml>
+        <MauiXaml Update="Src\Views\Components\EventsHeader.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Events\EventsPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Events\Controls\EventsHeader.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Events\Controls\EventGroupHeader.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Events\Controls\EventItemView.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Settings\SettingsPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Leads\LeadsPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Leads\Controls\LeadsOverviewView.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Leads\Controls\LeadsCollectionView.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Leads\Controls\LeadItemView.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Leads\AddLeadPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Leads\LeadDetailPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
+        <MauiXaml Update="Src\Views\Scanner\QrScannerPage.xaml">
+            <SubType>Designer</SubType>
+        </MauiXaml>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Src\Views\Components\EventsHeader.xaml.cs">
-        <DependentUpon>EventsHeader.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Events\EventsPage.xaml.cs">
-        <DependentUpon>EventsPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Events\Controls\EventsHeader.xaml.cs">
-        <DependentUpon>EventsHeader.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Events\Controls\EventGroupHeader.xaml.cs">
-        <DependentUpon>EventGroupHeader.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Events\Controls\EventItemView.xaml.cs">
-        <DependentUpon>EventItemView.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Settings\SettingsPage.xaml.cs">
-        <DependentUpon>SettingsPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Leads\LeadsPage.xaml.cs">
-        <DependentUpon>LeadsPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Leads\Controls\LeadsOverviewView.xaml.cs">
-        <DependentUpon>LeadsOverviewView.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Leads\Controls\LeadsCollectionView.xaml.cs">
-        <DependentUpon>LeadsCollectionView.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Leads\Controls\LeadItemView.xaml.cs">
-        <DependentUpon>LeadItemView.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Leads\AddLeadPage.xaml.cs">
-        <DependentUpon>AddLeadPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Leads\LeadDetailPage.xaml.cs">
-        <DependentUpon>LeadDetailPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Src\Views\Scanner\QrScannerPage.xaml.cs">
-        <DependentUpon>QrScannerPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
+        <Compile Update="Src\Views\Components\EventsHeader.xaml.cs">
+            <DependentUpon>EventsHeader.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Events\EventsPage.xaml.cs">
+            <DependentUpon>EventsPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Events\Controls\EventsHeader.xaml.cs">
+            <DependentUpon>EventsHeader.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Events\Controls\EventGroupHeader.xaml.cs">
+            <DependentUpon>EventGroupHeader.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Events\Controls\EventItemView.xaml.cs">
+            <DependentUpon>EventItemView.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Settings\SettingsPage.xaml.cs">
+            <DependentUpon>SettingsPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Leads\LeadsPage.xaml.cs">
+            <DependentUpon>LeadsPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Leads\Controls\LeadsOverviewView.xaml.cs">
+            <DependentUpon>LeadsOverviewView.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Leads\Controls\LeadsCollectionView.xaml.cs">
+            <DependentUpon>LeadsCollectionView.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Leads\Controls\LeadItemView.xaml.cs">
+            <DependentUpon>LeadItemView.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Leads\AddLeadPage.xaml.cs">
+            <DependentUpon>AddLeadPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Leads\LeadDetailPage.xaml.cs">
+            <DependentUpon>LeadDetailPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Src\Views\Scanner\QrScannerPage.xaml.cs">
+            <DependentUpon>QrScannerPage.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
-
 </Project>
