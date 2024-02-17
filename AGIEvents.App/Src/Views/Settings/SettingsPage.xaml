@@ -3,7 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:viewmodel="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AGIEvents.App.Views.SettingsPage"
+             x:Class="AGIEvents.App.Views.Settings.SettingsPage"
              x:DataType="viewmodel:SettingsViewModel"
              Title="Settings">
 

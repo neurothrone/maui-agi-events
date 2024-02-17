@@ -4,14 +4,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:zxingcontrols="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              xmlns:converters="clr-namespace:AGIEvents.App.Converters"
-             x:Class="AGIEvents.App.Views.QrScannerPage"
+             xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             x:Class="AGIEvents.App.Views.Scanner.QrScannerPage"
              x:DataType="viewmodels:QrScannerViewModel"
              Title="QR Scanner">
 
     <ContentPage.Resources>
-        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         <converters:BarcodeDetectionEventArgsConverter x:Key="BarcodeDetectionEventArgsConverter" />
     </ContentPage.Resources>
 

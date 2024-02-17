@@ -1,4 +1,4 @@
-namespace AGIEvents.App.Views;
+namespace AGIEvents.App.Views.Settings;
 
 public partial class SettingsPage : ContentPage
 {

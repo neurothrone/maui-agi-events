@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage
-    Title="Leads"
-    x:Class="AGIEvents.App.Views.LeadsPage"
-    x:DataType="viewmodels:LeadsViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:AGIEvents.App.Views.Controls"
-    xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib">
+    xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+    xmlns:controls1="clr-namespace:AGIEvents.App.Views.Leads.Controls"
+    x:Class="AGIEvents.App.Views.Leads.LeadsPage"
+    x:DataType="viewmodels:LeadsViewModel"
+    Title="Leads">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="{OnPlatform iOS=icon_ios_share.png, Default=icon_android_share.png}"
@@ -23,12 +23,12 @@
         <Image Grid.Row="0"
                Source="{Binding EventImage}" />
 
-        <controls:LeadsOverviewView Grid.Row="1" />
+        <controls1:LeadsOverviewView Grid.Row="1" />
 
         <ActivityIndicator Grid.Row="2"
                            IsRunning="{Binding IsLoading}"
                            IsVisible="{Binding IsLoading}" />
 
-        <controls:LeadsCollectionView Grid.Row="2" />
+        <controls1:LeadsCollectionView Grid.Row="2" />
     </Grid>
 </ContentPage>

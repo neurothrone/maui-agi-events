@@ -1,4 +1,4 @@
-namespace AGIEvents.App.Views;
+namespace AGIEvents.App.Views.Leads;
 
 public partial class LeadsPage : ContentPage
 {

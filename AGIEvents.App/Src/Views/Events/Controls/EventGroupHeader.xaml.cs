@@ -1,4 +1,4 @@
-namespace AGIEvents.App.Views.Controls;
+namespace AGIEvents.App.Views.Events.Controls;
 
 public partial class EventGroupHeader : ContentView
 {

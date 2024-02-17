@@ -3,7 +3,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
-             x:Class="AGIEvents.App.Views.Controls.EventGroupHeader"
+             x:Class="AGIEvents.App.Views.Events.Controls.EventGroupHeader"
              x:DataType="viewModels:EventGroup">
 
     <Grid>

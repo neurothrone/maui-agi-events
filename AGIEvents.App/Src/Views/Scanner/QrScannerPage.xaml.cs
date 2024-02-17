@@ -2,7 +2,7 @@ using AGIEvents.Lib.Services.Messages;
 using CommunityToolkit.Mvvm.Messaging;
 using ZXing.Net.Maui;
 
-namespace AGIEvents.App.Views;
+namespace AGIEvents.App.Views.Scanner;
 
 public partial class QrScannerPage : ContentPage
 {

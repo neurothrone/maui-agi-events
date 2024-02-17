@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage
-    x:Class="AGIEvents.App.Views.EventsPage"
-    x:DataType="viewmodels:EventsViewModel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:AGIEvents.App.Converters"
+    xmlns:controls="clr-namespace:AGIEvents.App.Views.Events.Controls"
     xmlns:viewmodels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
-    xmlns:controls="clr-namespace:AGIEvents.App.Views.Controls">
-
-    <ContentPage.Resources>
-        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-    </ContentPage.Resources>
+    x:Class="AGIEvents.App.Views.Events.EventsPage"
+    x:DataType="viewmodels:EventsViewModel">
 
     <ContentPage.ToolbarItems>
         <!-- <ToolbarItem IconImageSource="icon_settings.png" -->

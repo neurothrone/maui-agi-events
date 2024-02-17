@@ -1,4 +1,4 @@
-namespace AGIEvents.App.Views.Controls;
+namespace AGIEvents.App.Views.Leads.Controls;
 
 public partial class LeadsCollectionView : ContentView
 {

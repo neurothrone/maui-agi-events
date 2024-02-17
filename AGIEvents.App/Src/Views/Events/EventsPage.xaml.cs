@@ -1,4 +1,4 @@
-namespace AGIEvents.App.Views;
+namespace AGIEvents.App.Views.Events;
 
 public partial class EventsPage : ContentPage
 {

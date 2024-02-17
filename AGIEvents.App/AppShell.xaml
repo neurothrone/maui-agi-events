@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <Shell
-    Shell.FlyoutBehavior="Disabled"
-    Title="AGIEvents.App"
-    x:Class="AGIEvents.App.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:views="clr-namespace:AGIEvents.App.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:events="clr-namespace:AGIEvents.App.Views.Events"
+    x:Class="AGIEvents.App.AppShell"
+    Title="AGIEvents.App"
+    FlyoutBehavior="Disabled">
 
     <ShellContent
-        ContentTemplate="{DataTemplate views:EventsPage}"
+        ContentTemplate="{DataTemplate events:EventsPage}"
         Route="EventsPage"
         Title="Events" />
 
