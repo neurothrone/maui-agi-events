@@ -53,8 +53,8 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<IAppInteractionsService, AppInteractionsService>();
         builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
-        builder.Services.AddTransient<IEventsService, EventsFileService>(
-            _ => new EventsFileService(FileSystem.OpenAppPackageFileAsync("events.json"))
+        builder.Services.AddTransient<IEventsService, EventsFileStorageService>(
+            _ => new EventsFileStorageService(FileSystem.OpenAppPackageFileAsync("events.json"))
         );
 
 #if DEBUG

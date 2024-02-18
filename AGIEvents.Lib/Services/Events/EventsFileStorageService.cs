@@ -4,7 +4,7 @@ using AGIEvents.Lib.Services.Database.DTO;
 
 namespace AGIEvents.Lib.Services.Events;
 
-public class EventsFileService(Task<Stream> eventsStreamTask) : IEventsService
+public class EventsFileStorageService(Task<Stream> eventsStreamTask) : IEventsService
 {
     private EventRecord[]? _events = null;
 
