@@ -1,4 +1,12 @@
-﻿using CommunityToolkit.Maui;
+﻿using AGIEvents.App.Views.Events;
+using AGIEvents.App.Views.Leads;
+using AGIEvents.App.Views.Scanner;
+using AGIEvents.App.Views.Settings;
+using AGIEvents.Lib.Services;
+using AGIEvents.Lib.Services.Database;
+using AGIEvents.Lib.Services.Events;
+using AGIEvents.Lib.ViewModels;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
 
@@ -11,39 +19,43 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            // Required to use CommunityToolkit.Maui
-            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("MaterialSymbolsRounded.ttf", "MaterialSymbolsRounded");
-            })
-            // Third Party
-            .UseBarcodeReader()
-            // Initialize Services
-            .Services
-            // ViewModels
-            .AddSingleton<Lib.ViewModels.EventsViewModel>()
-            .AddTransient<Lib.ViewModels.EventViewModel>()
-            .AddSingleton<Lib.ViewModels.LeadsViewModel>()
-            .AddTransient<Lib.ViewModels.LeadViewModel>()
-            .AddTransient<Lib.ViewModels.LeadDetailViewModel>()
-            .AddTransient<Lib.ViewModels.AddLeadViewModel>()
-            .AddTransient<Lib.ViewModels.QrScannerViewModel>()
-            .AddSingleton<Lib.ViewModels.SettingsViewModel>()
-            // Views
-            .AddSingleton<Views.Events.EventsPage>()
-            .AddSingleton<Views.Leads.LeadsPage>()
-            .AddTransient<Views.Leads.LeadDetailPage>()
-            .AddTransient<Views.Leads.AddLeadPage>()
-            .AddTransient<Views.Scanner.QrScannerPage>()
-            .AddSingleton<Views.Settings.SettingsPage>()
-            // Data
-            .AddSingleton<Lib.Services.Database.IDatabaseRepository, Lib.Services.Database.DatabaseRepository>()
-            .AddTransient<Lib.Services.Events.IEventsService, Lib.Services.Events.EventsLocalService>()
-            .AddSingleton<Lib.Services.IAppInteractionsService, Lib.Services.AppInteractionsService>()
-            ;
+            });
+        // Required to use CommunityToolkit.Maui
+        builder.UseMauiCommunityToolkit();
+
+        // Third Party
+        builder.UseBarcodeReader();
+
+        builder.Services.AddSingleton<EventsPage>();
+        builder.Services.AddSingleton<EventsViewModel>();
+        builder.Services.AddTransient<EventViewModel>();
+
+        builder.Services.AddSingleton<LeadsPage>();
+        builder.Services.AddSingleton<LeadsViewModel>();
+        builder.Services.AddTransient<LeadViewModel>();
+
+        builder.Services.AddTransient<LeadDetailPage>();
+        builder.Services.AddTransient<LeadDetailViewModel>();
+
+        builder.Services.AddTransient<AddLeadPage>();
+        builder.Services.AddTransient<AddLeadViewModel>();
+
+        builder.Services.AddTransient<QrScannerPage>();
+        builder.Services.AddTransient<QrScannerViewModel>();
+
+        builder.Services.AddSingleton<SettingsPage>();
+        builder.Services.AddSingleton<SettingsViewModel>();
+
+        builder.Services.AddSingleton<IAppInteractionsService, AppInteractionsService>();
+        builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
+        builder.Services.AddTransient<IEventsService, EventsFileService>(
+            _ => new EventsFileService(FileSystem.OpenAppPackageFileAsync("events.json"))
+        );
 
 #if DEBUG
         builder.Logging.AddDebug();
