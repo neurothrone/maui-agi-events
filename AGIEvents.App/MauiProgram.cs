@@ -57,6 +57,13 @@ public static class MauiProgram
             _ => new EventsFileStorageService(FileSystem.OpenAppPackageFileAsync("events.json"))
         );
 
+        // Register routes
+        Routing.RegisterRoute(nameof(LeadsPage), typeof(LeadsPage));
+        Routing.RegisterRoute(nameof(LeadDetailPage), typeof(LeadDetailPage));
+        Routing.RegisterRoute(nameof(AddLeadPage), typeof(AddLeadPage));
+        Routing.RegisterRoute(nameof(QrScannerPage), typeof(QrScannerPage));
+        Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
