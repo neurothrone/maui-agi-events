@@ -1,4 +1,5 @@
 using AGIEvents.Lib.Models;
+using AGIEvents.Lib.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -6,21 +7,37 @@ namespace AGIEvents.Lib.ViewModels;
 
 public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 {
-    [ObservableProperty] private string _leadId;
-    [ObservableProperty] private string _firstName;
-    [ObservableProperty] private string _lastName;
-    [ObservableProperty] private string _company;
-    [ObservableProperty] private string _email;
-    [ObservableProperty] private string _phone;
+    private readonly IAppInteractionsService _appInteractionsService;
 
-    [ObservableProperty] private string _address;
-    [ObservableProperty] private string _zipCode;
-    [ObservableProperty] private string _city;
-    [ObservableProperty] private string _product;
-    [ObservableProperty] private string _seller;
+    [ObservableProperty] private string _leadId = string.Empty;
+    [ObservableProperty] private string _firstName = string.Empty;
+    [ObservableProperty] private string _lastName = string.Empty;
+    [ObservableProperty] private string _company = string.Empty;
+    [ObservableProperty] private string _email = string.Empty;
+    [ObservableProperty] private string _phone = string.Empty;
 
-    [ObservableProperty] private string _notes;
+    [ObservableProperty] private string _address = string.Empty;
+    [ObservableProperty] private string _zipCode = string.Empty;
+    [ObservableProperty] private string _city = string.Empty;
+    [ObservableProperty] private string _product = string.Empty;
+    [ObservableProperty] private string _seller = string.Empty;
+
+    [ObservableProperty] private string _notes = string.Empty;
     [ObservableProperty] private DateTime _scannedAt;
+
+    [ObservableProperty] private bool _showNotes = false;
+
+    public LeadDetailViewModel(IAppInteractionsService appInteractionsService)
+    {
+        _appInteractionsService = appInteractionsService;
+    }
+
+    [RelayCommand]
+    private void TabBarPressed(bool pressedNotes)
+    {
+        Console.WriteLine($"ℹ️ -> pressedNotes: {pressedNotes}");
+        ShowNotes = pressedNotes;
+    }
 
     [RelayCommand]
     private async Task SaveChanges()
@@ -32,7 +49,13 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     [RelayCommand]
     private async Task OpenPhoneDialer()
     {
-        Console.WriteLine("✅ -> Open Phone Dialer");
+        await _appInteractionsService.OpenPhoneDialerAsync(Phone);
+    }
+
+    [RelayCommand]
+    private async Task OpenEmailClient()
+    {
+        await _appInteractionsService.ComposeEmailAsync(Email, "AGI Events");
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -53,17 +76,17 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
         LeadId = matchedLead.Id;
         FirstName = matchedLead.FirstName;
         LastName = matchedLead.LastName;
-        Company = matchedLead.company;
-        Email = matchedLead.email;
-        Phone = matchedLead.phone;
+        Company = matchedLead.Company;
+        Email = matchedLead.Email;
+        Phone = matchedLead.Phone;
 
-        Address = matchedLead.address;
-        ZipCode = matchedLead.zipCode;
-        City = matchedLead.city;
-        Product = matchedLead.product;
-        Seller = matchedLead.seller;
+        Address = matchedLead.Address;
+        ZipCode = matchedLead.ZipCode;
+        City = matchedLead.City;
+        Product = matchedLead.Product;
+        Seller = matchedLead.Seller;
 
-        Notes = matchedLead.notes;
-        ScannedAt = matchedLead.scannedAt;
+        Notes = matchedLead.Notes;
+        ScannedAt = matchedLead.ScannedDate;
     }
 }

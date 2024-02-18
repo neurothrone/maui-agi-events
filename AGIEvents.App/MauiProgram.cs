@@ -17,6 +17,7 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                fonts.AddFont("MaterialSymbolsRounded.ttf", "MaterialSymbolsRounded");
             })
             // Third Party
             .UseBarcodeReader()
@@ -40,6 +41,8 @@ public static class MauiProgram
             .AddSingleton<Views.Settings.SettingsPage>()
             // Data
             .AddSingleton<Lib.Services.Database.IDatabaseRepository, Lib.Services.Database.DatabaseRepository>()
+            .AddTransient<Lib.Services.Events.IEventsService, Lib.Services.Events.EventsLocalService>()
+            .AddSingleton<Lib.Services.IAppInteractionsService, Lib.Services.AppInteractionsService>()
             ;
 
 #if DEBUG

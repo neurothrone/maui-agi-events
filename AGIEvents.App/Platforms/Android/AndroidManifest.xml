@@ -9,4 +9,28 @@
     <!-- Required for scanning QR codes -->
     <uses-permission android:name="android.permission.CAMERA"/>
 
+    <queries>
+        <!-- This is required to open the default email client from this app -->
+        <intent>
+            <action android:name="android.intent.action.SENDTO"/>
+            <data android:scheme="mailto"/>
+        </intent>
+
+        <!-- This is required to open the phone dialer from this app -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel"/>
+        </intent>
+
+        <!-- This is required to open a web link in the system-preferred browser from this app -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="http"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
+    </queries>
+
 </manifest>

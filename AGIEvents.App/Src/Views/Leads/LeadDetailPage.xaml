@@ -28,10 +28,32 @@
                            Text="{Binding Company }" />
                 <EntryCell Label="E-mail" LabelColor="MediumSlateBlue"
                            Text="{Binding Email }"
-                           Keyboard="Email" />
+                           Keyboard="Email">
+
+                    <EntryCell.ContextActions>
+                        <MenuItem Text="Email"
+                                  Command="{Binding OpenEmailClientCommand}">
+                            <MenuItem.IconImageSource>
+                                <FontImageSource Glyph="&#xe0be;" />
+                            </MenuItem.IconImageSource>
+                        </MenuItem>
+                    </EntryCell.ContextActions>
+
+                </EntryCell>
                 <EntryCell Label="Phone" LabelColor="MediumSlateBlue"
                            Text="{Binding Phone }"
-                           Keyboard="Telephone" />
+                           Keyboard="Telephone">
+
+                    <EntryCell.ContextActions>
+                        <MenuItem Text="Call"
+                                  Command="{Binding OpenPhoneDialerCommand}">
+                            <MenuItem.IconImageSource>
+                                <FontImageSource Glyph="&#xe0b0;" />
+                            </MenuItem.IconImageSource>
+                        </MenuItem>
+                    </EntryCell.ContextActions>
+
+                </EntryCell>
             </TableSection>
 
             <TableSection Title="Additional Information">
