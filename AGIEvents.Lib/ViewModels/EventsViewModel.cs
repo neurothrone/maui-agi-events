@@ -70,7 +70,9 @@ public partial class EventsViewModel : ObservableObject,
 
         var nonSavedEventsFromFile = eventsFromFileTask.Result;
         var nonSavedViewModels = nonSavedEventsFromFile
-            .Where(nonSavedEvent => !savedEventsIds.Contains(nonSavedEvent.EventId))
+            .Where(nonSavedEvent => !savedEventsIds.Contains(nonSavedEvent.EventId) &&
+                                    // Skip unsaved events that have already taken place.
+                                    nonSavedEvent.StartDate > DateTime.Now)
             .Select(e => EventViewModel.FromRecord(e))
             .ToList();
 
@@ -84,8 +86,6 @@ public partial class EventsViewModel : ObservableObject,
         var upcomingEvents = new EventGroup(UpcomingEvents, nonSavedViewModels
             .OrderBy(e => e.StartDate)
             .ToList());
-
-        // TODO: Events that took place and you never attended should not be included in Coming Events
 
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
