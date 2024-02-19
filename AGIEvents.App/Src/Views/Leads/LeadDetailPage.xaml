@@ -80,7 +80,7 @@
                 <ImageCell
                     ImageSource="icon_schedule.png"
                     Text="Scanned at" TextColor="MediumSlateBlue"
-                    Detail="{Binding ScannedAt}" />
+                    Detail="{Binding ScannedDate}" />
             </TableSection>
         </TableRoot>
     </TableView>

@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              x:Class="AGIEvents.App.Views.Leads.Controls.LeadItemView"
-             x:DataType="viewModels:LeadViewModel">
+             x:DataType="viewModels:LeadItemViewModel">
 
     <Border Stroke="Transparent">
         <Border.StrokeShape>

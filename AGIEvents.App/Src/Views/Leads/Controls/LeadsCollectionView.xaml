@@ -19,7 +19,7 @@
         </CollectionView.ItemsLayout>
 
         <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="viewModels:LeadViewModel">
+            <DataTemplate x:DataType="viewModels:LeadItemViewModel">
                 <controls:LeadItemView />
             </DataTemplate>
         </CollectionView.ItemTemplate>
