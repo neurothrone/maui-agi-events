@@ -1,5 +1,5 @@
-using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services;
+using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -8,8 +8,9 @@ namespace AGIEvents.Lib.ViewModels;
 public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 {
     private readonly IAppInteractionsService _appInteractionsService;
+    private readonly IDatabaseRepository _databaseRepository;
 
-    [ObservableProperty] private string _leadId = string.Empty;
+    [ObservableProperty] private int _leadId;
     [ObservableProperty] private string _firstName = string.Empty;
     [ObservableProperty] private string _lastName = string.Empty;
     [ObservableProperty] private string _company = string.Empty;
@@ -27,9 +28,48 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 
     [ObservableProperty] private bool _showNotes = false;
 
-    public LeadDetailViewModel(IAppInteractionsService appInteractionsService)
+    public LeadDetailViewModel(
+        IAppInteractionsService appInteractionsService,
+        IDatabaseRepository databaseRepository)
     {
         _appInteractionsService = appInteractionsService;
+        _databaseRepository = databaseRepository;
+    }
+
+    void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (!query.TryGetValue("LeadId", out var value))
+            return;
+
+        if (value is int leadId)
+            LoadLeadInfo(leadId);
+    }
+
+    private async void LoadLeadInfo(int leadId)
+    {
+        // TODO: load Lead from database
+        var matchedLead = await _databaseRepository.FetchLeadByIdAsync(leadId);
+        if (matchedLead is null)
+        {
+            Console.WriteLine("❌ -> Failed to fetch lead by id.");
+            return;
+        }
+
+        LeadId = matchedLead.LeadId;
+        FirstName = matchedLead.FirstName;
+        LastName = matchedLead.LastName;
+        Company = matchedLead.Company;
+        Email = matchedLead.Email;
+        Phone = matchedLead.Phone;
+
+        Address = matchedLead.Address;
+        ZipCode = matchedLead.ZipCode;
+        City = matchedLead.City;
+        Product = matchedLead.Product;
+        Seller = matchedLead.Seller;
+
+        Notes = matchedLead.Notes;
+        ScannedAt = matchedLead.ScannedDate;
     }
 
     [RelayCommand]
@@ -56,37 +96,5 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     private async Task OpenEmailClient()
     {
         await _appInteractionsService.ComposeEmailAsync(Email, "AGI Events");
-    }
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        if (!query.TryGetValue("LeadId", out var value))
-            return;
-
-        LoadLeadInfo(value.ToString() ?? "");
-    }
-
-    private async void LoadLeadInfo(string leadId)
-    {
-        // TODO: load Lead from database
-        var matchedLead = Lead.Samples().FirstOrDefault((lead) => lead.Id == leadId);
-        if (matchedLead == null)
-            return;
-
-        LeadId = matchedLead.Id;
-        FirstName = matchedLead.FirstName;
-        LastName = matchedLead.LastName;
-        Company = matchedLead.Company;
-        Email = matchedLead.Email;
-        Phone = matchedLead.Phone;
-
-        Address = matchedLead.Address;
-        ZipCode = matchedLead.ZipCode;
-        City = matchedLead.City;
-        Product = matchedLead.Product;
-        Seller = matchedLead.Seller;
-
-        Notes = matchedLead.Notes;
-        ScannedAt = matchedLead.ScannedDate;
     }
 }
