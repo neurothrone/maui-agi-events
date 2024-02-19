@@ -17,7 +17,7 @@ public class DatabaseRepository : IDatabaseRepository
             DatabaseConstants.DatabasePath,
             DatabaseConstants.Flags
         );
-        
+
         await _database.CreateTableAsync<EventEntity>();
         await _database.CreateTableAsync<LeadEntity>();
     }
@@ -48,9 +48,51 @@ public class DatabaseRepository : IDatabaseRepository
             .ToList();
     }
 
-    public async Task SaveLeadAsync(LeadRecord record)
+    public async Task<LeadRecord> SaveLeadAsync(LeadRecord record)
     {
         await Init();
+
+        var entity = new LeadEntity
+        {
+            EventId = record.EventId,
+            FirstName = record.FirstName,
+            LastName = record.LastName,
+            Company = record.Company,
+            Email = record.Email,
+            Phone = record.Phone,
+            Address = record.Address,
+            ZipCode = record.ZipCode,
+            City = record.City,
+            ScannedDate = record.ScannedDate
+        };
+        await _database.InsertAsync(entity);
+
+        return record with { LeadId = entity.LeadId };
+    }
+
+    public async Task<LeadRecord?> FetchLeadByIdAsync(int leadId)
+    {
+        await Init();
+
+        var entity = await _database.Table<LeadEntity>().FirstOrDefaultAsync(lead => lead.LeadId == leadId);
+        if (entity is null)
+            return null;
+
+        return new LeadRecord(
+            entity.EventId,
+            entity.FirstName,
+            entity.LastName,
+            entity.Company,
+            entity.Email,
+            entity.Phone,
+            entity.Address,
+            entity.ZipCode,
+            entity.City,
+            entity.Product,
+            entity.Seller,
+            entity.Notes,
+            entity.ScannedDate,
+            entity.LeadId);
     }
 
     public async Task<List<LeadRecord>> FetchLeadsByEventIdAsync(string eventId)
@@ -60,10 +102,11 @@ public class DatabaseRepository : IDatabaseRepository
         var entities = await _database.Table<LeadEntity>()
             .Where(lead => lead.EventId == eventId)
             .ToListAsync();
+
         return entities
-            .Select(e => new LeadRecord(
-                e.LeadId, e.EventId, e.FirstName, e.LastName, e.Company, e.Email,
-                e.Phone, e.Address, e.ZipCode, e.City, e.ScannedDate)
+            .Select(l => new LeadRecord(
+                l.EventId, l.FirstName, l.LastName, l.Company, l.Email,
+                l.Phone, l.Address, l.ZipCode, l.City, l.Product, l.Seller, l.Notes, l.ScannedDate, l.LeadId)
             )
             .ToList();
     }
@@ -89,10 +132,10 @@ public class DatabaseRepository : IDatabaseRepository
         );
     }
 
-    public async Task DeleteLeadAsync(LeadRecord lead)
+    public async Task<bool> DeleteLeadByIdAsync(int leadId)
     {
         await Init();
-        await _database.DeleteAsync<LeadEntity>(lead.LeadId);
+        return await _database.DeleteAsync<LeadEntity>(leadId) != 0;
     }
 
 
@@ -105,7 +148,7 @@ public class DatabaseRepository : IDatabaseRepository
     public async Task DeleteAllDataAsync()
     {
         await Init();
-        
+
         await _database.DeleteAllAsync<LeadEntity>();
         await _database.DeleteAllAsync<EventEntity>();
     }
