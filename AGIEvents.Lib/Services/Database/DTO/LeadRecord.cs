@@ -1,7 +1,6 @@
 namespace AGIEvents.Lib.Services.Database.DTO;
 
 public record LeadRecord(
-    int LeadId,
     string EventId,
     string FirstName,
     string LastName,
@@ -11,5 +10,9 @@ public record LeadRecord(
     string Address,
     string ZipCode,
     string City,
-    DateTime ScannedDate
+    string Product,
+    string Seller,
+    string Notes,
+    DateTime ScannedDate,
+    int LeadId = -1
 );
