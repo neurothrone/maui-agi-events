@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services.Database;
+using AGIEvents.Lib.Services.Database.DTO;
 using AGIEvents.Lib.Services.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -44,6 +45,8 @@ public partial class EventsViewModel : ObservableObject,
         _eventsService = eventsService;
 
         SubscribeToMessages();
+
+        // TODO: implement NavigationService and OnNavigatedTo and call await LoadEvents() from there
         LoadEvents();
     }
 
@@ -52,85 +55,44 @@ public partial class EventsViewModel : ObservableObject,
         WeakReferenceMessenger.Default.Register<QrScannerCompletedMessage>(this);
     }
 
-    private async void LoadEvents()
+    private async Task LoadEvents()
     {
         IsLoading = true;
-        // var eventsFromDatabaseTask = _databaseRepository.FetchEventsAsync();
-        // var eventsFromFileTask = _eventsService.LoadEvents();
 
-        // await Task.WhenAll(eventsFromDatabaseTask, eventsFromFileTask);
+        var eventsFromDatabaseTask = _databaseRepository.FetchEventsAsync();
+        var eventsFromFileTask = _eventsService.LoadEvents();
 
-        // TODO: Merge saved events from database with non-saved events from file
-        var events = await _eventsService.LoadEvents();
+        await Task.WhenAll(eventsFromDatabaseTask, eventsFromFileTask);
 
-        // var eventViewModels = new List<EventViewModel>(eventsFromFileTask.Result
-        var eventViewModels = new List<EventViewModel>(events
-            .Select(e => new EventViewModel(e.EventId, e.Title, e.Image.Replace(".svg", ".png"),
-                e.StartDate, e.EndDate, false))
-            .OrderBy(e => e.StartDate)
-            .ToList()
-        );
+        var savedEventsFromDatabase = eventsFromDatabaseTask.Result;
+        var savedEventsViewModels = savedEventsFromDatabase
+            .Select(e => EventViewModel.FromRecord(e, isSaved: true))
+            .ToList();
+
+        // Create a HashSet for better performance during lookups, although it will be negligible for the
+        // small collections that this app will work with when considering only the Events in the database.
+        var savedEventsIds = new HashSet<string>(savedEventsViewModels.Select(e => e.EventId));
+
+        var nonSavedEventsFromFile = eventsFromFileTask.Result;
+        var nonSavedViewModels = nonSavedEventsFromFile
+            .Where(nonSavedEvent => !savedEventsIds.Contains(nonSavedEvent.EventId))
+            .Select(e => EventViewModel.FromRecord(e))
+            .ToList();
 
         // Order by ascending (StartDate) will sort the events from the ones that are
         // scheduled to start soonest.
-        var savedEvents = new EventGroup(YourEvents, eventViewModels
-            .Where(e => e.IsSaved)
+        var savedEvents = new EventGroup(YourEvents, savedEventsViewModels
             .OrderBy(e => e.StartDate)
             .ToList());
-        var upcomingEvents = new EventGroup(UpcomingEvents, eventViewModels
-            .Where(e => !e.IsSaved)
+        var upcomingEvents = new EventGroup(UpcomingEvents, nonSavedViewModels
             .OrderBy(e => e.StartDate)
             .ToList());
-        GroupedEvents = [savedEvents, upcomingEvents];
 
-
-        // var savedEventsFromDatabase = eventsFromDatabaseTask.Result.Where(e => e.IsSaved)
-        //     .Select(e => new EventViewModel(eventId: e.EventId, title: e.Title, image: e.Image, startDate: e.StartDate,
-        //         endDate: e.EndDate, isSaved: true))
-        //     .ToList();
-        // var nonSavedEventsFromFile = eventsFromFileTask.Result.Where(e => !e.IsSaved)
-        //     .Select(e => new EventViewModel(eventId: e.EventId, title: e.Title, image: e.Image, startDate: e.StartDate,
-        //         endDate: e.EndDate, isSaved: false))
-        //     .ToList();
-        // var mergedEvents = savedEventsFromDatabase.Concat(nonSavedEventsFromFile).ToList();
-        // var savedEvents = new EventGroup(YourEvents, mergedEvents.Where(e => e.IsSaved).OrderBy(e => e.StartDate).ToList());
-        // var upcomingEvents = new EventGroup(UpcomingEvents,
-        //     mergedEvents.Where(e => !e.IsSaved).OrderBy(e => e.StartDate).ToList());
-        // GroupedEvents = new ObservableCollection<EventGroup> { savedEvents, upcomingEvents };
-
-        // TODO: update on UI thread
-
-        IsLoading = false;
-    }
-
-
-    private async void FetchEvents()
-    {
-        IsLoading = true;
-        await Task.Delay(500);
-
-        // TODO: fetch from database
-        var eventViewModels = new List<EventViewModel>(
-            EventViewModel.Samples()
-                .OrderBy(e => e.StartDate)
-                .ToList()
-        );
-
-        // Order by ascending (StartDate) will sort the events from the ones that are
-        // scheduled to start soonest.
-        var savedEvents = new EventGroup(YourEvents,
-            eventViewModels
-                .Where(e => e.IsSaved)
-                .OrderBy(e => e.StartDate)
-                .ToList());
-        var upcomingEvents = new EventGroup(UpcomingEvents,
-            eventViewModels
-                .Where(e => !e.IsSaved)
-                .OrderBy(e => e.StartDate)
-                .ToList());
-        GroupedEvents = [savedEvents, upcomingEvents];
-
-        IsLoading = false;
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            IsLoading = false;
+            GroupedEvents = [savedEvents, upcomingEvents];
+        });
     }
 
     private void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
@@ -159,54 +121,17 @@ public partial class EventsViewModel : ObservableObject,
     private void ProcessQrCode(string qrCode)
     {
         Console.WriteLine($"✅ -> QR Code scanned: {qrCode}");
+        // TODO: We need to send the EventId as well from the Message
+        // TODO: Check Firebase if exhibitorId exists for the Event
+
+        // If true, save to database and update UI
+
+        // Else show toast/snackbar that the user is not registered for the event
     }
 
     void IRecipient<QrScannerCompletedMessage>.Receive(QrScannerCompletedMessage message)
     {
         ProcessQrCode(message.QrCode);
-    }
-
-    [RelayCommand]
-    private void AddEvent()
-    {
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            var group = GroupedEvents.FirstOrDefault(g => g.GroupName == YourEvents);
-
-            if (group == null)
-            {
-                group = new EventGroup(YourEvents, new List<EventViewModel>());
-                GroupedEvents.Add(group);
-            }
-
-
-            group.Add(
-                new EventViewModel(
-                    eventId: "sopno398692",
-                    title: "Sign, Print & Promotion",
-                    image: "sopno_logo.png",
-                    startDate: DateTime.Now.AddDays(150),
-                    endDate: DateTime.Now.AddDays(152),
-                    isSaved: true
-                )
-            );
-        });
-    }
-
-    [RelayCommand]
-    private void ClearEvents()
-    {
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            foreach (var group in GroupedEvents)
-                group.Clear();
-        });
-    }
-
-    [RelayCommand]
-    private void AddEvents()
-    {
-        MainThread.BeginInvokeOnMainThread(FetchEvents);
     }
 
     [RelayCommand]
@@ -221,6 +146,10 @@ public partial class EventsViewModel : ObservableObject,
         else
         {
             // TODO: Open QR Scanner
+            // Save to database
+            await _databaseRepository.SaveEventAsync(EventRecord.FromViewModel(eventViewModel));
+
+            // Update UI
             WeakReferenceMessenger.Default.Send(new EventSavedChangedMessage(eventViewModel.EventId, true));
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -235,5 +164,19 @@ public partial class EventsViewModel : ObservableObject,
     private async Task NavigateToSettings()
     {
         await Shell.Current.GoToAsync(nameof(AppRoute.SettingsPage));
+    }
+
+    [RelayCommand]
+    private async Task ClearEvents()
+    {
+        await _databaseRepository.DeleteAllDataAsync();
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            foreach (var group in GroupedEvents)
+                group.Clear();
+        });
+
+        await LoadEvents();
     }
 }
