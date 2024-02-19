@@ -15,6 +15,16 @@ public class EventGroup(
     IEnumerable<EventViewModel> events) : ObservableCollection<EventViewModel>(events)
 {
     public string GroupName { get; init; } = groupName;
+
+    public void SortByDescendingStartDate()
+    {
+        var sorted = this.OrderByDescending(e => e.StartDate).ToList();
+
+        for (var i = 0; i < sorted.Count; i++)
+        {
+            Move(this.IndexOf(sorted[i]), i);
+        }
+    }
 }
 
 public partial class EventsViewModel : ObservableObject,
@@ -81,14 +91,18 @@ public partial class EventsViewModel : ObservableObject,
             .Select(e => EventViewModel.FromRecord(e))
             .ToList();
 
-        // Order by ascending (StartDate) will sort the events from the ones that are
-        // scheduled to start soonest.
+        // Order by 'StartDate' in descending order to sort the events, starting with the ones
+        // that took place most recently.
         var savedEvents = new EventGroup(YourEvents, savedEventsViewModels
-            .OrderBy(e => e.StartDate)
+            .OrderByDescending(e => e.StartDate)
             .ToList());
+        // Ordering by 'StartDate' in ascending order will sort the events starting from the
+        // ones scheduled to happen the soonest.
         var upcomingEvents = new EventGroup(UpcomingEvents, nonSavedViewModels
             .OrderBy(e => e.StartDate)
             .ToList());
+
+        // TODO: Events that took place and you never attended should not be included in Coming Events
 
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
@@ -97,7 +111,7 @@ public partial class EventsViewModel : ObservableObject,
         });
     }
 
-    private void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
+    private async void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
     {
         // Find the source group
         var sourceGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == sourceGroupName);
@@ -111,12 +125,13 @@ public partial class EventsViewModel : ObservableObject,
         if (targetGroup != null)
         {
             targetGroup.Add(eventToMove);
+            await MainThread.InvokeOnMainThreadAsync(() => targetGroup.SortByDescendingStartDate());
         }
         else
         {
             // If target group doesn't exist, create it and add the event
             targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
-            GroupedEvents.Add(targetGroup);
+            await MainThread.InvokeOnMainThreadAsync(() => GroupedEvents.Add(targetGroup));
         }
     }
 
