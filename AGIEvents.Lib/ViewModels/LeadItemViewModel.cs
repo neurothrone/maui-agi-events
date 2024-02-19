@@ -2,7 +2,7 @@ using AGIEvents.Lib.Domain;
 
 namespace AGIEvents.Lib.ViewModels;
 
-public partial class LeadItemViewModel(
+public class LeadItemViewModel(
     int leadId,
     string eventId,
     string firstName,
