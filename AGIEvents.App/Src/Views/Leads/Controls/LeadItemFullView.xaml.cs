@@ -1,8 +1,8 @@
 namespace AGIEvents.App.Views.Leads.Controls;
 
-public partial class LeadItemView : ContentView
+public partial class LeadItemFullView : ContentView
 {
-    public LeadItemView()
+    public LeadItemFullView()
     {
         InitializeComponent();
     }

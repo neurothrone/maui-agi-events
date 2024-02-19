@@ -130,7 +130,7 @@
         <MauiXaml Update="Src\Views\Leads\Controls\LeadsCollectionView.xaml">
             <SubType>Designer</SubType>
         </MauiXaml>
-        <MauiXaml Update="Src\Views\Leads\Controls\LeadItemView.xaml">
+        <MauiXaml Update="Src\Views\Leads\Controls\LeadItemFullView.xaml">
             <SubType>Designer</SubType>
         </MauiXaml>
         <MauiXaml Update="Src\Views\Leads\AddLeadPage.xaml">
@@ -181,7 +181,7 @@
             <DependentUpon>LeadsCollectionView.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Src\Views\Leads\Controls\LeadItemView.xaml.cs">
+        <Compile Update="Src\Views\Leads\Controls\LeadItemFullView.xaml.cs">
             <DependentUpon>LeadItemView.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>

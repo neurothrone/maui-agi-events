@@ -3,13 +3,34 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:AGIEvents.App.Views.Leads.Controls"
+             xmlns:selectors="clr-namespace:AGIEvents.App.TemplateSelectors"
              xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
-             x:Class="AGIEvents.App.Views.Leads.Controls.LeadsCollectionView"
-             x:DataType="viewModels:LeadsViewModel">
+             x:Class="AGIEvents.App.Views.Leads.Controls.LeadsCollectionView">
+
+    <!-- TODO: Figure out a solution for FullNameOnly- and CompanyOnlyTemplate -->
+    <ContentView.Resources>
+        <DataTemplate x:Key="BothFullTemplate">
+            <controls:LeadItemFullView />
+        </DataTemplate>
+        <DataTemplate x:Key="FullNameOnlyTemplate">
+            <controls:LeadItemFullNameOnlyView />
+        </DataTemplate>
+        <DataTemplate x:Key="CompanyOnlyTemplate">
+            <controls:LeadItemCompanyOnlyView />
+        </DataTemplate>
+
+        <selectors:LeadItemDataTemplateSelector
+            x:Key="LeadItemDataTemplateSelector"
+            BothFullTemplate="{StaticResource BothFullTemplate}"
+            FullNameOnlyTemplate="{StaticResource FullNameOnlyTemplate}"
+            CompanyOnlyTemplate="{StaticResource CompanyOnlyTemplate}" />
+    </ContentView.Resources>
 
     <CollectionView
+        x:DataType="viewModels:LeadsViewModel"
         IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
         ItemsSource="{Binding Leads}"
+        ItemTemplate="{StaticResource LeadItemDataTemplateSelector}"
         SelectionMode="None"
         VerticalScrollBarVisibility="{OnIdiom Desktop=Always, Default=Never}">
 
@@ -17,11 +38,5 @@
             <LinearItemsLayout Orientation="Vertical"
                                ItemSpacing="0" />
         </CollectionView.ItemsLayout>
-
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="viewModels:LeadItemViewModel">
-                <controls:LeadItemView />
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
     </CollectionView>
 </ContentView>
