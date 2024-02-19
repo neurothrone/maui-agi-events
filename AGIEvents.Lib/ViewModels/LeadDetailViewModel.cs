@@ -13,23 +13,64 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     private readonly IAppInteractionsService _appInteractionsService;
     private readonly IDatabaseRepository _databaseRepository;
 
-    [ObservableProperty] private string _eventId = string.Empty;
     [ObservableProperty] private int _leadId;
-
-    [ObservableProperty] private string _firstName = string.Empty;
-    [ObservableProperty] private string _lastName = string.Empty;
-    [ObservableProperty] private string _company = string.Empty;
+    [ObservableProperty] private string _eventId = string.Empty;
     [ObservableProperty] private string _email = string.Empty;
     [ObservableProperty] private string _phone = string.Empty;
-
     [ObservableProperty] private string _address = string.Empty;
     [ObservableProperty] private string _zipCode = string.Empty;
     [ObservableProperty] private string _city = string.Empty;
     [ObservableProperty] private string _product = string.Empty;
     [ObservableProperty] private string _seller = string.Empty;
-
     [ObservableProperty] private string _notes = string.Empty;
     [ObservableProperty] private DateTime _scannedDate;
+
+    private string _firstName = string.Empty;
+
+    public string FirstName
+    {
+        get => _firstName;
+        set
+        {
+            SetProperty(ref _firstName, value);
+            SubmitCommand.NotifyCanExecuteChanged();
+        }
+    }
+
+    private string _lastName = string.Empty;
+
+    public string LastName
+    {
+        get => _lastName;
+        set
+        {
+            SetProperty(ref _lastName, value);
+            SubmitCommand.NotifyCanExecuteChanged();
+        }
+    }
+
+    private string _company = string.Empty;
+
+    public string Company
+    {
+        get => _company;
+        set
+        {
+            SetProperty(ref _company, value);
+            SubmitCommand.NotifyCanExecuteChanged();
+        }
+    }
+
+    private bool IsFormValid
+    {
+        get
+        {
+            var requiredFields = new List<string> { FirstName, LastName, Company };
+            return requiredFields.Any(field => !string.IsNullOrWhiteSpace(field));
+        }
+    }
+
+    public AsyncRelayCommand SubmitCommand { get; }
 
     public LeadDetailViewModel(
         IAppInteractionsService appInteractionsService,
@@ -37,6 +78,7 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     {
         _appInteractionsService = appInteractionsService;
         _databaseRepository = databaseRepository;
+        SubmitCommand = new AsyncRelayCommand(SaveChanges, () => IsFormValid);
     }
 
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
@@ -85,7 +127,6 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
         });
     }
 
-    [RelayCommand]
     private async Task SaveChanges()
     {
         var record = new LeadDetailRecordDto(
