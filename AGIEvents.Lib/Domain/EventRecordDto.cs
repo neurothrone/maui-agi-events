@@ -1,8 +1,8 @@
 using AGIEvents.Lib.ViewModels;
 
-namespace AGIEvents.Lib.Services.Database.DTO;
+namespace AGIEvents.Lib.Domain;
 
-public record EventRecord(
+public record EventRecordDto(
     string EventId,
     string Title,
     string Image,
@@ -10,9 +10,9 @@ public record EventRecord(
     DateTime EndDate
 )
 {
-    public static EventRecord FromViewModel(EventViewModel record)
+    public static EventRecordDto FromViewModel(EventViewModel record)
     {
-        return new EventRecord(
+        return new EventRecordDto(
             record.EventId,
             record.Title,
             record.Image,

@@ -1,6 +1,6 @@
-namespace AGIEvents.Lib.Services.Database.DTO;
+namespace AGIEvents.Lib.Domain;
 
-public record LeadRecord(
+public record LeadDetailRecordDto(
     string EventId,
     string FirstName,
     string LastName,
