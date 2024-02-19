@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
+using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services.Database;
-using AGIEvents.Lib.Services.Database.DTO;
 using AGIEvents.Lib.Services.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -141,17 +141,17 @@ public partial class EventsViewModel : ObservableObject,
     {
         if (eventViewModel.IsSaved)
         {
-            var record = EventRecord.FromViewModel(eventViewModel);
+            var record = EventRecordDto.FromViewModel(eventViewModel);
             await Shell.Current.GoToAsync(
                 $"{nameof(AppRoute.LeadsPage)}",
-                new Dictionary<string, object> { { nameof(EventRecord), record } }
+                new Dictionary<string, object> { { nameof(EventRecordDto), record } }
             );
         }
         else
         {
             // TODO: Open QR Scanner
             // Save to database
-            await _databaseRepository.SaveEventAsync(EventRecord.FromViewModel(eventViewModel));
+            await _databaseRepository.SaveEventAsync(EventRecordDto.FromViewModel(eventViewModel));
 
             // Update UI
             WeakReferenceMessenger.Default.Send(new EventSavedChangedMessage(eventViewModel.EventId, true));

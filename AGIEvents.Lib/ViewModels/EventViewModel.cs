@@ -1,5 +1,5 @@
+using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
-using AGIEvents.Lib.Services.Database.DTO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 
@@ -51,7 +51,7 @@ public class EventViewModel : ObservableObject, IRecipient<EventSavedChangedMess
         IsSaved = message.IsSaved;
     }
 
-    public static EventViewModel FromRecord(EventRecord record, bool isSaved = false)
+    public static EventViewModel FromRecord(EventRecordDto record, bool isSaved = false)
     {
         return new EventViewModel(
             record.EventId,
@@ -61,56 +61,4 @@ public class EventViewModel : ObservableObject, IRecipient<EventSavedChangedMess
             record.EndDate,
             isSaved: isSaved);
     }
-
-    public static List<EventViewModel> Samples() =>
-    [
-        new(
-            eventId: "sopse295842",
-            title: "Sign&Print Scandinavia",
-            image: "sopse_logo.png",
-            startDate: DateTime.Now.AddDays(100),
-            endDate: DateTime.Now.AddDays(103),
-            isSaved: true
-        ),
-        new(
-            eventId: "sopdk730956",
-            title: "Sign Print & Pack Denmark",
-            image: "sopdk_logo.png",
-            startDate: DateTime.Now.AddDays(125),
-            endDate: DateTime.Now.AddDays(127),
-            isSaved: false
-        ),
-        new(
-            eventId: "sopno398628",
-            title: "Sign, Print & Promotion",
-            image: "sopno_logo.png",
-            startDate: DateTime.Now.AddDays(150),
-            endDate: DateTime.Now.AddDays(152),
-            isSaved: false
-        ),
-        new(
-            eventId: "sopno398629",
-            title: "Sign, Print & Promotion",
-            image: "sopno_logo.png",
-            startDate: DateTime.Now.AddDays(165),
-            endDate: DateTime.Now.AddDays(168),
-            isSaved: false
-        ),
-        new(
-            eventId: "sopno398630",
-            title: "Sign, Print & Promotion",
-            image: "sopno_logo.png",
-            startDate: DateTime.Now.AddDays(172),
-            endDate: DateTime.Now.AddDays(174),
-            isSaved: false
-        ),
-        new(
-            eventId: "sopno398631",
-            title: "Sign, Print & Promotion",
-            image: "sopno_logo.png",
-            startDate: DateTime.Now.AddDays(180),
-            endDate: DateTime.Now.AddDays(183),
-            isSaved: false
-        )
-    ];
 }
