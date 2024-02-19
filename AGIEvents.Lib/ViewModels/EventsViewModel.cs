@@ -46,8 +46,9 @@ public partial class EventsViewModel : ObservableObject,
 
         SubscribeToMessages();
 
-        // TODO: implement NavigationService and OnNavigatedTo and call await LoadEvents() from there
-        LoadEvents();
+        // TODO: implement NavigationService and OnNavigatedTo and call await FetchAndMergeEvents() from there
+        // TODO: Or use the same approach when loading json data?
+        FetchAndMergeEvents();
     }
 
     private void SubscribeToMessages()
@@ -55,7 +56,8 @@ public partial class EventsViewModel : ObservableObject,
         WeakReferenceMessenger.Default.Register<QrScannerCompletedMessage>(this);
     }
 
-    private async Task LoadEvents()
+    // TODO: Extract out FetchEventsFromFile and FetchEventsFromDatabase tasks?
+    private async Task FetchAndMergeEvents()
     {
         IsLoading = true;
 
@@ -139,8 +141,10 @@ public partial class EventsViewModel : ObservableObject,
     {
         if (eventViewModel.IsSaved)
         {
+            var record = EventRecord.FromViewModel(eventViewModel);
             await Shell.Current.GoToAsync(
-                $"{nameof(AppRoute.LeadsPage)}?{nameof(EventViewModel.EventId)}={eventViewModel.EventId}"
+                $"{nameof(AppRoute.LeadsPage)}",
+                new Dictionary<string, object> { { nameof(EventRecord), record } }
             );
         }
         else
@@ -177,6 +181,6 @@ public partial class EventsViewModel : ObservableObject,
                 group.Clear();
         });
 
-        await LoadEvents();
+        await FetchAndMergeEvents();
     }
 }
