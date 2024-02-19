@@ -16,7 +16,8 @@ public class EventGroup(
     public string GroupName { get; init; } = groupName;
 }
 
-public partial class EventsViewModel : ObservableObject
+public partial class EventsViewModel : ObservableObject,
+    IRecipient<QrScannerCompletedMessage>
 {
     private const string YourEvents = "Your Events";
     private const string UpcomingEvents = "Coming Events";
@@ -41,17 +42,14 @@ public partial class EventsViewModel : ObservableObject
     {
         _databaseRepository = databaseRepository;
         _eventsService = eventsService;
-        
-        SubscribeToMessenger();
+
+        SubscribeToMessages();
         LoadEvents();
     }
 
-    private void SubscribeToMessenger()
+    private void SubscribeToMessages()
     {
-        WeakReferenceMessenger.Default.Register<QrScannerCompletedMessage>(
-            this,
-            (_, message) => ProcessQrCode(message.QrCode)
-        );
+        WeakReferenceMessenger.Default.Register<QrScannerCompletedMessage>(this);
     }
 
     private async void LoadEvents()
@@ -135,11 +133,6 @@ public partial class EventsViewModel : ObservableObject
         IsLoading = false;
     }
 
-    private void ProcessQrCode(string qrCode)
-    {
-        Console.WriteLine($"✅ -> QR Code scanned: {qrCode}");
-    }
-
     private void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
     {
         // Find the source group
@@ -161,6 +154,16 @@ public partial class EventsViewModel : ObservableObject
             targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
             GroupedEvents.Add(targetGroup);
         }
+    }
+
+    private void ProcessQrCode(string qrCode)
+    {
+        Console.WriteLine($"✅ -> QR Code scanned: {qrCode}");
+    }
+
+    void IRecipient<QrScannerCompletedMessage>.Receive(QrScannerCompletedMessage message)
+    {
+        ProcessQrCode(message.QrCode);
     }
 
     [RelayCommand]
