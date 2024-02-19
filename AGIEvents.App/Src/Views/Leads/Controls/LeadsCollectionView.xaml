@@ -38,5 +38,9 @@
             <LinearItemsLayout Orientation="Vertical"
                                ItemSpacing="0" />
         </CollectionView.ItemsLayout>
+
+        <CollectionView.EmptyView>
+            <controls:EmptyLeadsView />
+        </CollectionView.EmptyView>
     </CollectionView>
 </ContentView>
