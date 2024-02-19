@@ -1,4 +1,5 @@
 using AGIEvents.Lib.Messages;
+using AGIEvents.Lib.Services.Database.DTO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 
@@ -34,7 +35,7 @@ public class EventViewModel : ObservableObject, IRecipient<EventSavedChangedMess
     {
         EventId = eventId;
         Title = title;
-        Image = image;
+        Image = image.Replace(".svg", ".png");
         StartDate = startDate;
         EndDate = endDate;
         IsSaved = isSaved;
@@ -48,6 +49,17 @@ public class EventViewModel : ObservableObject, IRecipient<EventSavedChangedMess
             return;
 
         IsSaved = message.IsSaved;
+    }
+
+    public static EventViewModel FromRecord(EventRecord record, bool isSaved = false)
+    {
+        return new EventViewModel(
+            record.EventId,
+            record.Title,
+            record.Image,
+            record.StartDate,
+            record.EndDate,
+            isSaved: isSaved);
     }
 
     public static List<EventViewModel> Samples() =>
