@@ -1,28 +1,24 @@
-using AGIEvents.Lib.Services.Database.DTO;
+using AGIEvents.Lib.Domain;
 
 namespace AGIEvents.Lib.ViewModels;
 
-public partial class LeadViewModel
+public partial class LeadItemViewModel
 {
     public int LeadId { get; }
     public string EventId { get; }
     public string FirstName { get; }
     public string LastName { get; }
     public string Company { get; }
-    public string Email { get; }
-    public string Phone { get; }
     public DateTime ScannedDate { get; }
 
     public string FullName => $"{FirstName} {LastName}";
 
-    public LeadViewModel(
+    public LeadItemViewModel(
         int leadId,
         string eventId,
         string firstName,
         string lastName,
         string company,
-        string email,
-        string phone,
         DateTime scannedDate)
     {
         LeadId = leadId;
@@ -30,21 +26,17 @@ public partial class LeadViewModel
         FirstName = firstName;
         LastName = lastName;
         Company = company;
-        Email = email;
-        Phone = phone;
         ScannedDate = scannedDate;
     }
 
-    public static LeadViewModel FromRecord(LeadRecord record)
+    public static LeadItemViewModel FromLeadItemRecord(LeadItemRecordDto record)
     {
-        return new LeadViewModel(
+        return new LeadItemViewModel(
             record.LeadId,
             record.EventId,
             record.FirstName,
             record.LastName,
             record.Company,
-            record.Email,
-            record.Phone,
             record.ScannedDate);
     }
 }
