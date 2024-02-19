@@ -35,9 +35,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<EventsViewModel>();
         builder.Services.AddTransient<EventViewModel>();
 
-        builder.Services.AddSingleton<LeadsPage>();
-        builder.Services.AddSingleton<LeadsViewModel>();
-        builder.Services.AddTransient<LeadViewModel>();
+        builder.Services.AddTransient<LeadsPage>();
+        builder.Services.AddTransient<LeadsViewModel>();
+        builder.Services.AddTransient<LeadItemViewModel>();
 
         builder.Services.AddTransient<LeadDetailPage>();
         builder.Services.AddTransient<LeadDetailViewModel>();
@@ -48,8 +48,8 @@ public static class MauiProgram
         builder.Services.AddTransient<QrScannerPage>();
         builder.Services.AddTransient<QrScannerViewModel>();
 
-        builder.Services.AddSingleton<SettingsPage>();
-        builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddTransient<SettingsPage>();
+        builder.Services.AddTransient<SettingsViewModel>();
 
         builder.Services.AddSingleton<IAppInteractionsService, AppInteractionsService>();
         builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
