@@ -9,22 +9,15 @@
     x:DataType="viewModels:EventsViewModel">
 
     <ContentPage.ToolbarItems>
-        <!-- <ToolbarItem IconImageSource="icon_settings.png" -->
-        <!--              SemanticProperties.Description="Settings" -->
-        <!--              ToolTipProperties.Text="Settings" -->
-        <!--              Command="{Binding NavigateToSettingsCommand}" /> -->
-        <ToolbarItem IconImageSource="icon_add.png"
-                     SemanticProperties.Description="Add"
-                     ToolTipProperties.Text="Add"
-                     Command="{Binding AddEventCommand}" />
-        <ToolbarItem IconImageSource="icon_check.png"
-                     SemanticProperties.Description="Add Events"
-                     ToolTipProperties.Text="Add Events"
-                     Command="{Binding AddEventsCommand}" />
+
         <ToolbarItem IconImageSource="icon_delete.png"
                      SemanticProperties.Description="Clear"
                      ToolTipProperties.Text="Clear"
                      Command="{Binding ClearEventsCommand}" />
+        <ToolbarItem IconImageSource="icon_settings.png"
+                     SemanticProperties.Description="Settings"
+                     ToolTipProperties.Text="Settings"
+                     Command="{Binding NavigateToSettingsCommand}" />
     </ContentPage.ToolbarItems>
 
     <Grid Margin="10">
