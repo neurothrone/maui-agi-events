@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using AGIEvents.Lib.Services.Database.DTO;
+using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Utility;
 
 namespace AGIEvents.Lib.Services.Events;
@@ -8,9 +8,9 @@ namespace AGIEvents.Lib.Services.Events;
 public class EventsFileStorageService(Task<Stream> eventsStreamTask) : IEventsService
 {
     private const string DateTimeFormat = "yyyy/MM/dd HH:mm";
-    private EventRecord[]? _events;
+    private EventRecordDto[]? _events;
 
-    private async Task<EventRecord[]> ReadEventsFromStream()
+    private async Task<EventRecordDto[]> ReadEventsFromStream()
     {
         var stream = await eventsStreamTask;
 
@@ -26,12 +26,12 @@ public class EventsFileStorageService(Task<Stream> eventsStreamTask) : IEventsSe
             Converters = { new JsonDateTimeFormatConverter(DateTimeFormat) }
         };
 
-        var dictionary = JsonSerializer.Deserialize<Dictionary<string, EventRecord>>(json, serializeOptions);
-        return dictionary?.Values.ToArray() ?? Array.Empty<EventRecord>();
+        var dictionary = JsonSerializer.Deserialize<Dictionary<string, EventRecordDto>>(json, serializeOptions);
+        return dictionary?.Values.ToArray() ?? Array.Empty<EventRecordDto>();
     }
 
 
-    async Task<EventRecord[]> IEventsService.LoadEvents()
+    async Task<EventRecordDto[]> IEventsService.LoadEvents()
     {
         _events ??= await ReadEventsFromStream();
         return _events.ToArray();
