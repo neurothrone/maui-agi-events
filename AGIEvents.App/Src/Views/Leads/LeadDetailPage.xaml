@@ -13,7 +13,7 @@
         <ToolbarItem IconImageSource="icon_check.png"
                      SemanticProperties.Description="Save changes"
                      ToolTipProperties.Text="Save changes"
-                     Command="{Binding SaveChangesCommand}" />
+                     Command="{Binding SubmitCommand}" />
     </ContentPage.ToolbarItems>
 
     <TableView Intent="Form"
