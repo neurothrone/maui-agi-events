@@ -1,16 +1,16 @@
-using AGIEvents.Lib.Services.Database.DTO;
+using AGIEvents.Lib.Domain;
 
 namespace AGIEvents.Lib.Services.Database;
 
 public interface IDatabaseRepository
 {
-    Task SaveEventAsync(EventRecord record);
-    Task<List<EventRecord>> FetchEventsAsync();
+    Task SaveEventAsync(EventRecordDto record);
+    Task<List<EventRecordDto>> FetchEventsAsync();
 
-    Task<LeadRecord> SaveLeadAsync(LeadRecord record);
-    Task<LeadRecord?> FetchLeadByIdAsync(int leadId);
-    Task<List<LeadRecord>> FetchLeadsByEventIdAsync(string eventId);
-    Task UpdateLeadAsync(LeadRecord lead);
+    Task<LeadDetailRecordDto> SaveLeadAsync(LeadDetailRecordDto record);
+    Task<LeadDetailRecordDto?> FetchLeadDetailByIdAsync(int leadId);
+    Task<List<LeadItemRecordDto>> FetchLeadsByEventIdAsync(string eventId);
+    Task UpdateLeadAsync(LeadDetailRecordDto record);
     Task<bool> DeleteLeadByIdAsync(int leadId);
     Task DeleteLeadsByEventIdAsync(string eventId);
 

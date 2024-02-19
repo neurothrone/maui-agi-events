@@ -1,5 +1,5 @@
+using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Services.Database.Domain;
-using AGIEvents.Lib.Services.Database.DTO;
 using SQLite;
 
 namespace AGIEvents.Lib.Services.Database;
@@ -22,7 +22,7 @@ public class DatabaseRepository : IDatabaseRepository
         await _database.CreateTableAsync<LeadEntity>();
     }
 
-    public async Task SaveEventAsync(EventRecord record)
+    public async Task SaveEventAsync(EventRecordDto record)
     {
         await Init();
 
@@ -37,18 +37,18 @@ public class DatabaseRepository : IDatabaseRepository
         await _database.InsertAsync(entity);
     }
 
-    public async Task<List<EventRecord>> FetchEventsAsync()
+    public async Task<List<EventRecordDto>> FetchEventsAsync()
     {
         await Init();
 
         var entities = await _database.Table<EventEntity>().ToListAsync();
         return entities
-            .Select(e => new EventRecord(e.EventId, e.Title, e.Image, e.StartDate, e.EndDate))
+            .Select(e => new EventRecordDto(e.EventId, e.Title, e.Image, e.StartDate, e.EndDate))
             .OrderBy(e => e.StartDate)
             .ToList();
     }
 
-    public async Task<LeadRecord> SaveLeadAsync(LeadRecord record)
+    public async Task<LeadDetailRecordDto> SaveLeadAsync(LeadDetailRecordDto record)
     {
         await Init();
 
@@ -70,7 +70,7 @@ public class DatabaseRepository : IDatabaseRepository
         return record with { LeadId = entity.LeadId };
     }
 
-    public async Task<LeadRecord?> FetchLeadByIdAsync(int leadId)
+    public async Task<LeadDetailRecordDto?> FetchLeadDetailByIdAsync(int leadId)
     {
         await Init();
 
@@ -78,7 +78,7 @@ public class DatabaseRepository : IDatabaseRepository
         if (entity is null)
             return null;
 
-        return new LeadRecord(
+        return new LeadDetailRecordDto(
             entity.EventId,
             entity.FirstName,
             entity.LastName,
@@ -92,10 +92,11 @@ public class DatabaseRepository : IDatabaseRepository
             entity.Seller,
             entity.Notes,
             entity.ScannedDate,
-            entity.LeadId);
+            entity.LeadId
+        );
     }
 
-    public async Task<List<LeadRecord>> FetchLeadsByEventIdAsync(string eventId)
+    public async Task<List<LeadItemRecordDto>> FetchLeadsByEventIdAsync(string eventId)
     {
         await Init();
 
@@ -104,30 +105,38 @@ public class DatabaseRepository : IDatabaseRepository
             .ToListAsync();
 
         return entities
-            .Select(l => new LeadRecord(
-                l.EventId, l.FirstName, l.LastName, l.Company, l.Email,
-                l.Phone, l.Address, l.ZipCode, l.City, l.Product, l.Seller, l.Notes, l.ScannedDate, l.LeadId)
+            .Select(lead => new LeadItemRecordDto(
+                lead.EventId,
+                lead.FirstName,
+                lead.LastName,
+                lead.Company,
+                lead.ScannedDate,
+                lead.LeadId)
             )
             .ToList();
     }
 
-    public async Task UpdateLeadAsync(LeadRecord lead)
+    public async Task UpdateLeadAsync(LeadDetailRecordDto record)
     {
         await Init();
 
         await _database.UpdateAsync(
             new LeadEntity
             {
-                LeadId = lead.LeadId, // TODO: does this need to be updated?
-                FirstName = lead.FirstName,
-                LastName = lead.LastName,
-                Company = lead.Company,
-                Email = lead.Email,
-                Phone = lead.Phone,
-                Address = lead.Address,
-                ZipCode = lead.ZipCode,
-                City = lead.City,
-                ScannedDate = lead.ScannedDate
+                LeadId = record.LeadId,
+                EventId = record.EventId,
+                FirstName = record.FirstName,
+                LastName = record.LastName,
+                Company = record.Company,
+                Email = record.Email,
+                Phone = record.Phone,
+                Address = record.Address,
+                ZipCode = record.ZipCode,
+                City = record.City,
+                Product = record.Product,
+                Seller = record.Seller,
+                Notes = record.Notes,
+                ScannedDate = record.ScannedDate
             }
         );
     }

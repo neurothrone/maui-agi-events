@@ -1,7 +1,10 @@
+using AGIEvents.Lib.Domain;
+using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Services;
 using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace AGIEvents.Lib.ViewModels;
 
@@ -10,7 +13,9 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     private readonly IAppInteractionsService _appInteractionsService;
     private readonly IDatabaseRepository _databaseRepository;
 
+    [ObservableProperty] private string _eventId = string.Empty;
     [ObservableProperty] private int _leadId;
+
     [ObservableProperty] private string _firstName = string.Empty;
     [ObservableProperty] private string _lastName = string.Empty;
     [ObservableProperty] private string _company = string.Empty;
@@ -24,7 +29,7 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     [ObservableProperty] private string _seller = string.Empty;
 
     [ObservableProperty] private string _notes = string.Empty;
-    [ObservableProperty] private DateTime _scannedAt;
+    [ObservableProperty] private DateTime _scannedDate;
 
     public LeadDetailViewModel(
         IAppInteractionsService appInteractionsService,
@@ -36,43 +41,72 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (!query.TryGetValue(nameof(LeadViewModel.LeadId), out var value))
+        if (!query.TryGetValue(nameof(LeadItemRecordDto), out var value))
+        {
+            Console.WriteLine("❌ -> Failed to TryGetValue from Query.");
             return;
+        }
 
-        if (value is int leadId)
-            LoadLeadInfo(leadId);
+
+        if (value is LeadItemRecordDto record)
+            LoadLeadInfo(record.LeadId);
+
+        query.Clear();
     }
 
     private async void LoadLeadInfo(int leadId)
     {
-        var matchedLead = await _databaseRepository.FetchLeadByIdAsync(leadId);
-        if (matchedLead is null)
+        var lead = await _databaseRepository.FetchLeadDetailByIdAsync(leadId);
+        if (lead is null)
         {
             Console.WriteLine("❌ -> Failed to fetch lead by id.");
             return;
         }
 
-        LeadId = matchedLead.LeadId;
-        FirstName = matchedLead.FirstName;
-        LastName = matchedLead.LastName;
-        Company = matchedLead.Company;
-        Email = matchedLead.Email;
-        Phone = matchedLead.Phone;
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            EventId = lead.EventId;
+            LeadId = lead.LeadId;
 
-        Address = matchedLead.Address;
-        ZipCode = matchedLead.ZipCode;
-        City = matchedLead.City;
-        Product = matchedLead.Product;
-        Seller = matchedLead.Seller;
+            FirstName = lead.FirstName;
+            LastName = lead.LastName;
+            Company = lead.Company;
+            Email = lead.Email;
+            Phone = lead.Phone;
 
-        Notes = matchedLead.Notes;
-        ScannedAt = matchedLead.ScannedDate;
+            Address = lead.Address;
+            ZipCode = lead.ZipCode;
+            City = lead.City;
+            Product = lead.Product;
+            Seller = lead.Seller;
+
+            Notes = lead.Notes;
+            ScannedDate = lead.ScannedDate;
+        });
     }
 
     [RelayCommand]
     private async Task SaveChanges()
     {
-        // TODO: save changes to database
+        var record = new LeadDetailRecordDto(
+            EventId,
+            FirstName,
+            LastName,
+            Company,
+            Email,
+            Phone,
+            Address,
+            ZipCode,
+            City,
+            Product,
+            Seller,
+            Notes,
+            ScannedDate,
+            LeadId
+        );
+        await _databaseRepository.UpdateLeadAsync(record);
+
+        WeakReferenceMessenger.Default.Send(new LeadUpdatedMessage(LeadId));
         await Shell.Current.GoToAsync("..");
     }
 

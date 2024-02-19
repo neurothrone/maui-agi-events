@@ -1,13 +1,18 @@
 using System.Collections.ObjectModel;
+using AGIEvents.Lib.Domain;
+using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services.Database;
-using AGIEvents.Lib.Services.Database.DTO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace AGIEvents.Lib.ViewModels;
 
-public partial class LeadsViewModel : ObservableObject, IQueryAttributable
+public partial class LeadsViewModel :
+    ObservableObject,
+    IRecipient<LeadUpdatedMessage>,
+    IQueryAttributable
 {
     private readonly IDatabaseRepository _databaseRepository;
 
@@ -15,9 +20,9 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
     [ObservableProperty] private string _eventImage = string.Empty;
     [ObservableProperty] private bool _isLoading;
 
-    private ObservableCollection<LeadViewModel> _leads = [];
+    private ObservableCollection<LeadItemViewModel> _leads = [];
 
-    public ObservableCollection<LeadViewModel> Leads
+    public ObservableCollection<LeadItemViewModel> Leads
     {
         get => _leads;
         set => SetProperty(ref _leads, value);
@@ -26,21 +31,56 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
     public LeadsViewModel(IDatabaseRepository databaseRepository)
     {
         _databaseRepository = databaseRepository;
+        SubscribeToMessages();
+    }
+
+    private void SubscribeToMessages()
+    {
+        WeakReferenceMessenger.Default.Register(this);
+    }
+
+    async void IRecipient<LeadUpdatedMessage>.Receive(LeadUpdatedMessage message)
+    {
+        var updatedLeadId = message.LeadId;
+        var updatedLead = await _databaseRepository.FetchLeadDetailByIdAsync(updatedLeadId);
+        if (updatedLead is null)
+        {
+            Console.WriteLine("❌ -> updatedLead from Database is null.");
+            return;
+        }
+
+        var leadToUpdate = Leads.FirstOrDefault(lead => lead.LeadId == updatedLeadId);
+        if (leadToUpdate is null)
+        {
+            Console.WriteLine("❌ -> Could not find Lead to update inside Leads.");
+            return;
+        }
+
+        var index = Leads.IndexOf(leadToUpdate);
+
+        var itemRecord = LeadItemRecordDto.FromLeadDetailRecord(updatedLead);
+        var updatedViewModel = LeadItemViewModel.FromLeadItemRecord(itemRecord);
+
+        await MainThread.InvokeOnMainThreadAsync(() => Leads[index] = updatedViewModel);
     }
 
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (!query.TryGetValue(nameof(EventRecord), out var value))
+        if (!query.TryGetValue(nameof(EventRecordDto), out var value))
             return;
 
-        if (value is EventRecord record)
+        if (value is EventRecordDto record)
             LoadEventInfo(record);
+
+        // It is necessary to clear the query from memory so that when navigating back from
+        // the LeadDetailPage the method `LoadEventInfo()` does not execute again.
+        query.Clear();
     }
 
-    private async void LoadEventInfo(EventRecord record)
+    private async void LoadEventInfo(EventRecordDto recordDto)
     {
-        EventId = record.EventId;
-        EventImage = record.Image;
+        EventId = recordDto.EventId;
+        EventImage = recordDto.Image;
 
         await FetchLeads();
     }
@@ -49,24 +89,26 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
     {
         IsLoading = true;
 
+        // TODO: allow database to do Ordering?
+        // Order By Descending (ScannedDate) to show the latest who was scanned
         var leadsFromDatabase = await _databaseRepository.FetchLeadsByEventIdAsync(EventId);
         var leadsViewModels = leadsFromDatabase
-            .Select(LeadViewModel.FromRecord)
-            .OrderBy(lead => lead.ScannedDate)
+            .Select(LeadItemViewModel.FromLeadItemRecord)
+            .OrderByDescending(lead => lead.ScannedDate)
             .ToList();
 
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
             IsLoading = false;
-            Leads = new ObservableCollection<LeadViewModel>(leadsViewModels);
+            Leads = new ObservableCollection<LeadItemViewModel>(leadsViewModels);
         });
     }
 
     [RelayCommand]
     private async Task ShowQrScanner()
     {
-        // var randomLead 
-        var record = new LeadRecord(
+        // TODO: testing purposes
+        var record = new LeadDetailRecordDto(
             EventId,
             "Jane",
             "Doe",
@@ -82,15 +124,17 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
             DateTime.Now
         );
         var savedRecord = await _databaseRepository.SaveLeadAsync(record);
+        var itemRecord = LeadItemRecordDto.FromLeadDetailRecord(savedRecord);
 
         // Insert to top of List as we are Ordering by Ascending (ScannedDate)
-        await MainThread.InvokeOnMainThreadAsync(() => Leads.Insert(0, LeadViewModel.FromRecord(savedRecord)));
+        await MainThread.InvokeOnMainThreadAsync(
+            () => Leads.Insert(0, LeadItemViewModel.FromLeadItemRecord(itemRecord)));
     }
 
     [RelayCommand]
-    private async Task DeleteLead(LeadViewModel lead)
+    private async Task DeleteLead(LeadItemViewModel leadItem)
     {
-        var wasDeleted = await _databaseRepository.DeleteLeadByIdAsync(lead.LeadId);
+        var wasDeleted = await _databaseRepository.DeleteLeadByIdAsync(leadItem.LeadId);
 
         if (!wasDeleted)
         {
@@ -98,14 +142,14 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
             return;
         }
 
-        await MainThread.InvokeOnMainThreadAsync(() => Leads.Remove(lead));
+        await MainThread.InvokeOnMainThreadAsync(() => Leads.Remove(leadItem));
     }
 
     [RelayCommand]
-    private async Task ExportLead(LeadViewModel lead)
+    private async Task ExportLead(LeadItemViewModel leadItem)
     {
         // TODO: Export single lead feature
-        Console.WriteLine($"✅ -> Exporting lead with id: {lead.LeadId}");
+        Console.WriteLine($"✅ -> Exporting lead with id: {leadItem.LeadId}");
         await Task.Delay(100);
     }
 
@@ -113,21 +157,21 @@ public partial class LeadsViewModel : ObservableObject, IQueryAttributable
     private async Task ExportLeads()
     {
         // TODO: Export leads feature
+        Console.WriteLine($"✅ -> Exporting leads");
         await Task.Delay(100);
     }
 
-    // TODO: refactor to use LeadItemRecord (List Item)
-    // TODO: Add LeadDetailRecord (Detail View)
-
     [RelayCommand]
-    private async Task NavigateToLeadDetail(LeadViewModel lead)
+    private async Task NavigateToLeadDetail(LeadItemViewModel leadItem)
     {
-        await Shell.Current.GoToAsync($"{nameof(AppRoute.LeadDetailPage)}?LeadId={lead.LeadId}");
+        var record = LeadItemRecordDto.FromViewModel(leadItem);
+        await Shell.Current.GoToAsync($"{nameof(AppRoute.LeadDetailPage)}",
+            new Dictionary<string, object> { { nameof(LeadItemRecordDto), record } });
     }
 
     [RelayCommand]
     private async Task NavigateToAddLead()
     {
-        await Shell.Current.GoToAsync($"{nameof(AppRoute.AddLeadPage)}?EventId={EventId}");
+        await Shell.Current.GoToAsync($"{nameof(AppRoute.AddLeadPage)}?{nameof(EventViewModel.EventId)}={EventId}");
     }
 }
