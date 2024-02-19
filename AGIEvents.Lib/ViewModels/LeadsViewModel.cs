@@ -12,6 +12,7 @@ namespace AGIEvents.Lib.ViewModels;
 public partial class LeadsViewModel :
     ObservableObject,
     IRecipient<LeadUpdatedMessage>,
+    IRecipient<LeadInsertedMessage>,
     IQueryAttributable
 {
     private readonly IDatabaseRepository _databaseRepository;
@@ -36,7 +37,8 @@ public partial class LeadsViewModel :
 
     private void SubscribeToMessages()
     {
-        WeakReferenceMessenger.Default.Register(this);
+        WeakReferenceMessenger.Default.Register<LeadUpdatedMessage>(this);
+        WeakReferenceMessenger.Default.Register<LeadInsertedMessage>(this);
     }
 
     async void IRecipient<LeadUpdatedMessage>.Receive(LeadUpdatedMessage message)
@@ -64,6 +66,22 @@ public partial class LeadsViewModel :
         await MainThread.InvokeOnMainThreadAsync(() => Leads[index] = updatedViewModel);
     }
 
+    async void IRecipient<LeadInsertedMessage>.Receive(LeadInsertedMessage message)
+    {
+        var insertedLeadId = message.LeadId;
+        var leadDetailRecord = await _databaseRepository.FetchLeadDetailByIdAsync(insertedLeadId);
+        if (leadDetailRecord is null)
+        {
+            Console.WriteLine("❌ -> Inserted Lead from Database is null.");
+            return;
+        }
+
+        var leadItemRecord = LeadItemRecordDto.FromLeadDetailRecord(leadDetailRecord);
+        var newLead = LeadItemViewModel.FromLeadItemRecord(leadItemRecord);
+
+        await MainThread.InvokeOnMainThreadAsync(() => Leads.Insert(0, newLead));
+    }
+
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (!query.TryGetValue(nameof(EventRecordDto), out var value))
@@ -89,7 +107,6 @@ public partial class LeadsViewModel :
     {
         IsLoading = true;
 
-        // TODO: allow database to do Ordering?
         // Order By Descending (ScannedDate) to show the latest who was scanned
         var leadsFromDatabase = await _databaseRepository.FetchLeadsByEventIdAsync(EventId);
         var leadsViewModels = leadsFromDatabase

@@ -1,12 +1,18 @@
+using AGIEvents.Lib.Domain;
+using AGIEvents.Lib.Messages;
+using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace AGIEvents.Lib.ViewModels;
 
 [QueryProperty(nameof(EventId), nameof(EventId))]
 public partial class AddLeadViewModel : ObservableObject
 {
-    [ObservableProperty] private string _eventId = string.Empty;
+    private readonly IDatabaseRepository _databaseRepository;
+
+    [ObservableProperty] private string _eventId = string.Empty; // TODO: Does this have to be an ObservableProperty?
     [ObservableProperty] private string _email = string.Empty;
     [ObservableProperty] private string _phone = string.Empty;
     [ObservableProperty] private string _address = string.Empty;
@@ -60,19 +66,38 @@ public partial class AddLeadViewModel : ObservableObject
 
     public AsyncRelayCommand SubmitCommand { get; }
 
-    public AddLeadViewModel()
+    public AddLeadViewModel(IDatabaseRepository databaseRepository)
     {
-        SubmitCommand = new AsyncRelayCommand(OnSubmit, () => IsFormValid);
-    }
-
-    private async Task OnSubmit()
-    {
-        await AddLead();
+        _databaseRepository = databaseRepository;
+        SubmitCommand = new AsyncRelayCommand(AddLead, () => IsFormValid);
     }
 
     private async Task AddLead()
     {
-        // TODO: Save to Database and notify through Message (LeadInsertedMessage) to LeadsViewModel that a new Lead was added
+        if (!IsFormValid)
+        {
+            Console.WriteLine("❌ -> Form Is not Valid.");
+            return;
+        }
+
+        var record = new LeadDetailRecordDto(
+            EventId,
+            FirstName,
+            LastName,
+            Company,
+            Email,
+            Phone,
+            Address,
+            ZipCode,
+            City,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            DateTime.Now
+        );
+        var savedLead = await _databaseRepository.SaveLeadAsync(record);
+
+        WeakReferenceMessenger.Default.Send(new LeadInsertedMessage(savedLead.LeadId));
         await Shell.Current.GoToAsync("..");
     }
 }
