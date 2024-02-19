@@ -7,7 +7,6 @@
              xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              x:Class="AGIEvents.App.Views.Leads.Controls.LeadsCollectionView">
 
-    <!-- TODO: Figure out a solution for FullNameOnly- and CompanyOnlyTemplate -->
     <ContentView.Resources>
         <DataTemplate x:Key="BothFullTemplate">
             <controls:LeadItemFullView />
