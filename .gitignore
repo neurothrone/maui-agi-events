@@ -4,8 +4,13 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 
+# IDE:s
 .idea
 .vs
 .vscode
 
+# Temp/Development
 requirements.md
+events.json
+firebase-realtime-data.json
+
