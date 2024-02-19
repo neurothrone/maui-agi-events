@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services.Database;
+using AGIEvents.Lib.Services.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -21,6 +22,7 @@ public partial class EventsViewModel : ObservableObject
     private const string UpcomingEvents = "Coming Events";
 
     private readonly IDatabaseRepository _databaseRepository;
+    private readonly IEventsService _eventsService;
 
     [ObservableProperty] private bool _isLoading;
 
@@ -32,11 +34,16 @@ public partial class EventsViewModel : ObservableObject
         private set => SetProperty(ref _groupedEvents, value);
     }
 
-    public EventsViewModel(IDatabaseRepository databaseRepository)
+    public EventsViewModel(
+        IDatabaseRepository databaseRepository,
+        IEventsService eventsService
+    )
     {
         _databaseRepository = databaseRepository;
+        _eventsService = eventsService;
+        
         SubscribeToMessenger();
-        FetchEvents();
+        LoadEvents();
     }
 
     private void SubscribeToMessenger()
@@ -47,10 +54,57 @@ public partial class EventsViewModel : ObservableObject
         );
     }
 
-    private void ProcessQrCode(string qrCode)
+    private async void LoadEvents()
     {
-        Console.WriteLine($"✅ -> QR Code scanned: {qrCode}");
+        IsLoading = true;
+        // var eventsFromDatabaseTask = _databaseRepository.FetchEventsAsync();
+        // var eventsFromFileTask = _eventsService.LoadEvents();
+
+        // await Task.WhenAll(eventsFromDatabaseTask, eventsFromFileTask);
+
+        // TODO: Merge saved events from database with non-saved events from file
+        var events = await _eventsService.LoadEvents();
+
+        // var eventViewModels = new List<EventViewModel>(eventsFromFileTask.Result
+        var eventViewModels = new List<EventViewModel>(events
+            .Select(e => new EventViewModel(e.EventId, e.Title, e.Image.Replace(".svg", ".png"),
+                e.StartDate, e.EndDate, false))
+            .OrderBy(e => e.StartDate)
+            .ToList()
+        );
+
+        // Order by ascending (StartDate) will sort the events from the ones that are
+        // scheduled to start soonest.
+        var savedEvents = new EventGroup(YourEvents, eventViewModels
+            .Where(e => e.IsSaved)
+            .OrderBy(e => e.StartDate)
+            .ToList());
+        var upcomingEvents = new EventGroup(UpcomingEvents, eventViewModels
+            .Where(e => !e.IsSaved)
+            .OrderBy(e => e.StartDate)
+            .ToList());
+        GroupedEvents = [savedEvents, upcomingEvents];
+
+
+        // var savedEventsFromDatabase = eventsFromDatabaseTask.Result.Where(e => e.IsSaved)
+        //     .Select(e => new EventViewModel(eventId: e.EventId, title: e.Title, image: e.Image, startDate: e.StartDate,
+        //         endDate: e.EndDate, isSaved: true))
+        //     .ToList();
+        // var nonSavedEventsFromFile = eventsFromFileTask.Result.Where(e => !e.IsSaved)
+        //     .Select(e => new EventViewModel(eventId: e.EventId, title: e.Title, image: e.Image, startDate: e.StartDate,
+        //         endDate: e.EndDate, isSaved: false))
+        //     .ToList();
+        // var mergedEvents = savedEventsFromDatabase.Concat(nonSavedEventsFromFile).ToList();
+        // var savedEvents = new EventGroup(YourEvents, mergedEvents.Where(e => e.IsSaved).OrderBy(e => e.StartDate).ToList());
+        // var upcomingEvents = new EventGroup(UpcomingEvents,
+        //     mergedEvents.Where(e => !e.IsSaved).OrderBy(e => e.StartDate).ToList());
+        // GroupedEvents = new ObservableCollection<EventGroup> { savedEvents, upcomingEvents };
+
+        // TODO: update on UI thread
+
+        IsLoading = false;
     }
+
 
     private async void FetchEvents()
     {
@@ -79,6 +133,11 @@ public partial class EventsViewModel : ObservableObject
         GroupedEvents = [savedEvents, upcomingEvents];
 
         IsLoading = false;
+    }
+
+    private void ProcessQrCode(string qrCode)
+    {
+        Console.WriteLine($"✅ -> QR Code scanned: {qrCode}");
     }
 
     private void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
