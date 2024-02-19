@@ -26,8 +26,6 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
     [ObservableProperty] private string _notes = string.Empty;
     [ObservableProperty] private DateTime _scannedAt;
 
-    [ObservableProperty] private bool _showNotes = false;
-
     public LeadDetailViewModel(
         IAppInteractionsService appInteractionsService,
         IDatabaseRepository databaseRepository)
@@ -38,7 +36,7 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (!query.TryGetValue("LeadId", out var value))
+        if (!query.TryGetValue(nameof(LeadViewModel.LeadId), out var value))
             return;
 
         if (value is int leadId)
@@ -47,7 +45,6 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 
     private async void LoadLeadInfo(int leadId)
     {
-        // TODO: load Lead from database
         var matchedLead = await _databaseRepository.FetchLeadByIdAsync(leadId);
         if (matchedLead is null)
         {
@@ -70,13 +67,6 @@ public partial class LeadDetailViewModel : ObservableObject, IQueryAttributable
 
         Notes = matchedLead.Notes;
         ScannedAt = matchedLead.ScannedDate;
-    }
-
-    [RelayCommand]
-    private void TabBarPressed(bool pressedNotes)
-    {
-        Console.WriteLine($"ℹ️ -> pressedNotes: {pressedNotes}");
-        ShowNotes = pressedNotes;
     }
 
     [RelayCommand]
