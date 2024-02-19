@@ -44,7 +44,6 @@ public class DatabaseRepository : IDatabaseRepository
         var entities = await _database.Table<EventEntity>().ToListAsync();
         return entities
             .Select(e => new EventRecordDto(e.EventId, e.Title, e.Image, e.StartDate, e.EndDate))
-            .OrderBy(e => e.StartDate)
             .ToList();
     }
 
