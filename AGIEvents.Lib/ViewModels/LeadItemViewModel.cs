@@ -2,31 +2,33 @@ using AGIEvents.Lib.Domain;
 
 namespace AGIEvents.Lib.ViewModels;
 
-public partial class LeadItemViewModel
+public partial class LeadItemViewModel(
+    int leadId,
+    string eventId,
+    string firstName,
+    string lastName,
+    string company,
+    DateTime scannedDate)
 {
-    public int LeadId { get; }
-    public string EventId { get; }
-    public string FirstName { get; }
-    public string LastName { get; }
-    public string Company { get; }
-    public DateTime ScannedDate { get; }
+    public int LeadId { get; } = leadId;
+    public string EventId { get; } = eventId;
+    public string FirstName { get; } = firstName;
+    public string LastName { get; } = lastName;
+    public string Company { get; } = company;
+    public DateTime ScannedDate { get; } = scannedDate;
 
-    public string FullName => $"{FirstName} {LastName}";
-
-    public LeadItemViewModel(
-        int leadId,
-        string eventId,
-        string firstName,
-        string lastName,
-        string company,
-        DateTime scannedDate)
+    public string FullName
     {
-        LeadId = leadId;
-        EventId = eventId;
-        FirstName = firstName;
-        LastName = lastName;
-        Company = company;
-        ScannedDate = scannedDate;
+        get
+        {
+            return (string.IsNullOrWhiteSpace(FirstName), string.IsNullOrWhiteSpace(LastName)) switch
+            {
+                (false, false) => $"{FirstName} {LastName}",
+                (true, false) => LastName,
+                (false, true) => FirstName,
+                _ => string.Empty
+            };
+        }
     }
 
     public static LeadItemViewModel FromLeadItemRecord(LeadItemRecordDto record)
