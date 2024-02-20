@@ -69,6 +69,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
         builder.Services.AddSingleton<IRealtimeService, FirebaseRealtimeService>();
 
+        builder.Services.AddSingleton<ICsvService, CsvService>();
+        builder.Services.AddSingleton<IShareService, ShareService>();
+
         // Register routes
         Routing.RegisterRoute(nameof(LeadsPage), typeof(LeadsPage));
         Routing.RegisterRoute(nameof(LeadDetailPage), typeof(LeadDetailPage));

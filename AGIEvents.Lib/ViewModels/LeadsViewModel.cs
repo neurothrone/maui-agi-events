@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
@@ -19,6 +20,7 @@ public partial class LeadsViewModel :
 {
     private readonly IDatabaseRepository _databaseRepository;
     private readonly INotificationService _notificationService;
+    private readonly IShareService _shareService;
 
     [ObservableProperty] private string _eventId = string.Empty;
     [ObservableProperty] private string _eventImage = string.Empty;
@@ -34,10 +36,12 @@ public partial class LeadsViewModel :
 
     public LeadsViewModel(
         IDatabaseRepository databaseRepository,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        IShareService shareService)
     {
         _databaseRepository = databaseRepository;
         _notificationService = notificationService;
+        _shareService = shareService;
         SubscribeToMessages();
     }
 
@@ -210,9 +214,10 @@ public partial class LeadsViewModel :
     [RelayCommand]
     private async Task ExportLeads()
     {
-        // TODO: Export leads feature
-        Console.WriteLine($"✅ -> Exporting leads");
-        await Task.Delay(100);
+        // TODO: IsLoading = true?
+        var records = await _databaseRepository.FetchDetailedLeadsByEventIdAsync(EventId);
+        // TODO: Use Event name with File Name
+        await _shareService.ShareLeads("Leads.csv", records.ToArray());
     }
 
     [RelayCommand]
