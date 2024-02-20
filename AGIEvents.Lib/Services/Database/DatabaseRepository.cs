@@ -115,6 +115,34 @@ public class DatabaseRepository : IDatabaseRepository
             .ToList();
     }
 
+    public async Task<List<LeadDetailRecordDto>> FetchDetailedLeadsByEventIdAsync(string eventId)
+    {
+        await Init();
+
+        var entities = await _database.Table<LeadEntity>()
+            .Where(lead => lead.EventId == eventId)
+            .ToListAsync();
+
+        return entities
+            .Select(lead => new LeadDetailRecordDto(
+                lead.EventId,
+                lead.FirstName,
+                lead.LastName,
+                lead.Company,
+                lead.Email,
+                lead.Phone,
+                lead.Address,
+                lead.ZipCode,
+                lead.City,
+                lead.Product,
+                lead.Seller,
+                lead.Notes,
+                lead.ScannedDate,
+                lead.LeadId)
+            )
+            .ToList();
+    }
+
     public async Task UpdateLeadAsync(LeadDetailRecordDto record)
     {
         await Init();
