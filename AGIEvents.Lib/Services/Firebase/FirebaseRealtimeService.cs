@@ -26,10 +26,24 @@ public class FirebaseRealtimeService : IRealtimeService
         string exhibitionId,
         string eventId) => await FetchParticipantById<Exhibitor>(exhibitionId, eventId);
 
-    async Task<(Visitor? visitor,
-        string? errorMessage)> IRealtimeService.FetchVisitorById(
+    async Task<(Visitor? visitor, string? errorMessage)> IRealtimeService.FetchVisitorById(
         string exhibitionId,
-        string eventId) => await FetchParticipantById<Visitor>(exhibitionId, eventId);
+        string eventId)
+    {
+        // A Lead can either be an Exhibitor or a Visitor
+        var (visitor, errorMessage) = await FetchParticipantById<Visitor>(exhibitionId, eventId);
+
+        if (visitor is null)
+        {
+            var (exhibitor, errorMessage2) = await FetchParticipantById<Exhibitor>(exhibitionId, eventId);
+            if (exhibitor is not null)
+            {
+                return (Visitor.FromExhibitor(exhibitor), errorMessage2);
+            }
+        }
+
+        return (visitor, errorMessage);
+    }
 
 
     private async Task<(T?, string? errorMessage)> FetchParticipantById<T>(
