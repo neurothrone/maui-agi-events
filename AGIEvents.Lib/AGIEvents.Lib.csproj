@@ -19,10 +19,17 @@
 
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+        <PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
         <PackageReference Include="sqlite-net-pcl" Version="1.9.141-beta" />
         <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Platforms\Android\" />
+      <Folder Include="Platforms\iOS\" />
+      <Folder Include="Platforms\MacCatalyst\" />
     </ItemGroup>
 
 </Project>
