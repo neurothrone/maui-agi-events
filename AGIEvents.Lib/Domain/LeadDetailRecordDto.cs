@@ -15,4 +15,4 @@ public record LeadDetailRecordDto(
     string Notes,
     DateTime ScannedDate,
     int LeadId = -1
-);
+) : ILeadHashable;

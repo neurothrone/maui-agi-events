@@ -8,7 +8,7 @@ public class LeadItemViewModel(
     string firstName,
     string lastName,
     string company,
-    DateTime scannedDate)
+    DateTime scannedDate) : ILeadHashable
 {
     public int LeadId { get; } = leadId;
     public string EventId { get; } = eventId;
