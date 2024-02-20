@@ -9,6 +9,16 @@ public class CsvService : ICsvService
 {
     async Task ICsvService.WriteLeadsToFile(string filePath, IEnumerable<LeadDetailRecordDto> leads)
     {
+        await WriteLeadsToCsvFile(filePath, leads);
+    }
+
+    async Task ICsvService.WriteLeadToFile(string filePath, LeadDetailRecordDto lead)
+    {
+        await WriteLeadsToCsvFile(filePath, new[] { lead });
+    }
+
+    private async Task WriteLeadsToCsvFile(string filePath, IEnumerable<LeadDetailRecordDto> leads)
+    {
         await using var writer = new StreamWriter(filePath);
         await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
         csv.Context.RegisterClassMap<LeadMap>();

@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
@@ -209,9 +210,16 @@ public partial class LeadsViewModel :
     [RelayCommand]
     private async Task ExportLead(LeadItemViewModel lead)
     {
-        // TODO: Export single lead feature
-        Console.WriteLine($"✅ -> Exporting lead with id: {lead.LeadId}");
-        await Task.Delay(100);
+        var leadDetailRecord = await _databaseRepository.FetchLeadDetailByIdAsync(lead.LeadId);
+
+        if (leadDetailRecord is null)
+        {
+            Debug.WriteLine("❌ -> Failed to fetch lead from database.");
+            return;
+        }
+
+        var fileName = $"AGI Events {EventTitle} Exported Lead.csv";
+        await _shareService.ExportLead(fileName, leadDetailRecord);
     }
 
     [RelayCommand]
@@ -220,7 +228,7 @@ public partial class LeadsViewModel :
         // TODO: IsLoading = true?
         var records = await _databaseRepository.FetchDetailedLeadsByEventIdAsync(EventId);
         var fileName = $"AGI Events {EventTitle} Exported Leads.csv";
-        await _shareService.ShareLeads(fileName, records.ToArray());
+        await _shareService.ExportLeads(fileName, records.ToArray());
     }
 
     [RelayCommand]

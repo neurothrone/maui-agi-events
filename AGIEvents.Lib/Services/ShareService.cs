@@ -4,12 +4,22 @@ namespace AGIEvents.Lib.Services;
 
 public class ShareService(ICsvService csvService) : IShareService
 {
-    public async Task ShareLeads(string fileName, LeadDetailRecordDto[] leads)
+    async Task IShareService.ExportLeads(string fileName, LeadDetailRecordDto[] leads)
+    {
+        await ShareLeads("Share Leads", fileName, leads);
+    }
+
+    async Task IShareService.ExportLead(string fileName, LeadDetailRecordDto lead)
+    {
+        await ShareLeads("Share Lead", fileName, [lead]);
+    }
+
+    private async Task ShareLeads(string title, string fileName, IEnumerable<LeadDetailRecordDto> leads)
     {
         var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
 
         await csvService.WriteLeadsToFile(filePath, leads);
-        await ShareFile("Share Leads", filePath);
+        await ShareFile(title, filePath);
 
         File.Delete(filePath);
     }
