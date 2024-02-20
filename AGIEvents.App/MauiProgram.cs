@@ -1,10 +1,13 @@
-﻿using AGIEvents.App.Views.Events;
+﻿using System.Diagnostics;
+using AGIEvents.App.Views.Events;
 using AGIEvents.App.Views.Leads;
 using AGIEvents.App.Views.Scanner;
 using AGIEvents.App.Views.Settings;
 using AGIEvents.Lib.Services;
 using AGIEvents.Lib.Services.Database;
 using AGIEvents.Lib.Services.Events;
+using AGIEvents.Lib.Services.Firebase;
+using AGIEvents.Lib.Services.Realtime;
 using AGIEvents.Lib.ViewModels;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
@@ -56,6 +59,16 @@ public static class MauiProgram
         builder.Services.AddTransient<IEventsService, EventsFileStorageService>(
             _ => new EventsFileStorageService(FileSystem.OpenAppPackageFileAsync("events.json"))
         );
+
+        builder.Services.AddSingleton<INotificationService, NotificationService>();
+
+        // Load environment variables
+        IDotEnvService dotEnvService = new DotEnvService();
+        dotEnvService.LoadEnvironmentVariables(File.OpenRead(".env"));
+
+        builder.Services.AddTransient<IConfigurationService, ConfigurationService>();
+        builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
+        builder.Services.AddSingleton<IRealtimeService, FirebaseRealtimeService>();
 
         // Register routes
         Routing.RegisterRoute(nameof(LeadsPage), typeof(LeadsPage));
