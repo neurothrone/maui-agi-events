@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AGIEvents.App.Views.Events;
+﻿using AGIEvents.App.Views.Events;
 using AGIEvents.App.Views.Leads;
 using AGIEvents.App.Views.Scanner;
 using AGIEvents.App.Views.Settings;
