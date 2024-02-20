@@ -17,10 +17,12 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
     private const int QrCodeRequiredLength = 40;
 
     private string _eventId = string.Empty;
-    private ParticipantType _participantType = ParticipantType.Unknown;
 
     private bool _isParticipantScanOk;
+    [ObservableProperty] private ParticipantType _participant = ParticipantType.Unknown;
     [ObservableProperty] private bool _isDetecting = true;
+
+    public string PageTitle => Participant == ParticipantType.Exhibitor ? "Scan Exhibitor" : "Scan Lead";
 
     public QrScannerViewModel(
         INotificationService notificationService,
@@ -48,7 +50,7 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
             _eventId = eventId;
 
         if (participantValue is ParticipantType participantType)
-            _participantType = participantType;
+            _participant = participantType;
 
         query.Clear();
     }
@@ -75,7 +77,7 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
 
     private async Task RequestFromFirebase(string qrCode)
     {
-        if (_participantType == ParticipantType.Exhibitor)
+        if (_participant == ParticipantType.Exhibitor)
         {
             var response = await _realtimeService.FetchExhibitorById(qrCode, _eventId);
             if (response.errorMessage is not null)

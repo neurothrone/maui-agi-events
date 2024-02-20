@@ -8,7 +8,7 @@
              xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
              x:Class="AGIEvents.App.Views.Scanner.QrScannerPage"
              x:DataType="viewModels:QrScannerViewModel"
-             Title="QR Scanner">
+             Title="{Binding PageTitle}">
 
     <ContentPage.Resources>
         <converters:BarcodeDetectionEventArgsConverter x:Key="BarcodeDetectionEventArgsConverter" />
