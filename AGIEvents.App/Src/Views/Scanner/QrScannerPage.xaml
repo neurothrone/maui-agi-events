@@ -15,12 +15,12 @@
     </ContentPage.Resources>
 
     <Grid>
-        <ActivityIndicator IsEnabled="{Binding IsLoading}"
-                           IsVisible="{Binding IsLoading}" />
+        <ActivityIndicator IsEnabled="{Binding IsDetecting, Converter={StaticResource InverseBooleanConverter}}"
+                           IsVisible="{Binding IsDetecting, Converter={StaticResource InverseBooleanConverter}}" />
 
         <zxingControls:CameraBarcodeReaderView
             x:Name="BarcodeReader"
-            IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+            IsVisible="{Binding IsDetecting}"
             IsDetecting="{Binding IsDetecting}">
 
             <zxingControls:CameraBarcodeReaderView.Behaviors>
