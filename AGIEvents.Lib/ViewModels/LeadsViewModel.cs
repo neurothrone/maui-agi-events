@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
+using AGIEvents.Lib.Services;
 using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -12,10 +13,12 @@ namespace AGIEvents.Lib.ViewModels;
 public partial class LeadsViewModel :
     ObservableObject,
     IRecipient<LeadUpdatedMessage>,
-    IRecipient<LeadInsertedMessage>,
+    IRecipient<LeadAddedManuallyMessage>,
+    IRecipient<QrScannedVisitorMessage>,
     IQueryAttributable
 {
     private readonly IDatabaseRepository _databaseRepository;
+    private readonly INotificationService _notificationService;
 
     [ObservableProperty] private string _eventId = string.Empty;
     [ObservableProperty] private string _eventImage = string.Empty;
@@ -29,20 +32,25 @@ public partial class LeadsViewModel :
         set => SetProperty(ref _leads, value);
     }
 
-    public LeadsViewModel(IDatabaseRepository databaseRepository)
+    public LeadsViewModel(
+        IDatabaseRepository databaseRepository,
+        INotificationService notificationService)
     {
         _databaseRepository = databaseRepository;
+        _notificationService = notificationService;
         SubscribeToMessages();
     }
 
     private void SubscribeToMessages()
     {
         WeakReferenceMessenger.Default.Register<LeadUpdatedMessage>(this);
-        WeakReferenceMessenger.Default.Register<LeadInsertedMessage>(this);
+        WeakReferenceMessenger.Default.Register<LeadAddedManuallyMessage>(this);
+        WeakReferenceMessenger.Default.Register<QrScannedVisitorMessage>(this);
     }
 
     async void IRecipient<LeadUpdatedMessage>.Receive(LeadUpdatedMessage message)
     {
+        // TODO: extract out to separate method UpdateLead()
         var updatedLeadId = message.LeadId;
         var updatedLead = await _databaseRepository.FetchLeadDetailByIdAsync(updatedLeadId);
         if (updatedLead is null)
@@ -66,20 +74,9 @@ public partial class LeadsViewModel :
         await MainThread.InvokeOnMainThreadAsync(() => Leads[index] = updatedViewModel);
     }
 
-    async void IRecipient<LeadInsertedMessage>.Receive(LeadInsertedMessage message)
+    void IRecipient<LeadAddedManuallyMessage>.Receive(LeadAddedManuallyMessage message)
     {
-        var insertedLeadId = message.LeadId;
-        var leadDetailRecord = await _databaseRepository.FetchLeadDetailByIdAsync(insertedLeadId);
-        if (leadDetailRecord is null)
-        {
-            Console.WriteLine("❌ -> Inserted Lead from Database is null.");
-            return;
-        }
-
-        var leadItemRecord = LeadItemRecordDto.FromLeadDetailRecord(leadDetailRecord);
-        var newLead = LeadItemViewModel.FromLeadItemRecord(leadItemRecord);
-
-        await MainThread.InvokeOnMainThreadAsync(() => Leads.Insert(0, newLead));
+        SaveLead(message.Lead);
     }
 
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
@@ -95,10 +92,61 @@ public partial class LeadsViewModel :
         query.Clear();
     }
 
-    private async void LoadEventInfo(EventRecordDto recordDto)
+    void IRecipient<QrScannedVisitorMessage>.Receive(QrScannedVisitorMessage message)
     {
-        EventId = recordDto.EventId;
-        EventImage = recordDto.Image;
+        var scannedLead = message.Visitor;
+        var leadDetailRecord = new LeadDetailRecordDto(
+            EventId,
+            scannedLead.FirstName,
+            scannedLead.LastName,
+            scannedLead.Company,
+            scannedLead.Email,
+            scannedLead.Phone,
+            scannedLead.Address,
+            scannedLead.ZipCode,
+            scannedLead.City,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            DateTime.Now);
+        SaveLead(leadDetailRecord);
+    }
+
+    private async void SaveLead(LeadDetailRecordDto leadToSave)
+    {
+        if (IsThisLeadSaved(leadToSave))
+        {
+            await _notificationService.ShowNotificationAsync("Uh Oh!", "You have already scanned this Lead", "OK");
+            return;
+        }
+
+        // TODO: can just return the LeadId since that is all that is new
+        var savedLeadDetailRecord = await _databaseRepository.SaveLeadAsync(leadToSave);
+
+        var leadItemRecord = LeadItemRecordDto.FromLeadDetailRecord(savedLeadDetailRecord);
+        var newLead = LeadItemViewModel.FromLeadItemRecord(leadItemRecord);
+
+        await MainThread.InvokeOnMainThreadAsync(() => Leads.Insert(0, newLead));
+    }
+
+    private bool IsThisLeadSaved(ILeadHashable leadToCheck)
+    {
+        var searchHash = ILeadHashable.GetHash(leadToCheck);
+
+        foreach (var lead in Leads)
+        {
+            // Already in list
+            if (ILeadHashable.GetHash(lead) == searchHash)
+                return true;
+        }
+
+        return false;
+    }
+
+    private async void LoadEventInfo(EventRecordDto eventRecord)
+    {
+        EventId = eventRecord.EventId;
+        EventImage = eventRecord.Image;
 
         await FetchLeads();
     }
@@ -121,37 +169,26 @@ public partial class LeadsViewModel :
         });
     }
 
-    [RelayCommand]
-    private async Task ShowQrScanner()
+    private async Task NavigateToQrScanner(string eventId)
     {
-        // TODO: testing purposes
-        var record = new LeadDetailRecordDto(
-            EventId,
-            "Jane",
-            "Doe",
-            "Doe Industries",
-            "jane.doe@example.com",
-            "+46 123 456 78 90",
-            "Some st. 49",
-            "123 45",
-            "Gothenburg",
-            "Nothing",
-            "Captain Crunch",
-            "I have no notes!",
-            DateTime.Now
-        );
-        var savedRecord = await _databaseRepository.SaveLeadAsync(record);
-        var itemRecord = LeadItemRecordDto.FromLeadDetailRecord(savedRecord);
-
-        // Insert to top of List as we are Ordering by Ascending (ScannedDate)
-        await MainThread.InvokeOnMainThreadAsync(
-            () => Leads.Insert(0, LeadItemViewModel.FromLeadItemRecord(itemRecord)));
+        await Shell.Current.GoToAsync(nameof(AppRoute.QrScannerPage),
+            new Dictionary<string, object>
+            {
+                { nameof(EventViewModel.EventId), eventId },
+                { nameof(ParticipantType), ParticipantType.Visitor }
+            });
     }
 
     [RelayCommand]
-    private async Task DeleteLead(LeadItemViewModel leadItem)
+    private async Task ShowQrScanner()
     {
-        var wasDeleted = await _databaseRepository.DeleteLeadByIdAsync(leadItem.LeadId);
+        await NavigateToQrScanner(EventId);
+    }
+
+    [RelayCommand]
+    private async Task DeleteLead(LeadItemViewModel lead)
+    {
+        var wasDeleted = await _databaseRepository.DeleteLeadByIdAsync(lead.LeadId);
 
         if (!wasDeleted)
         {
@@ -159,14 +196,14 @@ public partial class LeadsViewModel :
             return;
         }
 
-        await MainThread.InvokeOnMainThreadAsync(() => Leads.Remove(leadItem));
+        await MainThread.InvokeOnMainThreadAsync(() => Leads.Remove(lead));
     }
 
     [RelayCommand]
-    private async Task ExportLead(LeadItemViewModel leadItem)
+    private async Task ExportLead(LeadItemViewModel lead)
     {
         // TODO: Export single lead feature
-        Console.WriteLine($"✅ -> Exporting lead with id: {leadItem.LeadId}");
+        Console.WriteLine($"✅ -> Exporting lead with id: {lead.LeadId}");
         await Task.Delay(100);
     }
 
@@ -179,9 +216,9 @@ public partial class LeadsViewModel :
     }
 
     [RelayCommand]
-    private async Task NavigateToLeadDetail(LeadItemViewModel leadItem)
+    private async Task NavigateToLeadDetail(LeadItemViewModel lead)
     {
-        var record = LeadItemRecordDto.FromViewModel(leadItem);
+        var record = LeadItemRecordDto.FromViewModel(lead);
         await Shell.Current.GoToAsync($"{nameof(AppRoute.LeadDetailPage)}",
             new Dictionary<string, object> { { nameof(LeadItemRecordDto), record } });
     }
