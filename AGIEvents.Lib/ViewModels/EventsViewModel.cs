@@ -108,14 +108,12 @@ public partial class EventsViewModel : ObservableObject,
         if (targetGroup != null)
         {
             targetGroup.Add(eventToMove);
-            // await MainThread.InvokeOnMainThreadAsync(() => targetGroup.SortByDescendingStartDate());
             targetGroup.SortByDescendingStartDate();
         }
         else
         {
             // If target group doesn't exist, create it and add the event
             targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
-            // await MainThread.InvokeOnMainThreadAsync(() => GroupedEvents.Add(targetGroup));
             GroupedEvents.Add(targetGroup);
         }
     }
@@ -145,7 +143,6 @@ public partial class EventsViewModel : ObservableObject,
 
         // Update UI
         WeakReferenceMessenger.Default.Send(new EventSavedChangedMessage(eventViewModel.EventId, true));
-        // await MoveEventToGroup(eventViewModel.EventId, UpcomingEvents, YourEvents);
         MainThread.BeginInvokeOnMainThread(() =>
         {
             MoveEventToGroup(eventViewModel.EventId, UpcomingEvents, YourEvents);
