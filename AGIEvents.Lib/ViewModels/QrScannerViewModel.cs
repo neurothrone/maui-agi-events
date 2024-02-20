@@ -50,9 +50,6 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
         if (participantValue is ParticipantType participantType)
             _participantType = participantType;
 
-        Debug.WriteLine($"✅ -> EventId: {_eventId}");
-        Debug.WriteLine($"✅ -> ParticipantType: {_participantType.ToString()}");
-
         query.Clear();
     }
 
