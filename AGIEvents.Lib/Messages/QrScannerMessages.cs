@@ -1,7 +1,9 @@
+using AGIEvents.Lib.Services.Firebase.Domain;
+
 namespace AGIEvents.Lib.Messages;
 
-public record QrScannerCompletedMessage(string QrCode);
+public record QrScannerFailedMessage(string Error);
 
-public record QrScannerFailedMessage();
+public record QrScannedExhibitorMessage(string EventId);
 
-public record QrScannerDetectionEnabledMessage();
+public record QrScannedVisitorMessage(Visitor Visitor);

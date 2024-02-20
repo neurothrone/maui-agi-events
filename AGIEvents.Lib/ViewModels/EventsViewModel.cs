@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
@@ -11,7 +12,7 @@ using CommunityToolkit.Mvvm.Messaging;
 namespace AGIEvents.Lib.ViewModels;
 
 public partial class EventsViewModel : ObservableObject,
-    IRecipient<QrScannerCompletedMessage>
+    IRecipient<QrScannedExhibitorMessage>
 {
     private const string YourEvents = "Your Events";
     private const string UpcomingEvents = "Coming Events";
@@ -40,13 +41,12 @@ public partial class EventsViewModel : ObservableObject,
         SubscribeToMessages();
 
         // TODO: implement NavigationService and OnNavigatedTo and call await FetchAndMergeEvents() from there
-        // TODO: Or use the same approach when loading json data?
         FetchAndMergeEvents();
     }
 
     private void SubscribeToMessages()
     {
-        WeakReferenceMessenger.Default.Register<QrScannerCompletedMessage>(this);
+        WeakReferenceMessenger.Default.Register(this);
     }
 
     // TODO: Extract out FetchEventsFromFile and FetchEventsFromDatabase tasks?
@@ -94,7 +94,7 @@ public partial class EventsViewModel : ObservableObject,
         });
     }
 
-    private async void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
+    private void MoveEventToGroup(string eventId, string sourceGroupName, string targetGroupName)
     {
         // Find the source group
         var sourceGroup = GroupedEvents.FirstOrDefault(g => g.GroupName == sourceGroupName);
@@ -108,64 +108,69 @@ public partial class EventsViewModel : ObservableObject,
         if (targetGroup != null)
         {
             targetGroup.Add(eventToMove);
-            await MainThread.InvokeOnMainThreadAsync(() => targetGroup.SortByDescendingStartDate());
+            // await MainThread.InvokeOnMainThreadAsync(() => targetGroup.SortByDescendingStartDate());
+            targetGroup.SortByDescendingStartDate();
         }
         else
         {
             // If target group doesn't exist, create it and add the event
             targetGroup = new EventGroup(targetGroupName, new List<EventViewModel> { eventToMove });
-            await MainThread.InvokeOnMainThreadAsync(() => GroupedEvents.Add(targetGroup));
+            // await MainThread.InvokeOnMainThreadAsync(() => GroupedEvents.Add(targetGroup));
+            GroupedEvents.Add(targetGroup);
         }
     }
 
-    private void ProcessQrCode(string qrCode)
+    void IRecipient<QrScannedExhibitorMessage>.Receive(QrScannedExhibitorMessage message)
     {
-        Console.WriteLine($"✅ -> QR Code scanned: {qrCode}");
-        // TODO: We need to send the EventId as well from the Message
-        // TODO: Check Firebase if exhibitorId exists for the Event
-
-        // If true, save to database and update UI
-
-        // Else show toast/snackbar that the user is not registered for the event
+        OnQrCodeScannedSuccessfully(message.EventId);
     }
 
-    void IRecipient<QrScannerCompletedMessage>.Receive(QrScannerCompletedMessage message)
+    private async void OnQrCodeScannedSuccessfully(string eventId)
     {
-        ProcessQrCode(message.QrCode);
-    }
+        var eventViewModel = GroupedEvents.SelectMany(g => g).FirstOrDefault(e => e.EventId == eventId);
 
-    [RelayCommand]
-    private async Task EventTapped(EventViewModel eventViewModel)
-    {
-        if (eventViewModel.IsSaved)
+        if (eventViewModel is null)
         {
-            var record = EventRecordDto.FromViewModel(eventViewModel);
-            await Shell.Current.GoToAsync(
-                $"{nameof(AppRoute.LeadsPage)}",
-                new Dictionary<string, object> { { nameof(EventRecordDto), record } }
-            );
+            Debug.WriteLine($"❌ -> EventId '{eventId}' not found.");
+            return;
         }
-        else
-        {
-            // TODO: Open QR Scanner
-            // Save to database
-            await _databaseRepository.SaveEventAsync(EventRecordDto.FromViewModel(eventViewModel));
 
-            // Update UI
-            WeakReferenceMessenger.Default.Send(new EventSavedChangedMessage(eventViewModel.EventId, true));
-            MainThread.BeginInvokeOnMainThread(() =>
+        await SaveEvent(eventViewModel);
+    }
+
+    private async Task SaveEvent(EventViewModel eventViewModel)
+    {
+        // Save to database
+        await _databaseRepository.SaveEventAsync(EventRecordDto.FromViewModel(eventViewModel));
+
+        // Update UI
+        WeakReferenceMessenger.Default.Send(new EventSavedChangedMessage(eventViewModel.EventId, true));
+        // await MoveEventToGroup(eventViewModel.EventId, UpcomingEvents, YourEvents);
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            MoveEventToGroup(eventViewModel.EventId, UpcomingEvents, YourEvents);
+        });
+
+        // TODO: Navigate to LeadsPage for this Event
+    }
+
+    private async Task NavigateToQrScanner(string eventId)
+    {
+        await Shell.Current.GoToAsync(nameof(AppRoute.QrScannerPage),
+            new Dictionary<string, object>
             {
-                MoveEventToGroup(eventViewModel.EventId, UpcomingEvents, YourEvents);
+                { nameof(EventViewModel.EventId), eventId },
+                { nameof(ParticipantType), ParticipantType.Exhibitor }
             });
-
-            // await Shell.Current.GoToAsync(nameof(AppRoute.QrScannerPage));
-        }
     }
 
-    [RelayCommand]
-    private async Task NavigateToSettings()
+    private async Task NavigateToLeadsForEvent(EventViewModel eventViewModel)
     {
-        await Shell.Current.GoToAsync(nameof(AppRoute.SettingsPage));
+        var record = EventRecordDto.FromViewModel(eventViewModel);
+        await Shell.Current.GoToAsync(
+            $"{nameof(AppRoute.LeadsPage)}",
+            new Dictionary<string, object> { { nameof(EventRecordDto), record } }
+        );
     }
 
     [RelayCommand]
@@ -180,5 +185,27 @@ public partial class EventsViewModel : ObservableObject,
         });
 
         await FetchAndMergeEvents();
+    }
+
+    [RelayCommand]
+    private async Task EventTapped(EventViewModel eventViewModel)
+    {
+        if (eventViewModel.IsSaved)
+        {
+            await NavigateToLeadsForEvent(eventViewModel);
+        }
+        else
+        {
+            // TEMP: Testing purposes, to skip Qr Scanning
+            // OnQrCodeScannedSuccessfully(eventViewModel.EventId);
+
+            await NavigateToQrScanner(eventViewModel.EventId);
+        }
+    }
+
+    [RelayCommand]
+    private async Task NavigateToSettings()
+    {
+        await Shell.Current.GoToAsync(nameof(AppRoute.SettingsPage));
     }
 }
