@@ -9,50 +9,38 @@ namespace AGIEvents.Lib.Services.Firebase;
 public class FirebaseRealtimeService : IRealtimeService
 {
     private readonly IConnectivity _connectivity;
-    private readonly INotificationService _notificationService;
     private readonly FirebaseClient _firebaseClient;
     private readonly bool _isBaseUrlValid;
 
     public FirebaseRealtimeService(
         IConfigurationService configurationService,
-        IConnectivity connectivity,
-        INotificationService notificationService)
+        IConnectivity connectivity)
     {
         _connectivity = connectivity;
-        _notificationService = notificationService;
-
         var firebaseUrl = configurationService.GetFirebaseUrl();
         _firebaseClient = new FirebaseClient(firebaseUrl);
         _isBaseUrlValid = !string.IsNullOrEmpty(firebaseUrl);
     }
 
-    // TODO: return Task<Exhibitor?, string errorMessage?>, Handle it from the caller of this service, not here
+    async Task<(Exhibitor? exhibitor, string? errorMessage)> IRealtimeService.FetchExhibitorById(
+        string exhibitionId,
+        string eventId) => await FetchParticipantById<Exhibitor>(exhibitionId, eventId);
 
-    async Task<Exhibitor?> IRealtimeService.FetchExhibitorById(string exhibitionId, string eventId)
-    {
-        var exhibitor = await FetchParticipantById<Exhibitor>(exhibitionId, eventId);
-        return exhibitor;
-    }
+    async Task<(Visitor? visitor,
+        string? errorMessage)> IRealtimeService.FetchVisitorById(
+        string exhibitionId,
+        string eventId) => await FetchParticipantById<Visitor>(exhibitionId, eventId);
 
-    async Task<Visitor?> IRealtimeService.FetchVisitorById(string exhibitionId, string eventId)
-    {
-        var visitor = await FetchParticipantById<Visitor>(exhibitionId, eventId);
-        return visitor;
-    }
 
-    private async Task<T?> FetchParticipantById<T>(string exhibitionId, string eventId) where T : Participant
+    private async Task<(T?, string? errorMessage)> FetchParticipantById<T>(
+        string exhibitionId,
+        string eventId) where T : Participant
     {
         if (!_isBaseUrlValid)
-        {
-            await _notificationService.ShowNotificationAsync("Uh Oh!", "Invalid Firebase URL", "OK");
-            return null;
-        }
+            return (null, "Invalid Firebase URL");
 
         if (_connectivity.NetworkAccess != NetworkAccess.Internet)
-        {
-            await _notificationService.ShowNotificationAsync("Uh Oh!", "No Internet", "OK");
-            return null;
-        }
+            return (null, "No Internet");
 
         var className = typeof(T).Name;
 
@@ -64,18 +52,12 @@ public class FirebaseRealtimeService : IRealtimeService
             .OnceAsJsonAsync();
 
         if (string.IsNullOrEmpty(jsonString) || jsonString.Equals("null"))
-        {
-            await Shell.Current.DisplayAlert("Uh Oh!", "You are not registered for this Event", "OK");
-            return null;
-        }
+            return (null, "The scanned QR Code is not registered for this Event");
 
         var participant = JsonSerializer.Deserialize<T>(jsonString);
         if (participant is null)
-        {
-            await Shell.Current.DisplayAlert("Uh Oh!", $"Failed to parse JSON for {className}", "OK");
-            return null;
-        }
+            return (null, $"Failed to parse JSON for {className}");
 
-        return participant;
+        return (participant, null);
     }
 }

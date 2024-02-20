@@ -4,6 +4,11 @@ namespace AGIEvents.Lib.Services.Realtime;
 
 public interface IRealtimeService
 {
-    Task<Exhibitor?> FetchExhibitorById(string exhibitionId, string eventId);
-    Task<Visitor?> FetchVisitorById(string exhibitionId, string eventId);
+    Task<(Exhibitor? exhibitor, string? errorMessage)> FetchExhibitorById(
+        string exhibitionId,
+        string eventId);
+
+    Task<(Visitor? visitor, string? errorMessage)> FetchVisitorById(
+        string exhibitionId,
+        string eventId);
 }
