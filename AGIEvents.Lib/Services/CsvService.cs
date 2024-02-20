@@ -1,30 +1,36 @@
+using System.Globalization;
 using AGIEvents.Lib.Domain;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace AGIEvents.Lib.Services;
 
 public class CsvService : ICsvService
 {
-    IEnumerable<string> ICsvService.ConvertLeadsToCsvData(LeadDetailRecordDto[] leads)
+    async Task ICsvService.WriteLeadsToFile(string filePath, IEnumerable<LeadDetailRecordDto> leads)
     {
-        var lines = new List<string>();
+        await using var writer = new StreamWriter(filePath);
+        await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        csv.Context.RegisterClassMap<LeadMap>();
+        await csv.WriteRecordsAsync(leads);
+    }
+}
 
-        // Use the name of each property as column headers
-        var header = string.Join(",", typeof(LeadDetailRecordDto)
-            .GetProperties()
-            .Select(property => property.Name)
-            .ToArray());
-        lines.Add(header);
-
-        // Use the value of each property as values
-        foreach (var lead in leads)
-        {
-            var values = string.Join(",", typeof(LeadDetailRecordDto)
-                .GetProperties()
-                .Select(property => property.GetValue(lead)));
-
-            lines.Add(values);
-        }
-
-        return lines.AsReadOnly();
+internal sealed class LeadMap : ClassMap<LeadDetailRecordDto>
+{
+    private LeadMap()
+    {
+        Map(l => l.Email).Index(0).Name("E-mail");
+        Map(l => l.FirstName).Index(1).Name("First Name");
+        Map(l => l.LastName).Index(2).Name("Last Name");
+        Map(l => l.Company).Index(3).Name("Company");
+        Map(l => l.Phone).Index(4).Name("Phone Number");
+        Map(l => l.Address).Index(5).Name("Address");
+        Map(l => l.ZipCode).Index(6).Name("Zip Code");
+        Map(l => l.City).Index(7).Name("City");
+        Map(l => l.Product).Index(8).Name("Product(s)");
+        Map(l => l.Seller).Index(9).Name("Seller");
+        Map(l => l.Notes).Index(10).Name("Notes");
+        Map(l => l.FormattedScannedDate).Index(11).Name("Scanned Date");
     }
 }

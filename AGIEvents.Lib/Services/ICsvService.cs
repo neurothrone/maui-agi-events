@@ -4,5 +4,5 @@ namespace AGIEvents.Lib.Services;
 
 public interface ICsvService
 {
-    IEnumerable<string> ConvertLeadsToCsvData(LeadDetailRecordDto[] leads);
+    Task WriteLeadsToFile(string filePath, IEnumerable<LeadDetailRecordDto> leads);
 }

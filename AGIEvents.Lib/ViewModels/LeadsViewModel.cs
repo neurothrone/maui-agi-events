@@ -23,6 +23,7 @@ public partial class LeadsViewModel :
     private readonly IShareService _shareService;
 
     [ObservableProperty] private string _eventId = string.Empty;
+    [ObservableProperty] private string _eventTitle = string.Empty;
     [ObservableProperty] private string _eventImage = string.Empty;
     [ObservableProperty] private bool _isLoading;
 
@@ -149,7 +150,9 @@ public partial class LeadsViewModel :
 
     private async void LoadEventInfo(EventRecordDto eventRecord)
     {
+        // TODO: just store record?
         EventId = eventRecord.EventId;
+        EventTitle = eventRecord.Title;
         EventImage = eventRecord.Image;
 
         await FetchLeads();
@@ -216,8 +219,8 @@ public partial class LeadsViewModel :
     {
         // TODO: IsLoading = true?
         var records = await _databaseRepository.FetchDetailedLeadsByEventIdAsync(EventId);
-        // TODO: Use Event name with File Name
-        await _shareService.ShareLeads("Leads.csv", records.ToArray());
+        var fileName = $"AGI Events {EventTitle} Exported Leads.csv";
+        await _shareService.ShareLeads(fileName, records.ToArray());
     }
 
     [RelayCommand]

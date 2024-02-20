@@ -15,4 +15,7 @@ public record LeadDetailRecordDto(
     string Notes,
     DateTime ScannedDate,
     int LeadId = -1
-) : ILeadHashable;
+) : ILeadHashable
+{
+    public string FormattedScannedDate => ScannedDate.ToString("HH:mm ddd dd MMM yyyy");
+}
