@@ -1,6 +1,5 @@
 using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
-using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -10,9 +9,14 @@ namespace AGIEvents.Lib.ViewModels;
 [QueryProperty(nameof(EventId), nameof(EventId))]
 public partial class AddLeadViewModel : ObservableObject
 {
-    private readonly IDatabaseRepository _databaseRepository;
+    private string _eventId = string.Empty;
 
-    [ObservableProperty] private string _eventId = string.Empty; // TODO: Does this have to be an ObservableProperty?
+    public string EventId
+    {
+        get => _eventId;
+        set => SetProperty(ref _eventId, value);
+    }
+
     [ObservableProperty] private string _email = string.Empty;
     [ObservableProperty] private string _phone = string.Empty;
     [ObservableProperty] private string _address = string.Empty;
@@ -66,21 +70,17 @@ public partial class AddLeadViewModel : ObservableObject
 
     public AsyncRelayCommand SubmitCommand { get; }
 
-    public AddLeadViewModel(IDatabaseRepository databaseRepository)
+    public AddLeadViewModel()
     {
-        _databaseRepository = databaseRepository;
         SubmitCommand = new AsyncRelayCommand(AddLead, () => IsFormValid);
     }
 
     private async Task AddLead()
     {
         if (!IsFormValid)
-        {
-            Console.WriteLine("❌ -> Form Is not Valid.");
             return;
-        }
 
-        var record = new LeadDetailRecordDto(
+        var newLead = new LeadDetailRecordDto(
             EventId,
             FirstName,
             LastName,
@@ -95,9 +95,8 @@ public partial class AddLeadViewModel : ObservableObject
             string.Empty,
             DateTime.Now
         );
-        var savedLead = await _databaseRepository.SaveLeadAsync(record);
 
-        WeakReferenceMessenger.Default.Send(new LeadInsertedMessage(savedLead.LeadId));
+        WeakReferenceMessenger.Default.Send(new LeadAddedManuallyMessage(newLead));
         await Shell.Current.GoToAsync("..");
     }
 }
