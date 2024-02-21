@@ -7,21 +7,44 @@
              x:DataType="viewModels:SettingsViewModel"
              Title="Settings">
 
-    <TableView Intent="Settings">
-        <TableRoot>
-            <TableSection Title="Preferences">
-                <SwitchCell Text="Safe Delete On for Leads"
-                            On="{Binding IsSafeDeleteOn, Mode=TwoWay}" />
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="icon_info.png" />
+    </ContentPage.ToolbarItems>
 
-            </TableSection>
+    <Grid>
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HeightRequest="50" />
 
-            <TableSection Title="Data">
+        <TableView IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                   Intent="Settings"
+                   HasUnevenRows="True">
+            <TableRoot>
+                <TableSection Title="Preferences">
+                    <SwitchCell Text="Safe Delete On for Leads"
+                                On="{Binding IsSafeDeleteOn, Mode=TwoWay}" />
 
-            </TableSection>
+                </TableSection>
 
-            <TableSection Title="About">
-
-            </TableSection>
-        </TableRoot>
-    </TableView>
+                <TableSection Title="Data">
+                    <ImageCell Text="Delete Your Data"
+                               Detail="This will delete all of your data on the device"
+                               ImageSource="icon_delete_red.png" />
+                    <SwitchCell Text="Show Delete Button"
+                                On="{Binding ShowDeleteButton, Mode=TwoWay}" />
+                    <ViewCell>
+                        <Button IsVisible="{Binding ShowDeleteButton}"
+                                Text="Delete All Data"
+                                TextColor="White"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                BackgroundColor="DarkRed"
+                                CornerRadius="0"
+                                Margin="0, 40,0,0"
+                                Command="{Binding DeleteAllDataCommand}" />
+                    </ViewCell>
+                </TableSection>
+            </TableRoot>
+        </TableView>
+    </Grid>
 </ContentPage>

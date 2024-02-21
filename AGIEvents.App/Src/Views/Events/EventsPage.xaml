@@ -9,11 +9,10 @@
     x:DataType="viewModels:EventsViewModel">
 
     <ContentPage.ToolbarItems>
+        <!-- For testing purposes -->
+        <ToolbarItem IconImageSource="icon_add.png"
+                     Command="{Binding AddEventCommand}" />
 
-        <ToolbarItem IconImageSource="icon_delete.png"
-                     SemanticProperties.Description="Clear"
-                     ToolTipProperties.Text="Clear"
-                     Command="{Binding ClearEventsCommand}" />
         <ToolbarItem IconImageSource="icon_settings.png"
                      SemanticProperties.Description="Settings"
                      ToolTipProperties.Text="Settings"
@@ -23,7 +22,7 @@
     <Grid Margin="10">
         <ActivityIndicator IsRunning="{Binding IsLoading}"
                            IsVisible="{Binding IsLoading}"
-                           HeightRequest="50"/>
+                           HeightRequest="50" />
 
         <CollectionView IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
                         VerticalScrollBarVisibility="{OnIdiom Phone=Never, Default=Always}"

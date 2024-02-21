@@ -12,7 +12,8 @@ using CommunityToolkit.Mvvm.Messaging;
 namespace AGIEvents.Lib.ViewModels;
 
 public partial class EventsViewModel : ObservableObject,
-    IRecipient<QrScannedExhibitorMessage>
+    IRecipient<QrScannedExhibitorMessage>,
+    IRecipient<EventsDeletedMessage>
 {
     private const string YourEvents = "Your Events";
     private const string UpcomingEvents = "Coming Events";
@@ -46,10 +47,35 @@ public partial class EventsViewModel : ObservableObject,
 
     private void SubscribeToMessages()
     {
-        WeakReferenceMessenger.Default.Register(this);
+        WeakReferenceMessenger.Default.Register<QrScannedExhibitorMessage>(this);
+        WeakReferenceMessenger.Default.Register<EventsDeletedMessage>(this);
+    }
+
+    void IRecipient<QrScannedExhibitorMessage>.Receive(QrScannedExhibitorMessage message)
+    {
+        OnQrCodeScannedSuccessfully(message.EventId);
+    }
+
+    async void IRecipient<EventsDeletedMessage>.Receive(EventsDeletedMessage message)
+    {
+        await ClearEvents();
+    }
+
+    private async Task ClearEvents()
+    {
+        await _databaseRepository.DeleteAllDataAsync();
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            foreach (var group in GroupedEvents)
+                group.Clear();
+        });
+
+        await FetchAndMergeEvents();
     }
 
     // TODO: Extract out FetchEventsFromFile and FetchEventsFromDatabase tasks?
+
     private async Task FetchAndMergeEvents()
     {
         IsLoading = true;
@@ -118,11 +144,6 @@ public partial class EventsViewModel : ObservableObject,
         }
     }
 
-    void IRecipient<QrScannedExhibitorMessage>.Receive(QrScannedExhibitorMessage message)
-    {
-        OnQrCodeScannedSuccessfully(message.EventId);
-    }
-
     private async void OnQrCodeScannedSuccessfully(string eventId)
     {
         var eventViewModel = GroupedEvents.SelectMany(g => g).FirstOrDefault(e => e.EventId == eventId);
@@ -171,20 +192,6 @@ public partial class EventsViewModel : ObservableObject,
     }
 
     [RelayCommand]
-    private async Task ClearEvents()
-    {
-        await _databaseRepository.DeleteAllDataAsync();
-
-        await MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            foreach (var group in GroupedEvents)
-                group.Clear();
-        });
-
-        await FetchAndMergeEvents();
-    }
-
-    [RelayCommand]
     private async Task EventTapped(EventViewModel eventViewModel)
     {
         if (eventViewModel.IsSaved)
@@ -204,5 +211,19 @@ public partial class EventsViewModel : ObservableObject,
     private async Task NavigateToSettings()
     {
         await Shell.Current.GoToAsync(nameof(AppRoute.SettingsPage));
+    }
+
+    [RelayCommand]
+    private async Task AddEvent()
+    {
+        var eventViewModel = GroupedEvents.SelectMany(g => g).FirstOrDefault();
+
+        if (eventViewModel is null)
+        {
+            Debug.WriteLine($"❌ -> Failed to Add Event.");
+            return;
+        }
+
+        await SaveEvent(eventViewModel);
     }
 }

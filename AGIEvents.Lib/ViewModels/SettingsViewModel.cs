@@ -1,11 +1,16 @@
+using AGIEvents.Lib.Messages;
+using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace AGIEvents.Lib.ViewModels;
 
-// TODO: Preferences Service with an enum of possible values, to get them
-
-public partial class SettingsViewModel : ObservableObject
+public partial class SettingsViewModel(IDatabaseRepository databaseRepository) : ObservableObject
 {
+    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty] private bool _showDeleteButton;
+
     public bool IsSafeDeleteOn
     {
         get => Preferences.Get(nameof(IsSafeDeleteOn), false);
@@ -15,5 +20,19 @@ public partial class SettingsViewModel : ObservableObject
             if (value != IsSafeDeleteOn)
                 OnPropertyChanged();
         }
+    }
+
+    [RelayCommand]
+    private async Task DeleteAllData()
+    {
+        IsLoading = true;
+
+        await databaseRepository.DeleteAllDataAsync();
+        WeakReferenceMessenger.Default.Send<EventsDeletedMessage>();
+        
+        IsLoading = false;
+        ShowDeleteButton = false;
+
+        // TODO: Show Toast/Snackbar when operation is completed
     }
 }
