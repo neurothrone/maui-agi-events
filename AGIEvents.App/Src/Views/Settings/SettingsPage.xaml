@@ -10,6 +10,8 @@
     <TableView Intent="Settings">
         <TableRoot>
             <TableSection Title="Preferences">
+                <SwitchCell Text="Safe Delete On for Leads"
+                            On="{Binding IsSafeDeleteOn, Mode=TwoWay}" />
 
             </TableSection>
 

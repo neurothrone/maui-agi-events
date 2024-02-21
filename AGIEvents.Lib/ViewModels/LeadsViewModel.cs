@@ -187,6 +187,17 @@ public partial class LeadsViewModel :
             });
     }
 
+    private async Task<bool> CanDeleteLead()
+    {
+        var isSafeDeleteOn = Preferences.Get(nameof(SettingsViewModel.IsSafeDeleteOn), false);
+        if (!isSafeDeleteOn)
+            return true;
+
+        return await _notificationService.ShowConfirmationPromptAsync(
+            "Delete Lead",
+            "Are you sure you want to delete this Lead?");
+    }
+
     [RelayCommand]
     private async Task ShowQrScanner()
     {
@@ -196,6 +207,10 @@ public partial class LeadsViewModel :
     [RelayCommand]
     private async Task DeleteLead(LeadItemViewModel lead)
     {
+        var canDeleteLead = await CanDeleteLead();
+        if (!canDeleteLead)
+            return;
+
         var wasDeleted = await _databaseRepository.DeleteLeadByIdAsync(lead.LeadId);
 
         if (!wasDeleted)

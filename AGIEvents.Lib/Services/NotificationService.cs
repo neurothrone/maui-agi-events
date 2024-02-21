@@ -6,4 +6,14 @@ public class NotificationService : INotificationService
     {
         await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.DisplayAlert(title, message, cancel));
     }
+
+    async Task<bool> INotificationService.ShowConfirmationPromptAsync(string title, string message)
+    {
+        return await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.DisplayAlert(
+            title,
+            message: message,
+            accept: "Yes",
+            cancel: "Cancel"
+        ));
+    }
 }
