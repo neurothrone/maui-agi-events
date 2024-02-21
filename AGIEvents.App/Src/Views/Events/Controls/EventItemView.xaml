@@ -6,7 +6,7 @@
              x:Class="AGIEvents.App.Views.Events.Controls.EventItemView"
              x:DataType="viewModels:EventViewModel">
 
-    <VerticalStackLayout>
+    <VerticalStackLayout HeightRequest="200">
         <Border
             Stroke="Transparent"
             BackgroundColor="SlateBlue"
@@ -16,10 +16,9 @@
                 <RoundRectangle CornerRadius="25" />
             </Border.StrokeShape>
 
-            <Grid>
+            <Grid HeightRequest="125">
                 <ImageButton
                     Aspect="AspectFit"
-                    HeightRequest="100"
                     SemanticProperties.Description="Event logo"
                     Source="{Binding Image}"
                     Command="{Binding

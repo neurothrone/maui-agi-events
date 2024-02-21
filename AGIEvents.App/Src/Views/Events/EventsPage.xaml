@@ -28,8 +28,8 @@
                         VerticalScrollBarVisibility="{OnIdiom Phone=Never, Default=Always}"
                         IsGrouped="True"
                         ItemsSource="{Binding GroupedEvents}"
-                        ItemSizingStrategy="MeasureFirstItem"
-                        SelectionMode="None">
+                        SelectionMode="None"
+                        ItemSizingStrategy="{OnPlatform Android=MeasureAllItems, Default=MeasureFirstItem}">
 
             <CollectionView.Header>
                 <controls:EventsHeader />
