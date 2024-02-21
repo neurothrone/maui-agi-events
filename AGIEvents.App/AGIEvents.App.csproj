@@ -88,6 +88,10 @@
         <MauiImage Include="Resources\Images\Icons\icon_delete_red.svg" />
         <None Remove="Resources\Images\Icons\icon_info.svg" />
         <MauiImage Include="Resources\Images\Icons\icon_info.svg" />
+        <None Remove="Resources\Images\Icons\dotnet_bot.png" />
+        <MauiImage Include="Resources\Images\Icons\dotnet_bot.png" />
+        <None Remove="Resources\Images\Icons\icon_link.svg" />
+        <MauiImage Include="Resources\Images\Icons\icon_link.svg" />
     </ItemGroup>
 
     <ItemGroup>
