@@ -17,7 +17,8 @@
 
     <TableView Intent="Form">
         <TableRoot>
-            <TableSection Title="New Lead">
+            <TableSection Title="New Lead" 
+                          TextColor="Silver">
                 <EntryCell Label="First Name" LabelColor="MediumSlateBlue"
                            Placeholder="John"
                            Text="{Binding FirstName}" />
@@ -54,5 +55,4 @@
             </TableSection>
         </TableRoot>
     </TableView>
-
 </ContentPage>
