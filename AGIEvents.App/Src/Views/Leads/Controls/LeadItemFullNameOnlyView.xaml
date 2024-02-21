@@ -9,15 +9,35 @@
 
     <controls:LeadItemWrapperView>
         <controls:LeadItemWrapperView.InnerContent>
-            <FlexLayout Direction="Row"
-                        JustifyContent="Start"
-                        AlignItems="Center">
-                <Image Source="icon_person.png" />
-                <Label
-                    FontSize="16"
-                    Margin="4,0,0,0"
-                    Text="{Binding FullName}" />
-            </FlexLayout>
+            <Grid ColumnDefinitions="20,*,0.15*"
+                  RowDefinitions="*"
+                  Padding="20,10,5,10"
+                  BackgroundColor="DarkSlateBlue">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding 
+                                                   Source={RelativeSource 
+                                                   AncestorType={x:Type viewModels:LeadsViewModel}}, 
+                                                   Path=NavigateToLeadDetailCommand}"
+                        CommandParameter="{Binding .}" />
+                </Grid.GestureRecognizers>
+
+                <Image Grid.Column="0"
+                       Source="icon_person.png" />
+
+                <Label Grid.Column="1"
+                       FontSize="16"
+                       LineBreakMode="TailTruncation"
+                       Margin="10,0,0,0"
+                       VerticalOptions="Center"
+                       Text="{Binding FullName}" />
+
+                <ImageButton Grid.Column="2"
+                             Source="icon_chevron_right.png"
+                             Scale="0.5"
+                             HorizontalOptions="End" />
+            </Grid>
         </controls:LeadItemWrapperView.InnerContent>
     </controls:LeadItemWrapperView>
 </ContentView>

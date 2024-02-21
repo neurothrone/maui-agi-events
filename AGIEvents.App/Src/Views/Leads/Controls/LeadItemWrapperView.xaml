@@ -39,41 +39,7 @@
                                    CommandParameter="{Binding .}" />
                     </SwipeView.RightItems>
 
-                    <Grid ColumnDefinitions="*,*"
-                          RowDefinitions="*"
-                          RowSpacing="4"
-                          Padding="20,10,5,10"
-                          BackgroundColor="DarkSlateBlue">
-
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding 
-                                                   Source={RelativeSource 
-                                                   AncestorType={x:Type viewModels:LeadsViewModel}}, 
-                                                   Path=NavigateToLeadDetailCommand}"
-                                CommandParameter="{Binding .}" />
-                        </Grid.GestureRecognizers>
-
-                        <ContentView x:Name="MyContent"
-                                     Grid.Column="0" />
-
-                        <!-- <FlexLayout Grid.Column="0" -->
-                        <!--             Direction="Row" -->
-                        <!--             JustifyContent="Start" -->
-                        <!--             AlignItems="Center"> -->
-                        <!--     <Image Source="{Binding Image, Source={x:Reference This}}" /> -->
-                        <!--     <Label -->
-                        <!--         FontSize="16" -->
-                        <!--         Margin="4,0,0,0" -->
-                        <!--         Text="{Binding InnerContent, Source={x:Reference This}}" /> -->
-                        <!-- </FlexLayout> -->
-
-                        <ImageButton Grid.Column="1"
-                                     Source="icon_chevron_right.png"
-                                     Scale="0.5"
-                                     HorizontalOptions="End" />
-
-                    </Grid>
+                    <ContentView x:Name="MyContent" />
                 </SwipeView>
             </Border>
 
