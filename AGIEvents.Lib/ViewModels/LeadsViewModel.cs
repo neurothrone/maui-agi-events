@@ -199,12 +199,6 @@ public partial class LeadsViewModel :
     }
 
     [RelayCommand]
-    private async Task ShowQrScanner()
-    {
-        await NavigateToQrScanner(EventId);
-    }
-
-    [RelayCommand]
     private async Task DeleteLead(LeadItemViewModel lead)
     {
         var canDeleteLead = await CanDeleteLead();
@@ -244,6 +238,12 @@ public partial class LeadsViewModel :
         var records = await _databaseRepository.FetchDetailedLeadsByEventIdAsync(EventId);
         var fileName = $"AGI Events {EventTitle} Exported Leads.csv";
         await _shareService.ExportLeads(fileName, records.ToArray());
+    }
+
+    [RelayCommand]
+    private async Task ShowQrScanner()
+    {
+        await NavigateToQrScanner(EventId);
     }
 
     [RelayCommand]
