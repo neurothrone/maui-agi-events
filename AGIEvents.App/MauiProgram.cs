@@ -27,32 +27,31 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("MaterialSymbolsRounded.ttf", "MaterialSymbolsRounded");
             });
+
+        builder.RegisterThirdPartyServices();
+        builder.RegisterAppServices();
+        builder.RegisterViewModels();
+        builder.RegisterViews();
+        RegisterRoutes();
+
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
+
+        return builder.Build();
+    }
+
+    private static void RegisterThirdPartyServices(this MauiAppBuilder builder)
+    {
         // Required to use CommunityToolkit.Maui
         builder.UseMauiCommunityToolkit();
 
         // Third Party
         builder.UseBarcodeReader();
+    }
 
-        builder.Services.AddSingleton<EventsPage>();
-        builder.Services.AddSingleton<EventsViewModel>();
-        builder.Services.AddTransient<EventViewModel>();
-
-        builder.Services.AddTransient<LeadsPage>();
-        builder.Services.AddTransient<LeadsViewModel>();
-        builder.Services.AddTransient<LeadItemViewModel>();
-
-        builder.Services.AddTransient<LeadDetailPage>();
-        builder.Services.AddTransient<LeadDetailViewModel>();
-
-        builder.Services.AddTransient<AddLeadPage>();
-        builder.Services.AddTransient<AddLeadViewModel>();
-
-        builder.Services.AddTransient<QrScannerPage>();
-        builder.Services.AddTransient<QrScannerViewModel>();
-
-        builder.Services.AddTransient<SettingsPage>();
-        builder.Services.AddTransient<SettingsViewModel>();
-
+    private static void RegisterAppServices(this MauiAppBuilder builder)
+    {
         builder.Services.AddSingleton<IAppInteractionsService, AppInteractionsService>();
         builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
         builder.Services.AddTransient<IEventsService, EventsFileStorageService>(
@@ -68,23 +67,49 @@ public static class MauiProgram
             FileSystem.OpenAppPackageFileAsync("env.txt"));
 
         builder.Services.AddTransient<IConfigurationService, ConfigurationService>();
-        builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
+        builder.Services.AddSingleton(Connectivity.Current);
         builder.Services.AddSingleton<IRealtimeService, FirebaseRealtimeService>();
 
         builder.Services.AddSingleton<ICsvService, CsvService>();
         builder.Services.AddSingleton<IShareService, ShareService>();
+    }
 
-        // Register routes
+    private static void RegisterViewModels(this MauiAppBuilder builder)
+    {
+        builder.Services.AddSingleton<EventsViewModel>();
+        builder.Services.AddTransient<EventViewModel>();
+
+        builder.Services.AddTransient<LeadsViewModel>();
+        builder.Services.AddTransient<LeadItemViewModel>();
+
+        builder.Services.AddTransient<LeadDetailViewModel>();
+
+        builder.Services.AddTransient<AddLeadViewModel>();
+
+        builder.Services.AddTransient<QrScannerViewModel>();
+
+        builder.Services.AddTransient<SettingsViewModel>();
+    }
+
+    private static void RegisterViews(this MauiAppBuilder builder)
+    {
+        builder.Services.AddSingleton<EventsPage>();
+
+        builder.Services.AddTransient<LeadsPage>();
+        builder.Services.AddTransient<LeadDetailPage>();
+        builder.Services.AddTransient<AddLeadPage>();
+
+        builder.Services.AddTransient<QrScannerPage>();
+
+        builder.Services.AddTransient<SettingsPage>();
+    }
+
+    private static void RegisterRoutes()
+    {
         Routing.RegisterRoute(nameof(LeadsPage), typeof(LeadsPage));
         Routing.RegisterRoute(nameof(LeadDetailPage), typeof(LeadDetailPage));
         Routing.RegisterRoute(nameof(AddLeadPage), typeof(AddLeadPage));
         Routing.RegisterRoute(nameof(QrScannerPage), typeof(QrScannerPage));
         Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
-
-#if DEBUG
-        builder.Logging.AddDebug();
-#endif
-
-        return builder.Build();
     }
 }
