@@ -7,10 +7,33 @@
              x:DataType="viewModels:AboutViewModel"
              Title="About">
 
-    <TableView>
+    <TableView Intent="Data">
         <TableRoot>
-            <TableSection Title="About"></TableSection>
+            <TableSection Title="{Binding AppTitle, Mode=OneTime}">
+                <EntryCell Label="Version"
+                           Text="{Binding Version, Mode=OneTime}"
+                           IsEnabled="False" />
+                <EntryCell Label="Developer"
+                           Text="{Binding Author, Mode=OneTime}"
+                           IsEnabled="False" />
+            </TableSection>
+
+            <TableSection Title="Contact">
+                <ImageCell ImageSource="icon_link.png"
+                           Text="Support"
+                           Detail="This will open the default email app"
+                           Command="{Binding OpenSupportEmailLinkCommand}" />
+                <ImageCell ImageSource="icon_link.png"
+                           Text="LinkedIn"
+                           Detail="This will open a browser"
+                           Command="{Binding OpenLinkedinWebLinkCommand}" />
+            </TableSection>
+
+            <TableSection Title="Credits">
+                <ImageCell ImageSource="dotnet_bot.png"
+                           Text="{Binding DotNetTextCredits, Mode=OneTime}"
+                           Detail="{Binding DotNetDetailCredits, Mode=OneTime}" />
+            </TableSection>
         </TableRoot>
     </TableView>
-
 </ContentPage>
