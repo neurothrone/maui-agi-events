@@ -1,7 +1,9 @@
-﻿using AGIEvents.App.Views.Events;
+﻿using AGIEvents.App.Views.About;
+using AGIEvents.App.Views.Events;
 using AGIEvents.App.Views.Leads;
 using AGIEvents.App.Views.Scanner;
 using AGIEvents.App.Views.Settings;
+using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services;
 using AGIEvents.Lib.Services.Database;
 using AGIEvents.Lib.Services.Events;
@@ -106,10 +108,11 @@ public static class MauiProgram
 
     private static void RegisterRoutes()
     {
-        Routing.RegisterRoute(nameof(LeadsPage), typeof(LeadsPage));
-        Routing.RegisterRoute(nameof(LeadDetailPage), typeof(LeadDetailPage));
-        Routing.RegisterRoute(nameof(AddLeadPage), typeof(AddLeadPage));
-        Routing.RegisterRoute(nameof(QrScannerPage), typeof(QrScannerPage));
-        Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
+        Routing.RegisterRoute(nameof(AppRoute.LeadsPage), typeof(LeadsPage));
+        Routing.RegisterRoute(nameof(AppRoute.LeadDetailPage), typeof(LeadDetailPage));
+        Routing.RegisterRoute(nameof(AppRoute.AddLeadPage), typeof(AddLeadPage));
+        Routing.RegisterRoute(nameof(AppRoute.QrScannerPage), typeof(QrScannerPage));
+        Routing.RegisterRoute(nameof(AppRoute.SettingsPage), typeof(SettingsPage));
+        Routing.RegisterRoute(nameof(AppRoute.AboutPage), typeof(AboutPage));
     }
 }
