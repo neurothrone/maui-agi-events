@@ -31,8 +31,8 @@
             <HorizontalStackLayout Spacing="10">
 
                 <Button ImageSource="icon_qr_code_scanner.png"
-                        HeightRequest="20"
-                        WidthRequest="20"
+                        HeightRequest="44"
+                        WidthRequest="44"
                         TextColor="White"
                         BackgroundColor="SlateBlue"
                         FontSize="24"
@@ -43,8 +43,8 @@
                         Command="{Binding ShowQrScannerCommand}" />
 
                 <Button ImageSource="icon_add.png"
-                        WidthRequest="20"
-                        HeightRequest="20"
+                        WidthRequest="44"
+                        HeightRequest="44"
                         TextColor="White"
                         BackgroundColor="SlateBlue"
                         FontSize="24"
