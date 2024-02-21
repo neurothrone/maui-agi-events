@@ -56,14 +56,16 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAppInteractionsService, AppInteractionsService>();
         builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
         builder.Services.AddTransient<IEventsService, EventsFileStorageService>(
-            _ => new EventsFileStorageService(FileSystem.OpenAppPackageFileAsync("events.json"))
+            _ => new EventsFileStorageService(
+                FileSystem.OpenAppPackageFileAsync("events.json"))
         );
 
         builder.Services.AddSingleton<INotificationService, NotificationService>();
 
         // Load environment variables
         IDotEnvService dotEnvService = new DotEnvService();
-        dotEnvService.LoadEnvironmentVariables(File.OpenRead(".env"));
+        dotEnvService.LoadEnvironmentVariables(
+            FileSystem.OpenAppPackageFileAsync("env.txt"));
 
         builder.Services.AddTransient<IConfigurationService, ConfigurationService>();
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);

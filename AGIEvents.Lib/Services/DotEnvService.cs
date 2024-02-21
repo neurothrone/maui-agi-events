@@ -1,11 +1,15 @@
+using System.Text;
+
 namespace AGIEvents.Lib.Services;
 
 public class DotEnvService : IDotEnvService
 {
-    void IDotEnvService.LoadEnvironmentVariables(Stream dotEnvStreamTask)
+    async void IDotEnvService.LoadEnvironmentVariables(Task<Stream> dotEnvStreamTask)
     {
-        using var reader = new StreamReader(dotEnvStreamTask);
-        while (reader.ReadLine() is { } line)
+        var stream = await dotEnvStreamTask;
+
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        while (await reader.ReadLineAsync() is { } line)
         {
             var parts = line.Split(
                 '=',

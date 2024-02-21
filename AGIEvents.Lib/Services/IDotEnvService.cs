@@ -2,5 +2,5 @@ namespace AGIEvents.Lib.Services;
 
 public interface IDotEnvService
 {
-    void LoadEnvironmentVariables(Stream dotEnvStreamTask);
+    void LoadEnvironmentVariables(Task<Stream> dotEnvStreamTask);
 }
