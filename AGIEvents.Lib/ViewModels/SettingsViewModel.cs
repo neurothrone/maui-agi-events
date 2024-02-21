@@ -29,7 +29,7 @@ public partial class SettingsViewModel(IDatabaseRepository databaseRepository) :
         IsLoading = true;
 
         await databaseRepository.DeleteAllDataAsync();
-        WeakReferenceMessenger.Default.Send<EventsDeletedMessage>();
+        WeakReferenceMessenger.Default.Send<AllDataDeletedMessage>();
 
         IsLoading = false;
         ShowDeleteButton = false;

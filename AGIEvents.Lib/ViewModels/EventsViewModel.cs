@@ -13,7 +13,7 @@ namespace AGIEvents.Lib.ViewModels;
 
 public partial class EventsViewModel : ObservableObject,
     IRecipient<QrScannedExhibitorMessage>,
-    IRecipient<EventsDeletedMessage>
+    IRecipient<AllDataDeletedMessage>
 {
     private const string YourEvents = "Your Events";
     private const string UpcomingEvents = "Coming Events";
@@ -48,7 +48,7 @@ public partial class EventsViewModel : ObservableObject,
     private void SubscribeToMessages()
     {
         WeakReferenceMessenger.Default.Register<QrScannedExhibitorMessage>(this);
-        WeakReferenceMessenger.Default.Register<EventsDeletedMessage>(this);
+        WeakReferenceMessenger.Default.Register<AllDataDeletedMessage>(this);
     }
 
     void IRecipient<QrScannedExhibitorMessage>.Receive(QrScannedExhibitorMessage message)
@@ -56,7 +56,7 @@ public partial class EventsViewModel : ObservableObject,
         OnQrCodeScannedSuccessfully(message.EventId);
     }
 
-    async void IRecipient<EventsDeletedMessage>.Receive(EventsDeletedMessage message)
+    async void IRecipient<AllDataDeletedMessage>.Receive(AllDataDeletedMessage message)
     {
         await ClearEvents();
     }
