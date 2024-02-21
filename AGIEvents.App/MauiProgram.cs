@@ -91,6 +91,8 @@ public static class MauiProgram
         builder.Services.AddTransient<QrScannerViewModel>();
 
         builder.Services.AddTransient<SettingsViewModel>();
+
+        builder.Services.AddTransient<AboutViewModel>();
     }
 
     private static void RegisterViews(this MauiAppBuilder builder)
@@ -104,6 +106,8 @@ public static class MauiProgram
         builder.Services.AddTransient<QrScannerPage>();
 
         builder.Services.AddTransient<SettingsPage>();
+
+        builder.Services.AddTransient<AboutPage>();
     }
 
     private static void RegisterRoutes()

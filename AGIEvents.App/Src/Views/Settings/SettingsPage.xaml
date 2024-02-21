@@ -8,7 +8,8 @@
              Title="Settings">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="icon_info.png" />
+        <ToolbarItem IconImageSource="icon_info.png"
+                     Command="{Binding NavigateToAboutPageCommand}" />
     </ContentPage.ToolbarItems>
 
     <Grid>

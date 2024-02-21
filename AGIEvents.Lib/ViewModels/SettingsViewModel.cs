@@ -1,4 +1,5 @@
 using AGIEvents.Lib.Messages;
+using AGIEvents.Lib.Models;
 using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -29,10 +30,16 @@ public partial class SettingsViewModel(IDatabaseRepository databaseRepository) :
 
         await databaseRepository.DeleteAllDataAsync();
         WeakReferenceMessenger.Default.Send<EventsDeletedMessage>();
-        
+
         IsLoading = false;
         ShowDeleteButton = false;
 
         // TODO: Show Toast/Snackbar when operation is completed
+    }
+
+    [RelayCommand]
+    private async Task NavigateToAboutPage()
+    {
+        await Shell.Current.GoToAsync(nameof(AppRoute.AboutPage));
     }
 }

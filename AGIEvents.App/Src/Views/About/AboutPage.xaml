@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:AGIEvents.Lib.ViewModels;assembly=AGIEvents.Lib"
+             x:Class="AGIEvents.App.Views.About.AboutPage"
+             x:DataType="viewModels:AboutViewModel"
+             Title="About">
+
+    <TableView>
+        <TableRoot>
+            <TableSection Title="About"></TableSection>
+        </TableRoot>
+    </TableView>
+
+</ContentPage>
