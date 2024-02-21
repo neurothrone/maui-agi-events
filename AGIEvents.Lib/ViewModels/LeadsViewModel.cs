@@ -122,7 +122,7 @@ public partial class LeadsViewModel :
     {
         if (IsThisLeadSaved(leadToSave))
         {
-            await _notificationService.ShowNotificationAsync("Uh Oh!", "You have already scanned this Lead", "OK");
+            await _notificationService.ShowNotificationAsync("Uh Oh!", "You have already added this Lead", "OK");
             return;
         }
 
