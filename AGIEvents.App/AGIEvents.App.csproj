@@ -12,7 +12,7 @@
         either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
         <!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 
-        <!-- Required for deploying to rael Android device -->
+        <!-- Required for deploying to real Android device -->
         <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 
         <OutputType>Exe</OutputType>
@@ -97,7 +97,7 @@
     <ItemGroup>
         <ProjectReference Include="..\AGIEvents.Lib\AGIEvents.Lib.csproj"/>
     </ItemGroup>
-
+    
     <ItemGroup>
         <Folder Include="Resources\Images\AppIcon\"/>
     </ItemGroup>
