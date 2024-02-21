@@ -10,27 +10,20 @@ using CommunityToolkit.Mvvm.Messaging;
 
 namespace AGIEvents.Lib.ViewModels;
 
-public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
+public partial class QrScannerViewModel(
+    INotificationService notificationService,
+    IRealtimeService realtimeService)
+    : ObservableObject, IQueryAttributable
 {
-    private readonly INotificationService _notificationService;
-    private readonly IRealtimeService _realtimeService;
     private const int QrCodeRequiredLength = 40;
 
     private string _eventId = string.Empty;
-
     private bool _isParticipantScanOk;
+
     [ObservableProperty] private ParticipantType _participant = ParticipantType.Unknown;
     [ObservableProperty] private bool _isDetecting = true;
 
     public string PageTitle => Participant == ParticipantType.Exhibitor ? "Scan Exhibitor" : "Scan Lead";
-
-    public QrScannerViewModel(
-        INotificationService notificationService,
-        IRealtimeService realtimeService)
-    {
-        _notificationService = notificationService;
-        _realtimeService = realtimeService;
-    }
 
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
     {
@@ -50,7 +43,7 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
             _eventId = eventId;
 
         if (participantValue is ParticipantType participantType)
-            _participant = participantType;
+            Participant = participantType;
 
         query.Clear();
     }
@@ -62,12 +55,12 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
 
         if (qrCode.Length != QrCodeRequiredLength)
         {
-            await _notificationService.ShowNotificationAsync("Uh Oh!", "Invalid QR Code", "OK");
+            await notificationService.ShowNotificationAsync("Uh Oh!", "Invalid QR Code", "OK");
             IsDetecting = true;
             return;
         }
 
-        await RequestFromFirebase(qrCode);
+        await FetchParticipantFromFirebase(qrCode);
 
         if (_isParticipantScanOk)
             await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(".."));
@@ -75,14 +68,14 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
             IsDetecting = true;
     }
 
-    private async Task RequestFromFirebase(string qrCode)
+    private async Task FetchParticipantFromFirebase(string qrCode)
     {
-        if (_participant == ParticipantType.Exhibitor)
+        if (Participant == ParticipantType.Exhibitor)
         {
-            var response = await _realtimeService.FetchExhibitorById(qrCode, _eventId);
+            var response = await realtimeService.FetchExhibitorById(qrCode, _eventId);
             if (response.errorMessage is not null)
             {
-                await _notificationService.ShowNotificationAsync("Uh Oh!", response.errorMessage, "OK");
+                await notificationService.ShowNotificationAsync("Uh Oh!", response.errorMessage, "OK");
             }
             else
             {
@@ -92,10 +85,10 @@ public partial class QrScannerViewModel : ObservableObject, IQueryAttributable
         }
         else
         {
-            var response = await _realtimeService.FetchVisitorById(qrCode, _eventId);
+            var response = await realtimeService.FetchVisitorById(qrCode, _eventId);
             if (response.errorMessage is not null)
             {
-                await _notificationService.ShowNotificationAsync("Uh Oh!", response.errorMessage, "OK");
+                await notificationService.ShowNotificationAsync("Uh Oh!", response.errorMessage, "OK");
             }
             else
             {
