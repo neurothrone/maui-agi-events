@@ -15,4 +15,4 @@ events.json
 firebase-realtime-data.json
 
 # Environment
-.env
+env.txt
