@@ -6,5 +6,6 @@ public enum AppRoute
     LeadsPage,
     LeadDetailPage,
     AddLeadPage,
-    SettingsPage
+    SettingsPage,
+    AboutPage
 }
