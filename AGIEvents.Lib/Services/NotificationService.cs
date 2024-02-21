@@ -1,3 +1,7 @@
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using Font = Microsoft.Maui.Font;
+
 namespace AGIEvents.Lib.Services;
 
 public class NotificationService : INotificationService
@@ -15,5 +19,24 @@ public class NotificationService : INotificationService
             accept: "Yes",
             cancel: "Cancel"
         ));
+    }
+
+    async Task INotificationService.ShowSnackbar(string text)
+    {
+        CancellationTokenSource cancellationTokenSource = new();
+        var snackbarOptions = new SnackbarOptions
+        {
+            BackgroundColor = Colors.DarkSlateBlue,
+            TextColor = Colors.White,
+            CornerRadius = new CornerRadius(10),
+            Font = Font.SystemFontOfSize(14),
+        };
+        var duration = TimeSpan.FromSeconds(3);
+
+        var snackbar = Snackbar.Make(message: text,
+            actionButtonText: string.Empty,
+            duration: duration,
+            visualOptions: snackbarOptions);
+        await snackbar.Show(cancellationTokenSource.Token);
     }
 }

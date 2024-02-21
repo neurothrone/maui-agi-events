@@ -1,5 +1,6 @@
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
+using AGIEvents.Lib.Services;
 using AGIEvents.Lib.Services.Database;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,7 +8,9 @@ using CommunityToolkit.Mvvm.Messaging;
 
 namespace AGIEvents.Lib.ViewModels;
 
-public partial class SettingsViewModel(IDatabaseRepository databaseRepository) : ObservableObject
+public partial class SettingsViewModel(
+    IDatabaseRepository databaseRepository,
+    INotificationService notificationService) : ObservableObject
 {
     [ObservableProperty] private bool _isLoading;
     [ObservableProperty] private bool _showDeleteButton;
@@ -34,7 +37,7 @@ public partial class SettingsViewModel(IDatabaseRepository databaseRepository) :
         IsLoading = false;
         ShowDeleteButton = false;
 
-        // TODO: Show Toast/Snackbar when operation is completed
+        await notificationService.ShowSnackbar("Your data has successfully been deleted.");
     }
 
     [RelayCommand]
