@@ -22,7 +22,8 @@
 
     <Grid Margin="10">
         <ActivityIndicator IsRunning="{Binding IsLoading}"
-                           IsVisible="{Binding IsLoading}" />
+                           IsVisible="{Binding IsLoading}"
+                           HeightRequest="50"/>
 
         <CollectionView IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
                         VerticalScrollBarVisibility="{OnIdiom Phone=Never, Default=Always}"
