@@ -1,6 +1,6 @@
 namespace AGIEvents.Lib.Services;
 
-public class AppInteractionsService : IAppInteractionsService
+public class AppInteractionsService(INotificationService notificationService) : IAppInteractionsService
 {
     public async Task OpenBrowserAsync(string url)
     {
@@ -9,9 +9,12 @@ public class AppInteractionsService : IAppInteractionsService
             var uri = new Uri(url);
             await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // An unexpected error occurred. No browser may be installed on the device.
+            await notificationService.ShowNotificationAsync(
+                "An unexpected error occurred.",
+                "No browser may be installed on the device.",
+                "OK");
         }
     }
 
@@ -32,9 +35,25 @@ public class AppInteractionsService : IAppInteractionsService
 
     public async Task OpenPhoneDialerAsync(string phoneNumber)
     {
-        if (PhoneDialer.Default.IsSupported)
+        try
         {
-            PhoneDialer.Default.Open(phoneNumber);
+            if (PhoneDialer.Default.IsSupported)
+                PhoneDialer.Default.Open(phoneNumber);
+        }
+        catch (ArgumentNullException)
+        {
+            await notificationService.ShowNotificationAsync(
+                "Unable to dial",
+                "Phone number was not valid.",
+                "OK");
+        }
+        catch (Exception)
+        {
+            // Other error has occurred.
+            await notificationService.ShowNotificationAsync(
+                "Unable to dial",
+                "Phone dialing failed.",
+                "OK");
         }
     }
 }
