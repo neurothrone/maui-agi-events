@@ -24,13 +24,11 @@
                Source="{Binding EventImage}" />
 
         <controls:LeadsOverviewView Grid.Row="1" />
-
+        <controls:LeadsCollectionView Grid.Row="2" />
         <ActivityIndicator Grid.Row="2"
                            IsRunning="{Binding IsLoading}"
                            IsVisible="{Binding IsLoading}"
                            HeightRequest="50"
-                           VerticalOptions="Start"/>
-
-        <controls:LeadsCollectionView Grid.Row="2" />
+                           VerticalOptions="Start" />
     </Grid>
 </ContentPage>
