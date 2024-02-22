@@ -3,6 +3,7 @@ using System.Diagnostics;
 using AGIEvents.Lib.Domain;
 using AGIEvents.Lib.Messages;
 using AGIEvents.Lib.Models;
+using AGIEvents.Lib.Services;
 using AGIEvents.Lib.Services.Database;
 using AGIEvents.Lib.Services.Events;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -20,6 +21,7 @@ public partial class EventsViewModel : ObservableObject,
 
     private readonly IDatabaseRepository _databaseRepository;
     private readonly IEventsService _eventsService;
+    private readonly INotificationService _notificationService;
 
     [ObservableProperty] private bool _isLoading;
 
@@ -33,11 +35,12 @@ public partial class EventsViewModel : ObservableObject,
 
     public EventsViewModel(
         IDatabaseRepository databaseRepository,
-        IEventsService eventsService
-    )
+        IEventsService eventsService,
+        INotificationService notificationService)
     {
         _databaseRepository = databaseRepository;
         _eventsService = eventsService;
+        _notificationService = notificationService;
 
         SubscribeToMessages();
 
@@ -167,9 +170,8 @@ public partial class EventsViewModel : ObservableObject,
         MainThread.BeginInvokeOnMainThread(() =>
         {
             MoveEventToGroup(eventViewModel.EventId, UpcomingEvents, YourEvents);
+            _notificationService.ShowSnackbar("Event successfully saved.");
         });
-
-        // TODO: Navigate to LeadsPage for this Event
     }
 
     private async Task NavigateToQrScanner(string eventId)
@@ -213,6 +215,7 @@ public partial class EventsViewModel : ObservableObject,
         await Shell.Current.GoToAsync(nameof(AppRoute.SettingsPage));
     }
 
+    // TEMP:
     [RelayCommand]
     private async Task AddEvent()
     {

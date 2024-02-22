@@ -131,7 +131,11 @@ public partial class LeadsViewModel :
         var leadItemRecord = LeadItemRecordDto.FromLeadDetailRecord(savedLeadDetailRecord);
         var newLead = LeadItemViewModel.FromLeadItemRecord(leadItemRecord);
 
-        await MainThread.InvokeOnMainThreadAsync(() => Leads.Insert(0, newLead));
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            Leads.Insert(0, newLead);
+            _notificationService.ShowSnackbar("Lead successfully added.");
+        });
     }
 
     private bool IsThisLeadSaved(ILeadHashable leadToCheck)
