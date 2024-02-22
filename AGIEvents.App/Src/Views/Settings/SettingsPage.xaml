@@ -13,10 +13,6 @@
     </ContentPage.ToolbarItems>
 
     <Grid>
-        <ActivityIndicator IsRunning="{Binding IsLoading}"
-                           IsVisible="{Binding IsLoading}"
-                           HeightRequest="50" />
-
         <TableView IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
                    Intent="Settings"
                    HasUnevenRows="True">
@@ -47,5 +43,9 @@
                 </TableSection>
             </TableRoot>
         </TableView>
+
+        <ActivityIndicator IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"
+                           HeightRequest="50" />
     </Grid>
 </ContentPage>
