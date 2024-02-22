@@ -36,7 +36,7 @@ public partial class SettingsViewModel(
 
         IsLoading = false;
         ShowDeleteButton = false;
-
+        
         await notificationService.ShowSnackbar("Your data has successfully been deleted.");
     }
 
