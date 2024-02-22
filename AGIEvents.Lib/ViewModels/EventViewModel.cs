@@ -35,7 +35,7 @@ public class EventViewModel : ObservableObject, IRecipient<EventSavedChangedMess
     {
         EventId = eventId;
         Title = title;
-        Image = image.Replace(".svg", ".png");
+        Image = image;
         StartDate = startDate;
         EndDate = endDate;
         IsSaved = isSaved;
