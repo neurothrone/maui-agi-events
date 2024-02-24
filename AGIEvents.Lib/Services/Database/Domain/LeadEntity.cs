@@ -9,10 +9,8 @@ public class LeadEntity
     [Column(nameof(LeadId))]
     public int LeadId { get; init; }
 
-    [Column(nameof(EventId))]
-    [Indexed]
-    public string EventId { get; init; }
-
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    [Column(nameof(EventId))] [Indexed] public string EventId { get; init; }
     [Column(nameof(FirstName))] public string FirstName { get; init; }
     [Column(nameof(LastName))] public string LastName { get; init; }
     [Column(nameof(Company))] public string Company { get; init; }
@@ -22,11 +20,14 @@ public class LeadEntity
     [Column(nameof(ZipCode))] public string ZipCode { get; init; }
     [Column(nameof(City))] public string City { get; init; }
     [Column(nameof(Product))] public string Product { get; init; }
+
     [Column(nameof(Seller))] public string Seller { get; init; }
 
     // TODO: should we specify a MaxLength?
     // [Column(nameof(Notes)), MaxLength(10_000)] public string Notes { get; init; }
     [Column(nameof(Notes))] public string Notes { get; init; }
+#pragma warning restore CS8618
+
 
     [Column(nameof(ScannedDate))]
     [Indexed]

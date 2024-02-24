@@ -6,10 +6,13 @@ namespace AGIEvents.Lib.Services.Database;
 
 public class DatabaseRepository : IDatabaseRepository
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private SQLiteAsyncConnection _database;
+#pragma warning restore CS8618
 
     private async Task Init()
     {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (_database is not null)
             return;
 
