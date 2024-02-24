@@ -7,7 +7,14 @@ public class AppInteractionsService(INotificationService notificationService) : 
         try
         {
             var uri = new Uri(url);
-            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            BrowserLaunchOptions options = new()
+            {
+                LaunchMode = BrowserLaunchMode.SystemPreferred,
+                TitleMode = BrowserTitleMode.Show,
+                PreferredToolbarColor = Colors.DarkSlateBlue,
+                PreferredControlColor = Colors.Gold
+            };
+            await Browser.Default.OpenAsync(uri, options);
         }
         catch (Exception)
         {
