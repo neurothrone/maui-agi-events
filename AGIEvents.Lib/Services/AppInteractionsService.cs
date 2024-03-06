@@ -1,6 +1,7 @@
 namespace AGIEvents.Lib.Services;
 
-public class AppInteractionsService(INotificationService notificationService) : IAppInteractionsService
+public class AppInteractionsService(
+    INotificationService notificationService) : IAppInteractionsService
 {
     public async Task OpenBrowserAsync(string url)
     {

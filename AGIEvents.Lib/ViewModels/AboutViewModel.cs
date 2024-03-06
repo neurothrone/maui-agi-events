@@ -20,7 +20,7 @@ public partial class AboutViewModel(
     {
         await appInteractionsService.ComposeEmailAsync(
             configurationService.GetSupportEmail(),
-            "GasMatic Support"
+            "AGI Events Support"
         );
     }
 
